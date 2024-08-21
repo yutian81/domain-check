@@ -67,6 +67,7 @@ export default {
 };
 
 async function generateHTML(domains, SITENAME) {
+  //const faviconURL = "https://example.com/favicon.ico";  // 如果不会修改svg图标，可删除107行svg代码，下载一个ico或png格式的图标上传到你的仓库，修改本行图标文件的链接
   const rows = await Promise.all(domains.map(async info => {
     const registrationDate = new Date(info.registrationDate);
     const expirationDate = new Date(info.expirationDate);
