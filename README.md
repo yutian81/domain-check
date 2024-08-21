@@ -22,11 +22,9 @@ fork本仓库，在cf中创建一个pages，链接到你fork的仓库，点击�
 **示例**
 ```
 [
-  { "domain": "223344.best", "registrationDate": "2024-06-16", "expirationDate": "2025-07-15", "system": "SpaceShip" },
-  { "domain": "123123.xyz", "registrationDate": "2024-04-16", "expirationDate": "2029-04-15", "system": "SpaceShip" },
-  { "domain": "520520.xyz", "registrationDate": "2024-07-17", "expirationDate": "2025-07-16", "system": "SpaceShip" },
-  { "domain": "hello.site", "registrationDate": "2024-07-11", "expirationDate": "2025-07-11", "system": "NameCheap" },
-  { "domain": "hello.us.kg", "registrationDate": "2024-05-31", "expirationDate": "2025-05-31", "system": "US.KG" }
+  { "domain": "883344.best", "registrationDate": "2024-06-16", "expirationDate": "2025-07-15", "system": "SpaceShip", "systemURL": "https://www.spaceship.com/zh" },
+  { "domain": "711911.xyz", "registrationDate": "2024-04-16", "expirationDate": "2029-04-15", "system": "SpaceShip", "systemURL": "https://www.spaceship.com/zh" },
+  { "domain": "hello.xyz", "registrationDate": "2024-07-17", "expirationDate": "2025-07-16", "system": "SpaceShip", "systemURL": "https://www.spaceship.com/zh" }
 ]
 ```
 
