@@ -67,7 +67,6 @@ export default {
 };
 
 async function generateHTML(domains, SITENAME) {
-  const faviconURL = "https://raw.githubusercontent.com/yutian81/yutian81.github.io/master/assets/images/domains.png";  // 可以修改为你自己的图标
   const rows = await Promise.all(domains.map(async info => {
     const registrationDate = new Date(info.registrationDate);
     const expirationDate = new Date(info.expirationDate);
@@ -104,6 +103,7 @@ async function generateHTML(domains, SITENAME) {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>${SITENAME}</title>
+      <link rel="icon" href="https://raw.githubusercontent.com/yutian81/yutian81.github.io/master/assets/images/domains.png" type="image/png">
       <style>
         body {
           font-family: Arial, sans-serif;
