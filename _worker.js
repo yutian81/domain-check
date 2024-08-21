@@ -84,6 +84,7 @@ async function generateHTML(domains, SITENAME) {
         <td><span class="status-dot" style="background-color: ${statusColor};" title="${statusText}"></span></td>
         <td>${info.domain}</td>
         <td>${info.system}</td>
+        <td><a href="${info.systemURL}" target="_blank">${info.system}</a></td>
         <td>${info.registrationDate}</td>
         <td>${info.expirationDate}</td>
         <td>${isExpired ? '已过期' : daysRemaining + ' 天'}</td>
