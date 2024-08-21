@@ -4,7 +4,7 @@
 ## 部署方法
 
 ### 1、workers部署
-在cf中创建一个workers，复制`workers.js`中的代码到workers中，点击保存并部署。
+在cf中创建一个workers，复制`_worker.js`中的代码到workers中，点击保存并部署。
 
 ### 2、pages部署
 fork本仓库，在cf中创建一个pages，链接到你fork的仓库，点击部署
