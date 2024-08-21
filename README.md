@@ -16,7 +16,7 @@ fork本仓库，在cf中创建一个pages，链接到你fork的仓库，点击�
 | DOMAINS | `https://raw.githubusercontent.com/用户名/仓库名/main/domains.json` | 域名信息json文件 | 是 |
 | TGID | 6522584277 | TG机器人ID | 否 |
 | TGTOKEN | 6094768843:BBCrcWzLbXghYU8vdtt0jyESjpL9-uKM7p8 | TG机器人TOKEN | 否 |
-| DAYS | 7 | 提前几天发送TG提醒 | 否 |
+| DAYS | 7 | 提前几天发送TG提醒，必须是整数 | 否 |
 
 ## 域名信息json文件格式
 **示例**
