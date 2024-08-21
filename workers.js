@@ -199,7 +199,7 @@ async function generateHTML(domains, SITENAME) {
         </div>
       </div>
       <div class="footer">
-        powered by yutian81 | <a href="https://github.com/yutian81/CFTools/tree/main/domain-check">作者的 GITHUB</a>
+        Powered by yutian81 | <a href="https://github.com/yutian81/domain-check">作者的 GITHUB</a>
       </div>
     </body>
     </html>
