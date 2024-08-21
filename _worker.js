@@ -83,7 +83,6 @@ async function generateHTML(domains, SITENAME) {
       <tr>
         <td><span class="status-dot" style="background-color: ${statusColor};" title="${statusText}"></span></td>
         <td>${info.domain}</td>
-        <td>${info.system}</td>
         <td><a href="${info.systemURL}" target="_blank">${info.system}</a></td>
         <td>${info.registrationDate}</td>
         <td>${info.expirationDate}</td>
