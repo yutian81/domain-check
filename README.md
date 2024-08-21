@@ -29,10 +29,10 @@ fork本仓库，在cf中创建一个pages，链接到你fork的仓库，点击�
 ```
 
 ## 相关截图
-TG通知截图
+TG通知截图  
 ![TG通知.png](https://fastly.jsdelivr.net/gh/yutian81/yutian81.github.io@master/assets/images/1724210502008%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20240821104404.png)
 
-监控页面截图
+监控页面截图  
 ![监控页面.png](https://fastly.jsdelivr.net/gh/yutian81/yutian81.github.io@master/assets/images/17242106551601724210654691.png)
 
 ## 致谢
