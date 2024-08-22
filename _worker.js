@@ -29,7 +29,7 @@ export default {
       domains = env.DOMAINS || domains;
       tgid = env.TGID || tgid;
       tgtoken = env.TGTOKEN || tgtoken;
-      days = parseInt(env.DAYS || days);      
+      days = parseInt(env.DAYS || days, 10);      
       // 读取变量DOMAINS中的域名数据，格式为json
       if (!domains) {
         return new Response("DOMAINS 环境变量未设置", { status: 500 });
