@@ -6,17 +6,21 @@ let tgtoken = ""; //变量名TGTOKEN，填入TG的TOKEN，不需要提醒则不�
 let days = "7"; //变量名DAYS，提前几天发送TG提醒，默认为7天，必须为大于0的整数
 
 async function sendtgMessage(message, tgid, tgtoken) {
+  if (!tgid || !tgtoken) return;
   const url = `https://api.telegram.org/bot${tgtoken}/sendMessage`;
   const params = {
     chat_id: tgid,
     text: message,
   };
-
-  await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(params),
-  });
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+  } catch (error) {
+    console.error('Telegram 消息推送失败:', error);
+  }
 }
 
 export default {
@@ -25,8 +29,7 @@ export default {
       domains = env.DOMAINS || domains;
       tgid = env.TGID || tgid;
       tgtoken = env.TGTOKEN || tgtoken;
-      days = env.DAYS || days;
-      
+      days = env.DAYS || days;      
       // 读取变量DOMAINS中的域名数据，格式为json
       if (!domains) {
         return new Response("DOMAINS 环境变量未设置", { status: 500 });
@@ -54,14 +57,14 @@ export default {
           }
         }
   
-        // 正确处理 generateHTML 的返回值
+        // 处理 generateHTML 的返回值
         const htmlContent = await generateHTML(domains, sitename);
         return new Response(htmlContent, {
           headers: { 'Content-Type': 'text/html' },
         });
       } catch (error) {
         console.error("Fetch error:", error);
-        return new Response("无法获取或解析 domains.json 文件", { status: 500 });
+        return new Response("无法获取或解析域名的 json 文件", { status: 500 });
       }
     }
 };
@@ -140,11 +143,13 @@ async function generateHTML(domains, SITENAME) {
           width: 100%;
           border-collapse: collapse;
           white-space: nowrap;
+          table-layout: auto; /* 自动列宽 */
         }
         th, td {
           padding: 12px;
           text-align: left;
           border-bottom: 1px solid #ddd;
+          white-space: nowrap; /* 避免内容自动换行 */
         }
         th {
           background-color: #f2f2f2;
@@ -200,7 +205,7 @@ async function generateHTML(domains, SITENAME) {
         </div>
       </div>
       <div class="footer">
-        Powered by yutian81 | <a href="https://github.com/yutian81/domain-check">作者的 GITHUB</a>
+        Powered by yutian81 | <a href="https://github.com/yutian81/domain-check">Fork for Github</a>
       </div>
     </body>
     </html>
