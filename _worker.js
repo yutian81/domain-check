@@ -29,7 +29,7 @@ export default {
       domains = env.DOMAINS || domains;
       tgid = env.TGID || tgid;
       tgtoken = env.TGTOKEN || tgtoken;
-      days = env.DAYS || days;      
+      days = parseInt(env.DAYS || days);      
       // 读取变量DOMAINS中的域名数据，格式为json
       if (!domains) {
         return new Response("DOMAINS 环境变量未设置", { status: 500 });
@@ -52,7 +52,7 @@ export default {
           const daysRemaining = Math.ceil((expirationDate - today) / (1000 * 60 * 60 * 24));
   
           if (daysRemaining > 0 && daysRemaining <= days) {
-            const message = `域名 ${domain.domain} 将在 ${daysRemaining} 天后过期。过期日期：${domain.expirationDate}`;
+            const message = `[域名] ${domain.domain} 将在 ${daysRemaining} 天后过期。过期日期：${domain.expirationDate}`;
             await sendtgMessage(message, tgid, tgtoken);
           }
         }
