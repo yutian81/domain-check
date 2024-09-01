@@ -11,5 +11,7 @@
   { "domain": "yutian.filegear-sg.me", "registrationDate": "2024-05-15", "expirationDate": "2025-05-15", "system": "L53", "systemURL": "https://customer.l53.net" },
   { "domain": "yutian.onflashdrive.app", "registrationDate": "2024-03-28", "expirationDate": "2025-03-28", "system": "L53", "systemURL": "https://customer.l53.net" },
   { "domain": "yutian.cloudns.ch", "registrationDate": "2024-06-08", "expirationDate": "2025-07-15", "system": "Cloudns", "systemURL": "https://www.cloudns.net" },
-  { "domain": "yutian.app.tc", "registrationDate": "2024-03-24", "expirationDate": "2025-03-24", "system": "Site.ac", "systemURL": "https://www.site.ac" }
+  { "domain": "yutian.app.tc", "registrationDate": "2024-03-24", "expirationDate": "2025-03-24", "system": "Site.ac", "systemURL": "https://www.site.ac" },
+  { "domain": "yutian.nyc.mn", "registrationDate": "2024-09-01", "expirationDate": "2034-08-31", "system": "nyc.mn", "systemURL": "https://dot.nyc.mn/" },
+  { "domain": "yuzong.nyc.mn", "registrationDate": "2024-09-01", "expirationDate": "2034-08-31", "system": "nyc.mn", "systemURL": "https://dot.nyc.mn/" }
 ]
