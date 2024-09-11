@@ -205,7 +205,7 @@ async function generateHTML(domains, SITENAME) {
         </div>
       </div>
       <div class="footer">
-        Powered by yutian81 | <a href="https://github.com/yutian81/domain-check">Fork for Github</a>
+        Powered by yutian81 | <a href="https://github.com/yutian81/domain-check">Fork from Github</a>
       </div>
     </body>
     </html>
