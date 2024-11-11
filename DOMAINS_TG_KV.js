@@ -1,9 +1,9 @@
 // 定义外部变量
-let sitename = "域名监控"; //变量名SITENAME，自定义站点名称，默认为“域名监控”
-let domains = ""; //变量名DOMAINS，填入域名信息json文件直链，必须设置的变量
-let tgid = ""; //变量名TGID，填入TG机器人ID，不需要提醒则不填
-let tgtoken = ""; //变量名TGTOKEN，填入TG的TOKEN，不需要提醒则不填
-let days = "7"; //变量名DAYS，提前几天发送TG提醒，默认为7天，必须为大于0的整数
+let sitename = "域名监控"; // 变量名SITENAME，自定义站点名称，默认为“域名监控”
+let domains = ""; // 变量名DOMAINS，填入域名信息json文件直链，必须设置的变量
+let tgid = ""; // 变量名TGID，填入TG机器人ID，不需要提醒则不填
+let tgtoken = ""; // 变量名TGTOKEN，填入TG的TOKEN，不需要提醒则不填
+let days = "7"; // 变量名DAYS，提前几天发送TG提醒，默认为7天，必须为大于0的整数
 
 async function sendtgMessage(message, tgid, tgtoken) {
   if (!tgid || !tgtoken) return;
@@ -38,21 +38,22 @@ export default {
     try {
       const response = await fetch(domains);
       if (!response.ok) throw new Error('Network response was not ok');
-      
-      domains = await response.json();
-      if (!Array.isArray(domains)) throw new Error('JSON 数据格式不正确');
-      
+
+      // 将 JSON 数据存储在 domainsData 变量中
+      const domainsData = await response.json();
+      if (!Array.isArray(domainsData)) throw new Error('JSON 数据格式不正确');
+
       const today = new Date().toISOString().split('T')[0]; // 当前日期字符串
 
-      for (const domain of domains) {
+      for (const domain of domainsData) {
         const expirationDate = new Date(domain.expirationDate);
         const daysRemaining = Math.ceil((expirationDate - new Date()) / (1000 * 60 * 60 * 24));
 
         if (daysRemaining > 0 && daysRemaining <= days) {
           const message = `[域名] ${domain.domain} 将在 ${daysRemaining} 天后过期。过期日期：${domain.expirationDate}`;
-          
+
           const lastSentDate = await env.DOMAINS_TG_KV.get(domain.domain); // 以域名为键获取上次发送时间
-          
+
           if (lastSentDate !== today) { // 检查是否已经在今天发送过
             await sendtgMessage(message, tgid, tgtoken); // 发送通知
             await env.DOMAINS_TG_KV.put(domain.domain, today); // 更新发送日期
@@ -60,7 +61,7 @@ export default {
         }
       }
 
-      const htmlContent = await generateHTML(domains, sitename);
+      const htmlContent = await generateHTML(domainsData, sitename); // 使用 domainsData 生成 HTML
       return new Response(htmlContent, {
         headers: { 'Content-Type': 'text/html' },
       });
@@ -71,8 +72,8 @@ export default {
   }
 };
 
-async function generateHTML(domains, SITENAME) {
-  const rows = await Promise.all(domains.map(async info => {
+async function generateHTML(domainsData, SITENAME) {
+  const rows = await Promise.all(domainsData.map(async info => {
     const registrationDate = new Date(info.registrationDate);
     const expirationDate = new Date(info.expirationDate);
     const today = new Date();
