@@ -24,57 +24,51 @@ async function sendtgMessage(message, tgid, tgtoken) {
 }
 
 export default {
-    async fetch(request, env) {
-      sitename = env.SITENAME || sitename;
-      domains = env.DOMAINS || domains;
-      tgid = env.TGID || tgid;
-      tgtoken = env.TGTOKEN || tgtoken;
-      days = parseInt(env.DAYS || days, 10);      
-      // 读取变量DOMAINS中的域名数据，格式为json
-      if (!domains) {
-        return new Response("DOMAINS 环境变量未设置", { status: 500 });
-      }
-  
-      try {
-        const response = await fetch(domains);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        domains = await response.json();
-        if (!Array.isArray(domains)) {
-          throw new Error('JSON 数据格式不正确');
-        }
-  
-        // 检查即将过期的域名并发送 Telegram 消息
-        for (const domain of domains) {
-          const expirationDate = new Date(domain.expirationDate);
-          const today = new Date();
-          const daysRemaining = Math.ceil((expirationDate - today) / (1000 * 60 * 60 * 24));
-  
-          if (daysRemaining > 0 && daysRemaining <= days) {
-            const message = `[域名] ${domain.domain} 将在 ${daysRemaining} 天后过期。过期日期：${domain.expirationDate}`;
+  async fetch(request, env) {
+    sitename = env.SITENAME || sitename;
+    domains = env.DOMAINS || domains;
+    tgid = env.TGID || tgid;
+    tgtoken = env.TGTOKEN || tgtoken;
+    days = parseInt(env.DAYS || days, 10);
 
-            // 在发送通知之前检查是否已经发送过通知
-            const lastSent = await env.DOMAINS_TG_KV.get(info.system); // 使用KV存储检查上次发送的状态
-            
-            if (!lastSent || (new Date(lastSent).toISOString().split('T')[0] !== today.toISOString().split('T')[0])) {
-              // 如果没有记录，或者记录的时间不是今天，则发送通知并更新 KV
-              await sendtgMessage(message, tgid, tgtoken);
-              await env.DOMAINS_TG_KV.put(info.system, new Date().toISOString()); // 更新 KV 存储的发送时间
-            }
+    if (!domains) {
+      return new Response("DOMAINS 环境变量未设置", { status: 500 });
+    }
+
+    try {
+      const response = await fetch(domains);
+      if (!response.ok) throw new Error('Network response was not ok');
+      
+      domains = await response.json();
+      if (!Array.isArray(domains)) throw new Error('JSON 数据格式不正确');
+      
+      const today = new Date().toISOString().split('T')[0]; // 当前日期字符串
+
+      for (const domain of domains) {
+        const expirationDate = new Date(domain.expirationDate);
+        const daysRemaining = Math.ceil((expirationDate - new Date()) / (1000 * 60 * 60 * 24));
+
+        if (daysRemaining > 0 && daysRemaining <= days) {
+          const message = `[域名] ${domain.domain} 将在 ${daysRemaining} 天后过期。过期日期：${domain.expirationDate}`;
+          
+          const lastSentDate = await env.DOMAINS_TG_KV.get(domain.domain); // 以域名为键获取上次发送时间
+          
+          if (lastSentDate !== today) { // 检查是否已经在今天发送过
+            await sendtgMessage(message, tgid, tgtoken); // 发送通知
+            await env.DOMAINS_TG_KV.put(domain.domain, today); // 更新发送日期
           }
         }
-  
-        // 处理 generateHTML 的返回值
-        const htmlContent = await generateHTML(domains, sitename);
-        return new Response(htmlContent, {
-          headers: { 'Content-Type': 'text/html' },
-        });
-      } catch (error) {
-        console.error("Fetch error:", error);
-        return new Response("无法获取或解析域名的 json 文件", { status: 500 });
       }
+
+      const htmlContent = await generateHTML(domains, sitename);
+      return new Response(htmlContent, {
+        headers: { 'Content-Type': 'text/html' },
+      });
+    } catch (error) {
+      console.error("Fetch error:", error);
+      return new Response("无法获取或解析域名的 json 文件", { status: 500 });
     }
+  }
 };
 
 async function generateHTML(domains, SITENAME) {
@@ -151,13 +145,13 @@ async function generateHTML(domains, SITENAME) {
           width: 100%;
           border-collapse: collapse;
           white-space: nowrap;
-          table-layout: auto; /* 自动列宽 */
+          table-layout: auto;
         }
         th, td {
           padding: 12px;
           text-align: left;
           border-bottom: 1px solid #ddd;
-          white-space: nowrap; /* 避免内容自动换行 */
+          white-space: nowrap;
         }
         th {
           background-color: #f2f2f2;
