@@ -9,13 +9,11 @@
 
 ## 部署方法
 
-### 1、workers部署
+**worker 部署**
+
 在cf中创建一个workers，复制`_worker.js`中的代码到workers中，点击保存并部署。
 
 [![快速部署到 CF Worker](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/yutian81/domain-check)
-
-### 2、pages部署
-fork本仓库，在cf中创建一个pages，链接到你fork的仓库，点击部署
 
 ## 变量设置
 | 变量名 | 填写示例 | 说明 | 是否必填 | 
@@ -35,13 +33,6 @@ fork本仓库，在cf中创建一个pages，链接到你fork的仓库，点击�
   { "domain": "hello.xyz", "registrationDate": "2024-07-17", "expirationDate": "2025-07-16", "system": "SpaceShip", "systemURL": "https://www.spaceship.com/zh" }
 ]
 ```
-
-## 相关截图
-TG通知截图  
-![TG通知.png](https://fastly.jsdelivr.net/gh/yutian81/yutian81.github.io@master/assets/images/1724210502008%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20240821104404.png)
-
-监控页面截图  
-![监控页面.png](https://fastly.jsdelivr.net/gh/yutian81/yutian81.github.io@master/assets/images/17242327870871724232786683.png)
 
 ## 致谢
 [ypq123456789](https://github.com/ypq123456789/domainkeeper)
