@@ -23,7 +23,7 @@
 | SITENAME | 我的域名监控 | 自定义站点名称，默认为`域名监控` | 否 |
 | DOMAINS | `https://raw.githubusercontent.com/用户名/仓库名/main/domains.json` | 替换为你自己的json文件 | 是 |
 | TGID | 652***4277 | TG机器人ID，不需要通知可不填 | 否 |
-| TGTOKEN | 60947***43:BBCrcWzLbXghYU8vdtt0jyESjpL9-uKM7p8 | TG机器人TOKEN，不需要通知可不填 | 否 |
+| TGTOKEN | 60947***43:BBCrcWzLb000000vdtt0jy000000-uKM7p8 | TG机器人TOKEN，不需要通知可不填 | 否 |
 | DAYS | 7 | 提前几天发送TG提醒，必须是整数，默认为`7` | 否 |
 
 ## 域名信息json文件格式
