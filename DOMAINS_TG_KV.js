@@ -1,9 +1,9 @@
 // 定义外部变量
-let sitename = "域名监控"; // 变量名SITENAME，自定义站点名称，默认为“域名监控”
-let domains = ""; // 变量名DOMAINS，填入域名信息json文件直链，必须设置的变量
-let tgid = ""; // 变量名TGID，填入TG机器人ID，不需要提醒则不填
-let tgtoken = ""; // 变量名TGTOKEN，填入TG的TOKEN，不需要提醒则不填
-let days = "7"; // 变量名DAYS，提前几天发送TG提醒，默认为7天，必须为大于0的整数
+let sitename = "域名监控"; //变量名SITENAME，自定义站点名称，默认为“域名监控”
+let domains = ""; //变量名DOMAINS，填入域名信息json文件直链，必须设置的变量
+let tgid = ""; //变量名TGID，填入TG机器人ID，不需要提醒则不填
+let tgtoken = ""; //变量名TGTOKEN，填入TG的TOKEN，不需要提醒则不填
+let days = 7; //变量名DAYS，提前几天发送TG提醒，默认为7天，必须为大于0的整数
 
 async function sendtgMessage(message, tgid, tgtoken) {
   if (!tgid || !tgtoken) return;
@@ -29,7 +29,7 @@ export default {
     domains = env.DOMAINS || domains;
     tgid = env.TGID || tgid;
     tgtoken = env.TGTOKEN || tgtoken;
-    days = parseInt(env.DAYS || days, 10);
+    days = Number(env.DAYS || days);
 
     if (!domains) {
       return new Response("DOMAINS 环境变量未设置", { status: 500 });
@@ -38,22 +38,21 @@ export default {
     try {
       const response = await fetch(domains);
       if (!response.ok) throw new Error('Network response was not ok');
-
-      // 将 JSON 数据存储在 domainsData 变量中
-      const domainsData = await response.json();
-      if (!Array.isArray(domainsData)) throw new Error('JSON 数据格式不正确');
-
+      
+      domains = await response.json();
+      if (!Array.isArray(domains)) throw new Error('JSON 数据格式不正确');
+      
       const today = new Date().toISOString().split('T')[0]; // 当前日期字符串
 
-      for (const domain of domainsData) {
+      for (const domain of domains) {
         const expirationDate = new Date(domain.expirationDate);
         const daysRemaining = Math.ceil((expirationDate - new Date()) / (1000 * 60 * 60 * 24));
 
         if (daysRemaining > 0 && daysRemaining <= days) {
           const message = `[域名] ${domain.domain} 将在 ${daysRemaining} 天后过期。过期日期：${domain.expirationDate}`;
-
+          
           const lastSentDate = await env.DOMAINS_TG_KV.get(domain.domain); // 以域名为键获取上次发送时间
-
+          
           if (lastSentDate !== today) { // 检查是否已经在今天发送过
             await sendtgMessage(message, tgid, tgtoken); // 发送通知
             await env.DOMAINS_TG_KV.put(domain.domain, today); // 更新发送日期
@@ -61,7 +60,7 @@ export default {
         }
       }
 
-      const htmlContent = await generateHTML(domainsData, sitename); // 使用 domainsData 生成 HTML
+      const htmlContent = await generateHTML(domains, sitename);
       return new Response(htmlContent, {
         headers: { 'Content-Type': 'text/html' },
       });
@@ -72,8 +71,10 @@ export default {
   }
 };
 
-async function generateHTML(domainsData, SITENAME) {
-  const rows = await Promise.all(domainsData.map(async info => {
+async function generateHTML(domains, SITENAME) {
+  const siteIcon = 'https://pan.811520.xyz/icon/domain.png';
+  const bgimgURL = 'https://bing.img.run/1920x1080.php';
+  const rows = await Promise.all(domains.map(async info => {
     const registrationDate = new Date(info.registrationDate);
     const expirationDate = new Date(info.expirationDate);
     const today = new Date();
@@ -109,14 +110,14 @@ async function generateHTML(domainsData, SITENAME) {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>${SITENAME}</title>
-      <link rel="icon" href="https://raw.githubusercontent.com/yutian81/yutian81.github.io/master/assets/images/domains.png" type="image/png">
+      <link rel="icon" href="${siteIcon}" type="image/png">
       <style>
         body {
           font-family: Arial, sans-serif;
           line-height: 1.6;
           margin: 0;
           padding: 0;
-          background-color: #f4f4f4;
+          background-image: url('${bgimgURL}');
           color: #333;
           display: flex;
           flex-direction: column;
@@ -127,7 +128,7 @@ async function generateHTML(domainsData, SITENAME) {
           width: 95%;
           max-width: 1200px;
           margin: 20px auto;
-          background-color: #fff;
+          background-color: rgba(255, 255, 255, 0.7);
           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
           border-radius: 5px;
           overflow: hidden;
@@ -155,7 +156,7 @@ async function generateHTML(domainsData, SITENAME) {
           white-space: nowrap;
         }
         th {
-          background-color: #f2f2f2;
+          background-color: rgba(242, 242, 242, 0.7);
           font-weight: bold;
         }
         .status-dot {
@@ -178,10 +179,20 @@ async function generateHTML(domainsData, SITENAME) {
         }
         .footer {
           text-align: center;
-          padding: 10px;
+          padding: 0;
           background-color: #3498db;
+          font-size: 0.9rem;
           color: #fff;
           margin-top: auto;
+        }
+        .footer a {
+          color: white;
+          text-decoration: none;
+          margin-left: 10px;
+          transition: color 0.3s ease;
+        }
+        .footer a:hover {
+          color: #f1c40f;
         }
       </style>
     </head>
@@ -208,7 +219,11 @@ async function generateHTML(domainsData, SITENAME) {
         </div>
       </div>
       <div class="footer">
-        Powered by yutian81 | <a href="https://github.com/yutian81/domain-check" style="color: inherit; text-decoration: none;">Fork from Github</a>
+        <p>
+          Copyright © 2025 Yutian81&nbsp;&nbsp;&nbsp;| 
+          <a href="https://github.com/yutian81/vps-check" target="_blank">GitHub Repository</a>&nbsp;&nbsp;&nbsp;| 
+          <a href="https://blog.811520.xyz/" target="_blank">青云志博客</a>
+        </p>
       </div>
     </body>
     </html>
