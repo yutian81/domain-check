@@ -244,7 +244,7 @@ async function generateHTML(domains, SITENAME) {
         .progress-bar {
           width: 100%;
           min-width: 100px;
-          background-color: #e0e0e0;
+          background-color: rgba(224, 224, 224, 0.6);
           border-radius: 4px;
           overflow: hidden;
         }
