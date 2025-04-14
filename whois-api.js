@@ -61,6 +61,7 @@ async function handleRequest(request, env, ctx) {
     const creationDateMatch = html.match(/Creation Date:\s*([^\n]+)/i)?.[1]?.trim() || null;
     const updatedDateMatch = html.match(/Updated Date:\s*([^\n]+)/i)?.[1]?.trim() || null;
     const expiryDateMatch = html.match(/Registry Expiry Date:\s*([^\n]+)/i)?.[1]?.trim() || null;
+    const registrarMatch = html.match(/Registrar:\s*([^\s,，]+)/i)?.[1]?.trim() || null;
     const registrarUrlMatch = html.match(/Registrar URL:\s*([^\n]+)/i)?.[1]?.trim() || null;
     const nameServers = html.match(/Name Server:\s*([^\n]+)/gi) || [];
     const formattedNameServers = [...new Set(nameServers.map(ns => 
@@ -77,6 +78,7 @@ async function handleRequest(request, env, ctx) {
       creationDate: creationDateMatch,
       updatedDate: updatedDateMatch,
       expiryDate: expiryDateMatch,
+      registrar: registrarMatch,
       registrarUrl: registrarUrlMatch,
       nameServers: formattedNameServers,
     };
