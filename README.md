@@ -14,7 +14,7 @@
 ### API 调用
 - 请求URL格式：
 ```bash
-https://<woker项目地址>/api/<要查询的域名>
+https://<worker项目地址>/api/<要查询的域名>
 示例：https://whois.example.com/api/github.com
 ```
 - 请求头：`X-API-KEY: 你的API密钥`
