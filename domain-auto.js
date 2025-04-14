@@ -1,11 +1,11 @@
 // 定义外部变量
-let sitename = "域名监控"; //变量名SITENAME，自定义站点名称，默认为“域名监控”
+let sitename = "域名监控与到期提醒"; //变量名SITENAME，自定义站点名称，默认为“域名监控”
 let domains = ""; //变量名DOMAINS，填入域名信息json文件直链，必须设置的变量
 let tgid = ""; //变量名TGID，填入TG机器人ID，不需要提醒则不填
 let tgtoken = ""; //变量名TGTOKEN，填入TG的TOKEN，不需要提醒则不填
 let days = 7; //变量名DAYS，提前几天发送TG提醒，默认为7天，必须为大于0的整数
-let apiUrl = "https://whois.24811213.xyz/api/"; //变量名API_URL，WHOIS API接口地址
-let apiKey = "abc123"; //变量名API_KEY，API接口密钥
+let apiUrl = ""; //变量名API_URL，搭建的WHOIS API接口地址，末尾必须带“/”
+let apiKey = ""; //变量名API_KEY，API接口密钥，搭建WHOIS API接口时设置的秘钥
 
 // 格式化日期为北京时间 YYYY-MM-DD
 function formatDateToBeijing(dateStr) {
@@ -209,9 +209,9 @@ async function generateHTML(domains, SITENAME) {
           overflow: hidden;
         }
         h1 {
-          background-color: #3498db;
+          background-color: #2573b3;
           color: #fff;
-          padding: 20px;
+          padding: 15px 35px 15px 35px;
           margin: 0;
         }
         .table-container {
@@ -250,12 +250,12 @@ async function generateHTML(domains, SITENAME) {
         }
         .progress {
           height: 20px;
-          background-color: #3498db;
+          background-color: #2573b3;
         }
         .footer {
           text-align: center;
           padding: 0;
-          background-color: #3498db;
+          background-color: #2573b3;
           font-size: 0.9rem;
           color: #fff;
           margin-top: auto;
