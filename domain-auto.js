@@ -61,7 +61,7 @@ async function sendtgMessage(message, tgid, tgtoken) {
   }
 }
 
-// 将原有的主逻辑提取为独立函数
+// 主逻辑
 async function checkDomains(env) {
     sitename = env.SITENAME || sitename;
     domains = env.DOMAINS || domains;
