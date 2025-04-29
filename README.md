@@ -64,3 +64,9 @@ curl -X GET \
 
 ## 完整部署教程
 https://blog.811520.xyz/post/2025/04/domain-autocheck/
+
+## 鸣谢
+
+感谢 [VTEXS](https://console.vtexs.com/) 提供的免费服务器
+
+Thanks to [VTEXS](https://console.vtexs.com/) for the free server
