@@ -70,5 +70,3 @@ https://blog.811520.xyz/post/2025/04/domain-autocheck/
 感谢 [VTEXS](https://console.vtexs.com/) / [ZMTO](https://zmto.com/) 提供的免费服务器
 
 Thanks to [VTEXS](https://console.vtexs.com/) / [ZMTO](https://zmto.com/) for the free server
-
-[![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
