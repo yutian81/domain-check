@@ -67,6 +67,6 @@ https://blog.811520.xyz/post/2025/04/domain-autocheck/
 
 ## 鸣谢
 
-感谢 [VTEXS](https://console.vtexs.com/) 和 [ZMTO](https://zmto.com/) 提供的免费服务器
+感谢 [VTEXS](https://console.vtexs.com/) / [ZMTO](https://zmto.com/) 提供的免费服务器
 
-Thanks to [VTEXS](https://console.vtexs.com/) and [ZMTO](https://zmto.com/) for the free server
+Thanks to [VTEXS](https://console.vtexs.com/) / [ZMTO](https://zmto.com/) for the free server
