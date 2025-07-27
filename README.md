@@ -3,15 +3,21 @@
 
 **DEMO**：<https://domain.yuzong.nyc.mn/>  
 
-## 2025-04-14 更新：通过 whois 服务自动查询域名到期时间（对二级域名无效）
-### 部署 whois 域名查询 API
+## 更新记录
+
+- [x] 2025-04-14：通过 whois 服务自动查询域名到期时间（对二级域名无效）
+- [x] 2025-07-27：增加鉴权系统，需要输入密码方可访问
+- [x] 2025-07-27：允许个性化自定义站点LOGO、背景图、仓库链接、博客链接
+
+## 先部署 whois 域名查询 API
 - 文件`whois-api.js`
 - 变量
   - API_KEY：自行设置，调用 API 需要用到，`如：abcabc`
   - CACHE_HOURS：缓存时间（单位：小时），默认为24小时，`如：24`
 - 绑定域名（因为worker被墙，建议绑定域名）
+- 得到API接口地址：`https://<worker项目地址>/api/` （**末尾的/必须保留**）
 
-### API 调用
+### whois API 调用
 - 请求URL格式：
 ```bash
 https://<worker项目地址>/api/<要查询的域名>
@@ -61,6 +67,40 @@ curl -X GET \
 | 500 | 服务器错误           | {"error": "WHOIS查询超时"}        |
 | 502 | WHOIS服务不可用      | {"error": "WHOIS服务返回502"}     |
 | 503 | 未配置环境变量 API Key | {"error": "未配置 API Key"}      |
+
+## 再部署域名到期监控
+- 文件`domain-auto.js`
+- 变量
+
+| 变量名   | 默认值              | 示例说明                       | 是否必须 |
+| ------- | ------------------- | ----------------------------- | ------- |
+| DOMAINS | 无          | json 文件直链地址：`https://gist.githubusercontent.com/用户名/gistID/raw/domains.json` | 是 |
+| TGID    | 无          | TG 机器人 ID：`5868334288`   | 是   |
+| TGTOKEN | 无          | TG 机器人 token：`9194882369:xxxxxxfwCD8vdtt0jyESsgL2-xxxxxx`      | 是 |
+| DAYS    | 7           | 到期前几天提醒        | 否 | 
+| API_URL | 无          | 自部署 whois api 接口：`https://whois.example.com/api/github.com`     | 是 |
+| API_KEY | 无          | 自部署 whois api TOKEN     | 是 |
+| PASSWORD | 123123     | 主页访问密码     | 是 |
+| SITENAME | 域名到期监控          | 自定义站点名称    | 否 |
+| ICON | `https://pan.811520.xyz/icon/domain.png`    | 自定义站点LOGO    | 否 |
+| BGIMG | `https://pan.811520.xyz/icon/back.webp`    | 自定义站点背景图    | 否 |
+| GITHUB_URL | `https://github.com/yutian81/domain-check`    | 页脚自定义github仓库地址   | 否 |
+| BLOG_URL | `https://blog.811520.xyz/post/2025/04/domain-autocheck/`    | 页脚自定义博客地址   | 否 |
+| BLOG_NAME | 青云志 Blog    | 页脚自定义博客名称   | 否 |
+
+- DOMAINS变量json格式示例
+```json
+[
+  { "domain": "cfcdn.best" },
+  { "domain": "811520.xyz" },
+  { "domain": "cfedt.site" },
+  { "domain": "aaa.dpdns.org", "registrationDate": "2024-05-31", "expirationDate": "2026-05-31", "system": "DigitalPlat", "systemURL": "https://dash.domain.digitalplat.org" },
+  { "domain": "bbb.dpdns.org", "registrationDate": "2024-05-31", "expirationDate": "2026-05-31", "system": "DigitalPlat", "systemURL": "https://dash.domain.digitalplat.org" }
+]
+```
+
+- 绑定域名（因worker被墙，建议绑定域名）
+- 访问绑定的域名，输入设定的 `PASSWORD` 密码，进入主页
 
 ## 完整部署教程
 https://blog.811520.xyz/post/2025/04/domain-autocheck/
