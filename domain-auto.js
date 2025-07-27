@@ -140,7 +140,7 @@ export default {
     const siteIcon = env.ICON || 'https://pan.811520.xyz/icon/domain.png';
     const bgimgURL = env.BGIMG || 'https://pan.811520.xyz/icon/back.webp';
     const githubURL = env.GITHUB_URL || 'https://github.com/yutian81/domain-check';
-    const blogURL = env.BLOG_URL || 'https://blog.811520.xyz/';
+    const blogURL = env.BLOG_URL || 'https://blog.811520.xyz/post/2025/04/domain-autocheck/';
     const blogName = env.BLOG_NAME || '青云志 Blog';
     
     // 处理登录路由
