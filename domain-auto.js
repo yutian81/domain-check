@@ -43,12 +43,14 @@ async function fetchDomainFromAPI(domainName) {
   }
 }
 
+// TG通知函数
 async function sendtgMessage(message, tgid, tgtoken) {
   if (!tgid || !tgtoken) return;
   const url = `https://api.telegram.org/bot${tgtoken}/sendMessage`;
   const params = {
     chat_id: tgid,
     text: message,
+    parse_mode: "HTML"
   };
   try {
     await fetch(url, {
@@ -61,9 +63,8 @@ async function sendtgMessage(message, tgid, tgtoken) {
   }
 }
 
-// 将原有的主逻辑提取为独立函数
+// 获取域名信息并发出即将到期的TG通知
 async function checkDomains(env) {
-    sitename = env.SITENAME || sitename;
     domains = env.DOMAINS || domains;
     tgid = env.TGID || tgid;
     tgtoken = env.TGTOKEN || tgtoken;
@@ -107,7 +108,14 @@ async function checkDomains(env) {
         const daysRemaining = Math.ceil((expirationDate - new Date()) / (1000 * 60 * 60 * 24));
   
         if (daysRemaining > 0 && daysRemaining <= days) {
-          const message = `[域名] ${domainInfo.domain} 将在 ${daysRemaining} 天后过期。过期日期：${domainInfo.expirationDate}`;  
+          const message = `
+<b>🚨 域名到期提醒 🚨</b>
+          
+域名: <code>${domainInfo.domain}</code>
+将在 <b>${daysRemaining} 天</b>后过期！
+📅 过期日期: ${domainInfo.expirationDate}
+🔗 前往续期: <a href="${domainInfo.systemURL}">${domainInfo.system}</a>`;
+
           const lastSentDate = await env.DOMAINS_TG_KV.get(domainInfo.domain);
           if (lastSentDate !== today) {
             await sendtgMessage(message, tgid, tgtoken);
@@ -123,32 +131,209 @@ async function checkDomains(env) {
 }
 
 export default {
-    // 手动触发器
-    async fetch(request, env) {
+  // 手动触发器
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const path = url.pathname;
+
+    const siteName = env.SITENAME || sitename;
+    const siteIcon = env.ICON || 'https://pan.811520.xyz/icon/domain.png';
+    const bgimgURL = env.BGIMG || 'https://pan.811520.xyz/icon/back.webp';
+    const githubURL = env.GITHUB_URL || 'https://github.com/yutian81/domain-check';
+    const blogURL = env.BLOG_URL || 'https://blog.811520.xyz/';
+    const blogName = env.BLOG_NAME || '青云志 Blog';
+    
+    // 处理登录路由
+    if (path === '/login') {
+      if (request.method === 'GET') {
+        // 显示登录页面
+        return new Response(generateLoginPage(false, siteName, siteIcon, bgimgURL), {
+          headers: { 'Content-Type': 'text/html' },
+        });
+      } else if (request.method === 'POST') {
+        // 处理登录请求
+        const formData = await request.formData();
+        const password = formData.get('password');
+        const correctPassword = env.PASSWORD || "123123"; // 从环境变量获取正确密码
+        
+        // 检查密码是否正确
+        if (password === correctPassword) {
+          // 设置cookie，有效期1周
+          const expires = new Date();
+          expires.setDate(expires.getDate() + 7);
+          
+          const headers = new Headers();
+          headers.set('Location', '/');
+          headers.set('Set-Cookie', `auth=${password}; Expires=${expires.toUTCString()}; HttpOnly; Path=/; Secure; SameSite=Lax`);
+          
+          return new Response(null, {
+            status: 302,
+            headers: headers
+          });
+        } else {
+          // 密码错误，显示错误信息
+          return new Response(generateLoginPage(true, siteName, siteIcon, bgimgURL), {
+            headers: { 'Content-Type': 'text/html' },
+          });
+        }
+      }
+    }
+    
+    // 检查cookie中的认证信息
+    const cookie = request.headers.get('Cookie');
+    let authToken = null;
+    if (cookie) {
+      const match = cookie.match(/auth=([^;]+)/);
+      if (match) authToken = match[1];
+    }
+    
+    const correctPassword = env.PASSWORD;
+    
+    // 如果未认证且不是登录页面，重定向到登录页面
+    if (!correctPassword || authToken === correctPassword) {
+      // 已认证，显示主页面
       try {
         const processedDomains = await checkDomains(env);
-        const htmlContent = await generateHTML(processedDomains, sitename);
+        const htmlContent = await generateHTML(processedDomains, siteName, siteIcon, bgimgURL, githubURL, blogURL, blogName);
         return new Response(htmlContent, {
           headers: { 'Content-Type': 'text/html' },
         });
       } catch (error) {
         return new Response("无法获取或解析域名的 json 文件", { status: 500 });
       }
-    },
-    
-    // 定时触发器
-    async scheduled(event, env, ctx) {
-      ctx.waitUntil(
-        checkDomains(env).catch(err => {
-          console.error('定时任务执行失败:', err);
-        })
-      );
+    } else {
+      // 未认证，重定向到登录页面
+      const headers = new Headers();
+      headers.set('Location', '/login');
+      return new Response(null, {
+        status: 302,
+        headers: headers
+      });
     }
+  },
+  
+  // 定时触发器
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(
+      checkDomains(env).catch(err => {
+        console.error('定时任务执行失败:', err);
+      })
+    );
+  }
 };
 
-async function generateHTML(domains, SITENAME) {
-  const siteIcon = 'https://pan.811520.xyz/icon/domain.png';
-  const bgimgURL = 'https://pan.811520.xyz/icon/back.webp';
+// 生成登录页面HTML
+function generateLoginPage(showError = false, siteName, siteIcon, bgimgURL) { 
+  return `
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>登录 - ${siteName}</title>
+      <link rel="icon" href="${siteIcon}" type="image/png">
+      <style>
+        body, html {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          font-family: Arial, sans-serif;
+          background-image: url('${bgimgURL}');
+          background-position: center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .login-container {
+          background-color: rgba(255, 255, 255, 0.75);
+          padding: 30px;
+          border-radius: 8px;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+          width: 320px;
+          text-align: center;
+        }
+        .logo {
+          width: 80px;
+          height: 80px;
+          margin: 0 auto 15px;
+          background-image: url('${siteIcon}');
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+        }
+        h1 {
+          color: #2573b3;
+          margin: 0 0 20px 0;
+          font-size: 1.8rem;
+        }
+        .input-group {
+          margin-bottom: 20px;
+          text-align: left;
+        }
+        label {
+          display: block;
+          margin-bottom: 8px;
+          font-weight: bold;
+          color: #333;
+        }
+        input[type="password"] {
+          width: 100%;
+          padding: 12px;
+          background-color: rgba(255, 255, 255, 0.75);
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          box-sizing: border-box;
+          font-size: 16px;
+          transition: border-color 0.3s;
+        }
+        input[type="password"]:focus {
+          border-color: #2573b3;
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(37, 115, 179, 0.2);
+        }
+        button {
+          width: 100%;
+          padding: 12px;
+          background-color: #2573b3;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 16px;
+          font-weight: bold;
+          transition: background-color 0.3s;
+        }
+        button:hover {
+          background-color: #1c5a8a;
+        }
+        .error {
+          color: #e74c3c;
+          margin-top: 15px;
+          padding: 10px;
+          background-color: rgba(231, 76, 60, 0.1);
+          border-radius: 4px;
+          display: ${showError ? 'block' : 'none'};
+        }
+      </style>
+    </head>
+    <body>
+      <div class="login-container">
+        <h1>${siteName}</h1>
+        <form id="loginForm" action="/login" method="POST">
+          <div class="input-group">
+            <label for="password">访问密码</label>
+            <input type="password" id="password" name="password" required autocomplete="current-password">
+          </div>
+          <button type="submit">登录系统</button>
+          <div id="errorMessage" class="error">密码错误，请重试</div>
+        </form>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+async function generateHTML(domains, siteName, siteIcon, bgimgURL, githubURL, blogURL, blogName) {
   const rows = await Promise.all(domains.map(async info => {
     const registrationDate = new Date(info.registrationDate);
     const expirationDate = new Date(info.expirationDate);
@@ -184,7 +369,7 @@ async function generateHTML(domains, SITENAME) {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>${SITENAME}</title>
+      <title>${siteName}</title>
       <link rel="icon" href="${siteIcon}" type="image/png">
       <style>
         body, html {
@@ -284,7 +469,7 @@ async function generateHTML(domains, SITENAME) {
     </head>
     <body>
       <div class="container">
-        <h1>${SITENAME}</h1>
+        <h1>${siteName}</h1>
         <div class="table-container">
           <table>
             <thead>
@@ -307,8 +492,8 @@ async function generateHTML(domains, SITENAME) {
       <div class="footer">
         <p>
           Copyright © 2025 Yutian81&nbsp;&nbsp;&nbsp;| 
-          <a href="https://github.com/yutian81/domain-check" target="_blank">GitHub Repository</a>&nbsp;&nbsp;&nbsp;| 
-          <a href="https://blog.811520.xyz/" target="_blank">青云志博客</a>
+          <a href="${githubURL}" target="_blank">GitHub Repo</a>&nbsp;&nbsp;&nbsp;| 
+          <a href="${blogURL}" target="_blank">${blogName}</a>
         </p>
       </div>
     </body>
