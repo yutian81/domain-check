@@ -1,11 +1,11 @@
 // 定义外部变量
-let sitename = "域名监控与到期提醒"; //变量名SITENAME，自定义站点名称，默认为“域名监控”
+let sitename = "域名监控"; //变量名SITENAME，自定义站点名称，默认为“域名监控”
 let domains = ""; //变量名DOMAINS，填入域名信息json文件直链，必须设置的变量
 let tgid = ""; //变量名TGID，填入TG机器人ID，不需要提醒则不填
 let tgtoken = ""; //变量名TGTOKEN，填入TG的TOKEN，不需要提醒则不填
 let days = 7; //变量名DAYS，提前几天发送TG提醒，默认为7天，必须为大于0的整数
-let apiUrl = ""; //变量名API_URL，搭建的WHOIS API接口地址，末尾必须带“/”
-let apiKey = ""; //变量名API_KEY，API接口密钥，搭建WHOIS API接口时设置的秘钥
+let apiUrl = "https://whois.yuzong.nyc.mn/api/"; //变量名API_URL，WHOIS API接口地址
+let apiKey = "abc123"; //变量名API_KEY，API接口密钥
 
 // 格式化日期为北京时间 YYYY-MM-DD
 function formatDateToBeijing(dateStr) {
@@ -61,7 +61,7 @@ async function sendtgMessage(message, tgid, tgtoken) {
   }
 }
 
-// 主逻辑
+// 将原有的主逻辑提取为独立函数
 async function checkDomains(env) {
     sitename = env.SITENAME || sitename;
     domains = env.DOMAINS || domains;
@@ -148,7 +148,7 @@ export default {
 
 async function generateHTML(domains, SITENAME) {
   const siteIcon = 'https://pan.811520.xyz/icon/domain.png';
-  const bgimgURL = 'https://bing.img.run/1920x1080.php';
+  const bgimgURL = 'https://pan.811520.xyz/icon/back.webp';
   const rows = await Promise.all(domains.map(async info => {
     const registrationDate = new Date(info.registrationDate);
     const expirationDate = new Date(info.expirationDate);
@@ -187,16 +187,21 @@ async function generateHTML(domains, SITENAME) {
       <title>${SITENAME}</title>
       <link rel="icon" href="${siteIcon}" type="image/png">
       <style>
-        body {
-          font-family: Arial, sans-serif;
-          line-height: 1.6;
+        body, html {
+          height: 100%;
           margin: 0;
           padding: 0;
-          background-image: url('${bgimgURL}');
+          overflow: hidden; /* 禁止整个页面滚动 */
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
           color: #333;
+        }
+        body {
+          background-image: url('${bgimgURL}');
+          background-size: cover;
+          background-position: center;
           display: flex;
           flex-direction: column;
-          min-height: 100vh;
         }
         .container {
           flex: 1;
@@ -207,16 +212,20 @@ async function generateHTML(domains, SITENAME) {
           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
           border-radius: 5px;
           overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          height: calc(100% - 40px); /* 减去上下margin */
         }
         h1 {
           background-color: #2573b3;
           color: #fff;
-          padding: 15px 35px 15px 35px;
+          padding: 10px 35px;
           margin: 0;
+          flex-shrink: 0; /* 防止标题被压缩 */
         }
         .table-container {
-          width: 100%;
-          overflow-x: auto;
+          flex: 1;
+          overflow: auto; /* 仅在容器内滚动 */
         }
         table {
           width: 100%;
@@ -233,6 +242,8 @@ async function generateHTML(domains, SITENAME) {
         th {
           background-color: rgba(242, 242, 242, 0.7);
           font-weight: bold;
+          position: sticky;
+          top: 0; /* 固定表头 */
         }
         .status-dot {
           display: inline-block;
@@ -258,7 +269,7 @@ async function generateHTML(domains, SITENAME) {
           background-color: #2573b3;
           font-size: 0.9rem;
           color: #fff;
-          margin-top: auto;
+          flex-shrink: 0; /* 防止页脚被压缩 */
         }
         .footer a {
           color: white;
