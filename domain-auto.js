@@ -1,11 +1,21 @@
-// 定义外部变量
-let sitename = "域名到期监控"; //变量名SITENAME，自定义站点名称，默认为“域名到期监控”
-let domains = ""; //变量名DOMAINS，填入域名信息json文件直链，必须设置的变量
-let tgid = ""; //变量名TGID，填入TG机器人ID，不需要提醒则不填
-let tgtoken = ""; //变量名TGTOKEN，填入TG的TOKEN，不需要提醒则不填
-let days = 7; //变量名DAYS，提前几天发送TG提醒，默认为7天，必须为大于0的整数
-let apiUrl = ""; //变量名API_URL，WHOIS API接口地址，部署 whois-api.js 获取
-let apiKey = ""; //变量名API_KEY，API接口密钥，部署 whois-api.js 获取
+// 从环境变量读取配置
+function getConfig(env) {
+  return {
+    siteName: env.SITENAME || "域名到期监控",
+    siteIcon: env.ICON || 'https://pan.811520.xyz/icon/domain.png',
+    bgimgURL: env.BGIMG || 'https://pan.811520.xyz/icon/back.webp',
+    githubURL: env.GITHUB_URL || 'https://github.com/yutian81/domain-check',
+    blogURL: env.BLOG_URL || 'https://blog.811520.xyz/post/2025/04/domain-autocheck/',
+    blogName: env.BLOG_NAME || '青云志 Blog',
+    password: env.PASSWORD || "123123",
+    days: Number(env.DAYS || 7),
+    domains: env.DOMAINS,
+    tgid: env.TGID,
+    tgtoken: env.TGTOKEN,
+    apiUrl: env.API_URL,
+    apiKey: env.API_KEY
+  };
+}
 
 // 格式化日期为北京时间 YYYY-MM-DD
 function formatDateToBeijing(dateStr) {
@@ -23,10 +33,16 @@ function getPrimaryDomain(domain) {
 }
 
 // 调用WHOIS API获取域名信息
-async function fetchDomainFromAPI(domainName) {
+async function fetchDomainFromAPI(env, domainName) {
+  const config = getConfig(env);
+  
   try {
-    const response = await fetch(`${apiUrl}${domainName}`, {
-      headers: { 'X-API-KEY': apiKey }
+    const apiUrl = config.apiUrl.endsWith('/') 
+    ? `${config.apiUrl}${domainName}`
+    : `${config.apiUrl}/${domainName}`;
+
+    const response = await fetch(apiUrl, {
+      headers: { 'X-API-KEY': config.apiKey }
     });
     if (!response.ok) throw new Error('API请求失败');
     const data = await response.json();
@@ -34,8 +50,8 @@ async function fetchDomainFromAPI(domainName) {
       domain: domainName,
       registrationDate: formatDateToBeijing(data.creationDate),
       expirationDate: formatDateToBeijing(data.expiryDate),
-      system: data.registrar,
-      systemURL: data.registrarUrl
+      system: data.registrar || '未知',
+      systemURL: data.registrarUrl || '未知'
     };
   } catch (error) {
     console.error(`获取域名 ${domainName} 信息失败:`, error);
@@ -65,33 +81,29 @@ async function sendtgMessage(message, tgid, tgtoken) {
 
 // 获取域名信息并发出即将到期的TG通知
 async function checkDomains(env) {
-    domains = env.DOMAINS || domains;
-    tgid = env.TGID || tgid;
-    tgtoken = env.TGTOKEN || tgtoken;
-    days = Number(env.DAYS || days);
-    apiUrl = env.API_URL || apiUrl;
-    apiKey = env.API_KEY || apiKey;
-  
-    if (!domains) {
+    const config = getConfig(env);
+
+    if (!config.domains) {
       console.error("DOMAINS 环境变量未设置");
-      return;
+      return [];
     }
   
     try {
       // 获取原始域名列表
-      const response = await fetch(domains);
-      if (!response.ok) throw new Error('Network response was not ok');
-      let domainsData = await response.json();
+      const response = await fetch(config.domains);
+      if (!response.ok) throw new Error('网络响应不正常');
+      const domainsData = await response.json();
       if (!Array.isArray(domainsData)) throw new Error('JSON 数据格式不正确');
-      const today = new Date().toISOString().split('T')[0];
+
       const processedDomains = [];
-  
+      const today = new Date().toISOString().split('T')[0];
+      
       // 处理每个域名
       for (const domain of domainsData) {
         let domainInfo = {...domain};
         const primaryDomain = getPrimaryDomain(domain.domain);
         if (primaryDomain === domain.domain) {
-          const apiData = await fetchDomainFromAPI(domain.domain);
+          const apiData = await fetchDomainFromAPI(env, domain.domain);
           if (apiData) {
             domainInfo = {
               ...domainInfo,
@@ -107,7 +119,7 @@ async function checkDomains(env) {
         const expirationDate = new Date(domainInfo.expirationDate);
         const daysRemaining = Math.ceil((expirationDate - new Date()) / (1000 * 60 * 60 * 24));
   
-        if (daysRemaining > 0 && daysRemaining <= days) {
+        if (daysRemaining > 0 && daysRemaining <= config.days) {
           const message = `
 <b>🚨 域名到期提醒 🚨</b>
           
@@ -118,7 +130,7 @@ async function checkDomains(env) {
 
           const lastSentDate = await env.DOMAINS_TG_KV.get(domainInfo.domain);
           if (lastSentDate !== today) {
-            await sendtgMessage(message, tgid, tgtoken);
+            await sendtgMessage(message, config.tgid, config.tgtoken);
             await env.DOMAINS_TG_KV.put(domainInfo.domain, today);
           }
         }
@@ -126,99 +138,129 @@ async function checkDomains(env) {
       return processedDomains;
     } catch (error) {
       console.error("检查域名时出错:", error);
-      throw error;
+      return [];
     }
 }
 
-export default {
-  // 手动触发器
-  async fetch(request, env) {
-    const url = new URL(request.url);
-    const path = url.pathname;
-
-    const siteName = env.SITENAME || sitename;
-    const siteIcon = env.ICON || 'https://pan.811520.xyz/icon/domain.png';
-    const bgimgURL = env.BGIMG || 'https://pan.811520.xyz/icon/back.webp';
-    const githubURL = env.GITHUB_URL || 'https://github.com/yutian81/domain-check';
-    const blogURL = env.BLOG_URL || 'https://blog.811520.xyz/post/2025/04/domain-autocheck/';
-    const blogName = env.BLOG_NAME || '青云志 Blog';
-    
-    // 处理登录路由
-    if (path === '/login') {
-      if (request.method === 'GET') {
-        // 显示登录页面
-        return new Response(generateLoginPage(false, siteName, siteIcon, bgimgURL), {
+// 处理登录请求
+async function handleLogin(request, env) {
+  const config = getConfig(env);
+  
+  if (request.method === 'GET') {
+      // 显示登录页面
+      return new Response(generateLoginPage(false, config.siteName, config.siteIcon, config.bgimgURL), {
           headers: { 'Content-Type': 'text/html' },
-        });
-      } else if (request.method === 'POST') {
-        // 处理登录请求
-        const formData = await request.formData();
-        const password = formData.get('password');
-        const correctPassword = env.PASSWORD || "123123"; // 从环境变量获取正确密码
-        
-        // 检查密码是否正确
-        if (password === correctPassword) {
-          // 设置cookie，有效期1周
-          const expires = new Date();
-          expires.setDate(expires.getDate() + 7);
-          
-          const headers = new Headers();
-          headers.set('Location', '/');
-          headers.set('Set-Cookie', `auth=${password}; Expires=${expires.toUTCString()}; HttpOnly; Path=/; Secure; SameSite=Lax`);
-          
-          return new Response(null, {
-            status: 302,
-            headers: headers
-          });
-        } else {
-          // 密码错误，显示错误信息
-          return new Response(generateLoginPage(true, siteName, siteIcon, bgimgURL), {
-            headers: { 'Content-Type': 'text/html' },
-          });
-        }
-      }
-    }
-    
-    // 检查cookie中的认证信息
-    const cookie = request.headers.get('Cookie');
-    let authToken = null;
-    if (cookie) {
-      const match = cookie.match(/auth=([^;]+)/);
-      if (match) authToken = match[1];
-    }
-    
-    const correctPassword = env.PASSWORD;
-    
-    // 如果未认证且不是登录页面，重定向到登录页面
-    if (!correctPassword || authToken === correctPassword) {
-      // 已认证，显示主页面
-      try {
-        const processedDomains = await checkDomains(env);
-        const htmlContent = await generateHTML(processedDomains, siteName, siteIcon, bgimgURL, githubURL, blogURL, blogName);
-        return new Response(htmlContent, {
-          headers: { 'Content-Type': 'text/html' },
-        });
-      } catch (error) {
-        return new Response("无法获取或解析域名的 json 文件", { status: 500 });
-      }
-    } else {
-      // 未认证，重定向到登录页面
-      const headers = new Headers();
-      headers.set('Location', '/login');
-      return new Response(null, {
-        status: 302,
-        headers: headers
       });
-    }
+  } else if (request.method === 'POST') {
+      // 处理登录请求
+      let password;
+      const contentType = request.headers.get('content-type') || '';
+
+      try {
+          if (contentType.includes('application/json')) {
+              // 解析JSON请求体
+              const jsonData = await request.json();
+              password = jsonData.password;
+          } else if (contentType.includes('application/x-www-form-urlencoded')) {
+              // 解析表单数据
+              const formData = await request.formData();
+              password = formData.get('password');
+          } else {
+              // 不支持的Content-Type
+              return new Response('不支持的Content-Type', { status: 415 });
+          }
+
+          // 检查密码是否正确
+          if (password === config.password) {
+              // 设置cookie，有效期1周
+              const expires = new Date();
+              expires.setDate(expires.getDate() + 7);
+              
+              const headers = new Headers();
+              headers.set('Location', '/');
+              headers.set('Set-Cookie', `auth=${password}; Expires=${expires.toUTCString()}; HttpOnly; Path=/; Secure; SameSite=Lax`);
+              
+              return new Response(null, {
+                  status: 302,
+                  headers: headers
+              });
+          } else {
+              // 密码错误，显示错误信息
+              return new Response(generateLoginPage(true, config.siteName, config.siteIcon, config.bgimgURL), {
+                  headers: { 'Content-Type': 'text/html' },
+              });
+          }
+      } catch (error) {
+          console.error('解析请求体失败:', error);
+          return new Response('无效的请求数据', { status: 400 });
+      }
+  }
+
+  // 其他HTTP方法返回405
+  return new Response('Method Not Allowed', { status: 405 });
+}
+
+export default {
+  async fetch(request, env) {
+      const url = new URL(request.url);
+      const path = url.pathname;
+      const config = getConfig(env);
+      
+      // 处理登录路由
+      if (path === '/login') {
+          return handleLogin(request, env);
+      }
+      
+      // 检查cookie中的认证信息
+      const cookie = request.headers.get('Cookie');
+      let authToken = null;
+      if (cookie) {
+          const match = cookie.match(/auth=([^;]+)/);
+          if (match) authToken = match[1];
+      }
+           
+      // 如果未认证且不是登录页面，重定向到登录页面
+      if (!config.password || authToken === config.password) {
+          // 已认证，处理请求
+          try {
+              const processedDomains = await checkDomains(env);
+              
+              // 根据Accept头返回不同格式
+              const accept = request.headers.get('Accept') || '';
+              if (accept.includes('application/json')) {
+                  // 返回JSON格式
+                  return new Response(JSON.stringify(processedDomains), {
+                      headers: { 'Content-Type': 'application/json' },
+                  });
+              } else {
+                  // 返回HTML格式
+                  const htmlContent = await generateHTML(processedDomains, config.siteName, config.siteIcon, config.bgimgURL, config.githubURL, config.blogURL, config.blogName);
+                  return new Response(htmlContent, {
+                      headers: { 'Content-Type': 'text/html' },
+                  });
+              }
+          } catch (error) {
+              console.error('处理请求失败:', error);
+              return new Response("无法获取或解析域名的 json 文件", { status: 500 });
+          }
+      } else {
+          // 未认证，重定向到登录页面
+          const headers = new Headers();
+          headers.set('Location', '/login');
+          return new Response(null, {
+              status: 302,
+              headers: headers
+          });
+      }
   },
   
-  // 定时触发器
+  // 定时触发器保持不变
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(
-      checkDomains(env).catch(err => {
-        console.error('定时任务执行失败:', err);
-      })
-    );
+      ctx.waitUntil(
+          checkDomains(env).catch(err => {
+              console.error('定时任务执行失败:', err);
+          })
+      );
   }
 };
 
@@ -245,12 +287,17 @@ function generateLoginPage(showError = false, siteName, siteIcon, bgimgURL) {
           align-items: center;
         }
         .login-container {
-          background-color: rgba(255, 255, 255, 0.75);
+          background-color: rgba(255, 255, 255, 0.6);
           padding: 30px;
           border-radius: 8px;
           box-shadow: 0 4px 15px rgba(0,0,0,0.15);
           width: 320px;
           text-align: center;
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          box-shadow: 
+            0 4px 15px rgba(0,0,0,0.15),
+            inset 0 0 10px rgba(255,255,255,0.1);
         }
         .logo {
           width: 80px;
@@ -393,9 +440,14 @@ async function generateHTML(domains, siteName, siteIcon, bgimgURL, githubURL, bl
           width: 95%;
           max-width: 1200px;
           margin: 20px auto;
-          background-color: rgba(255, 255, 255, 0.7);
+          background-color: rgba(255, 255, 255, 0.6);
           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
           border-radius: 5px;
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          box-shadow: 
+            0 4px 15px rgba(0,0,0,0.15),
+            inset 0 0 10px rgba(255,255,255,0.1);
           overflow: hidden;
           display: flex;
           flex-direction: column;
