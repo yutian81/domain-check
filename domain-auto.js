@@ -424,17 +424,16 @@ async function generateHTML(domains, siteName, siteIcon, bgimgURL, githubURL, bl
           height: 100%;
           margin: 0;
           padding: 0;
-          overflow: hidden; /* 禁止整个页面滚动 */
           font-family: Arial, sans-serif;
           line-height: 1.6;
           color: #333;
+          display: flex;
+          flex-direction: column;
         }
         body {
           background-image: url('${bgimgURL}');
           background-size: cover;
           background-position: center;
-          display: flex;
-          flex-direction: column;
         }
         .container {
           flex: 1;
@@ -502,28 +501,32 @@ async function generateHTML(domains, siteName, siteIcon, bgimgURL, githubURL, bl
           height: 20px;
           background-color: #2573b3;
         }
-        footer {
-         background-color: #2573b3;
-         color: white;
-         font-size: 0.9rem;
-         width: 100%;
-         margin-top: auto; /* 使footer推到底部 */
-        }
-        footer p {
-         display: flex;
-         justify-content: center;
-         align-items: center;
-         flex-wrap: wrap;
-         gap: 12px;
-        }
-        footer a {
-         color: white;
-         text-decoration: none;
-         transition: color 0.3s ease;
-        }
-        footer a:hover {
-          color: #f1c40f;
-        }
+        .footer {
+          background-color: #2573b3 !important;
+          color: white;
+          font-size: 0.9rem;
+          width: 100%;
+          text-align: center;
+          padding: 16px 0;
+          margin-top: auto;
+        }
+        .footer p {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          gap: 12px;
+          margin: 0;
+        }
+        .footer a {
+          color: white;
+          text-decoration: none;
+          transition: color 0.3s ease;
+          white-space: nowrap;
+        }
+        .footer a:hover {
+          color: #f1c40f;
+        }
       </style>
     </head>
     <body>
