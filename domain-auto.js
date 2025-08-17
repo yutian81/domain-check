@@ -418,6 +418,7 @@ async function generateHTML(domains, siteName, siteIcon, bgimgURL, githubURL, bl
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>${siteName}</title>
       <link rel="icon" href="${siteIcon}" type="image/png">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
       <style>
         body, html {
           height: 100%;
@@ -479,6 +480,7 @@ async function generateHTML(domains, siteName, siteIcon, bgimgURL, githubURL, bl
         th {
           background-color: rgba(242, 242, 242, 0.7);
           font-weight: bold;
+          color: #2573B3;
           position: sticky;
           top: 0; /* 固定表头 */
         }
@@ -500,23 +502,28 @@ async function generateHTML(domains, siteName, siteIcon, bgimgURL, githubURL, bl
           height: 20px;
           background-color: #2573b3;
         }
-        .footer {
-          text-align: center;
-          padding: 0;
-          background-color: #2573b3;
-          font-size: 0.9rem;
-          color: #fff;
-          flex-shrink: 0; /* 防止页脚被压缩 */
-        }
-        .footer a {
-          color: white;
-          text-decoration: none;
-          margin-left: 10px;
-          transition: color 0.3s ease;
-        }
-        .footer a:hover {
-          color: #f1c40f;
-        }
+        footer {
+         background-color: #2573b3;
+         color: white;
+         font-size: 0.9rem;
+         width: 100%;
+         margin-top: auto; /* 使footer推到底部 */
+        }
+        footer p {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 12px;
+        }
+        footer a {
+         color: white;
+         text-decoration: none;
+         transition: color 0.3s ease;
+        }
+        footer a:hover {
+          color: #f1c40f;
+        }
       </style>
     </head>
     <body>
@@ -526,13 +533,13 @@ async function generateHTML(domains, siteName, siteIcon, bgimgURL, githubURL, bl
           <table>
             <thead>
               <tr>
-                <th>状态</th>
-                <th>域名</th>
-                <th>域名注册商</th>
-                <th>注册时间</th>
-                <th>过期时间</th>
-                <th>剩余天数</th>
-                <th>使用进度</th>
+                <th><i class="fas fa-signal"></i> 状态</th>
+                <th><i class="fas fa-globe"></i> 域名</th>
+                <th><i class="fas fa-building"></i> 域名注册商</th>
+                <th><i class="fas fa-calendar-plus"></i> 注册时间</th>
+                <th><i class="fas fa-calendar-times"></i> 过期时间</th>
+                <th><i class="fas fa-hourglass-half"></i> 剩余天数</th>
+                <th><i class="fas fa-tasks"></i> 使用进度</th>
               </tr>
             </thead>
             <tbody>
@@ -543,9 +550,11 @@ async function generateHTML(domains, siteName, siteIcon, bgimgURL, githubURL, bl
       </div>
       <div class="footer">
         <p>
-          Copyright © 2025 Yutian81&nbsp;&nbsp;&nbsp;| 
-          <a href="${githubURL}" target="_blank">GitHub Repo</a>&nbsp;&nbsp;&nbsp;| 
-          <a href="${blogURL}" target="_blank">${blogName}</a>
+          <span>Copyright © 2025 Yutian81</span><span>|</span>
+          <a href="${githubURL}" target="_blank">
+            <i class="fab fa-github"></i> GitHub Repo</a><span>|</span>
+          <a href="${blogURL}" target="_blank">
+            <i class="fas fa-blog"></i> ${blogName}</a>
         </p>
       </div>
     </body>
