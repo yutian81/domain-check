@@ -451,7 +451,6 @@ async function generateHTML(domains, siteName, siteIcon, bgimgURL, githubURL, bl
           overflow: hidden;
           display: flex;
           flex-direction: column;
-          height: calc(100% - 40px); /* 减去上下margin */
         }
         h1 {
           background-color: #2573b3;
@@ -526,6 +525,12 @@ async function generateHTML(domains, siteName, siteIcon, bgimgURL, githubURL, bl
         }
         .footer a:hover {
           color: #f1c40f;
+        }
+        @media (max-width: 768px) {
+          .footer p {
+            line-height: 0.9;
+            font-size: 0.75rem;
+          }
         }
       </style>
     </head>
