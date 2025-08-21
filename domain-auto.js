@@ -148,7 +148,7 @@ async function handleLogin(request, env) {
   
   if (request.method === 'GET') {
       // 显示登录页面
-      return new Response(generateLoginPage(false, config.siteName, config.siteIcon, config.bgimgURL), {
+      return new Response(generateLoginPage(false, config.siteName, config.siteIcon, config.bgimgURL, config.githubURL, config.blogURL, config.blogName), {
           headers: { 'Content-Type': 'text/html' },
       });
   } else if (request.method === 'POST') {
@@ -186,7 +186,7 @@ async function handleLogin(request, env) {
               });
           } else {
               // 密码错误，显示错误信息
-              return new Response(generateLoginPage(true, config.siteName, config.siteIcon, config.bgimgURL), {
+              return new Response(generateLoginPage(true, config.siteName, config.siteIcon, config.bgimgURL, config.githubURL, config.blogURL, config.blogName), {
                   headers: { 'Content-Type': 'text/html' },
               });
           }
@@ -265,7 +265,7 @@ export default {
 };
 
 // 生成登录页面HTML
-function generateLoginPage(showError = false, siteName, siteIcon, bgimgURL) { 
+function generateLoginPage(showError = false, siteName, siteIcon, bgimgURL, githubURL, blogURL, blogName) { 
   return `
     <!DOCTYPE html>
     <html lang="zh-CN">
@@ -274,11 +274,12 @@ function generateLoginPage(showError = false, siteName, siteIcon, bgimgURL) {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>登录 - ${siteName}</title>
       <link rel="icon" href="${siteIcon}" type="image/png">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
       <style>
         body, html {
           height: 100%;
           margin: 0;
-          padding: 0;
+          padding: 10px;
           font-family: Arial, sans-serif;
           background-image: url('${bgimgURL}');
           background-position: center;
@@ -287,11 +288,11 @@ function generateLoginPage(showError = false, siteName, siteIcon, bgimgURL) {
           align-items: center;
         }
         .login-container {
-          background-color: rgba(255, 255, 255, 0.6);
-          padding: 30px;
+          background-color: rgba(255, 255, 255, 0.5);
+          padding: 25px 25px 10px 25px;
           border-radius: 8px;
           box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-          width: 320px;
+          width: 400px;
           text-align: center;
           backdrop-filter: blur(10px);
           -webkit-backdrop-filter: blur(10px);
@@ -361,6 +362,41 @@ function generateLoginPage(showError = false, siteName, siteIcon, bgimgURL) {
           border-radius: 4px;
           display: ${showError ? 'block' : 'none'};
         }
+        .footer {
+          background-color: none;
+          color: white;
+          font-size: 0.8rem;
+          width: 100%;
+          text-align: center;
+          padding: 16px 0;
+          margin-top: 10px;
+        }
+        .footer p {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          gap: 8px;
+          margin: 0;
+        }
+        .footer a {
+          color: white;
+          text-decoration: none;
+          transition: color 0.3s ease;
+          white-space: nowrap;
+        }
+        .footer a:hover {
+          color: #f1c40f;
+        }
+        @media (max-width: 768px) {
+          .footer p {
+            line-height: 0.9;
+            font-size: 0.75rem;
+          }
+          .login-container {
+            width: 90%;
+          }
+        }
       </style>
     </head>
     <body>
@@ -374,6 +410,15 @@ function generateLoginPage(showError = false, siteName, siteIcon, bgimgURL) {
           <button type="submit">登录系统</button>
           <div id="errorMessage" class="error">密码错误，请重试</div>
         </form>
+        <div class="footer">
+          <p>
+            <span>Copyright © 2025 Yutian81</span><span>|</span>
+            <a href="${githubURL}" target="_blank">
+              <i class="fab fa-github"></i> GitHub</a><span>|</span>
+            <a href="${blogURL}" target="_blank">
+              <i class="fas fa-blog"></i> ${blogName}</a>
+          </p>
+        </div>
       </div>
     </body>
     </html>
@@ -440,7 +485,7 @@ async function generateHTML(domains, siteName, siteIcon, bgimgURL, githubURL, bl
           width: 95%;
           max-width: 1200px;
           margin: 20px auto;
-          background-color: rgba(255, 255, 255, 0.6);
+          background-color: rgba(255, 255, 255, 0.5);
           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
           border-radius: 5px;
           backdrop-filter: blur(10px);
@@ -514,7 +559,7 @@ async function generateHTML(domains, siteName, siteIcon, bgimgURL, githubURL, bl
           flex-wrap: wrap;
           justify-content: center;
           align-items: center;
-          gap: 12px;
+          gap: 8px;
           margin: 0;
         }
         .footer a {
