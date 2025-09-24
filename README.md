@@ -73,7 +73,7 @@ curl -X GET \
 - 变量
 
 | 变量名   | 默认值              | 示例说明                       | 是否必须 |
-| ------- | ------------------- | ----------------------------- | ------- |
+| ------- | ----------- | ----------------------------- | ------- |
 | DOMAINS | 无          | json 文件直链地址：`https://gist.githubusercontent.com/用户名/gistID/raw/domains.json` | 是 |
 | TGID    | 无          | TG 机器人 ID：`5868334288`   | 是   |
 | TGTOKEN | 无          | TG 机器人 token：`9194882369:xxxxxxfwCD8vdtt0jyESsgL2-xxxxxx`      | 是 |
@@ -81,11 +81,11 @@ curl -X GET \
 | API_URL | 无          | 自部署 whois api 接口：`https://whois.example.com/api/github.com`     | 是 |
 | API_KEY | 无          | 自部署 whois api TOKEN     | 是 |
 | PASSWORD | 123123     | 主页访问密码     | 是 |
-| SITENAME | 域名到期监控          | 自定义站点名称    | 否 |
-| ICON | `https://pan.811520.xyz/icon/domain.png`    | 自定义站点LOGO，**必须是png格式**    | 否 |
-| BGIMG | `https://pan.811520.xyz/icon/back.webp`    | 自定义站点背景图    | 否 |
-| GITHUB_URL | `https://github.com/yutian81/domain-check`    | 页脚自定义github仓库地址   | 否 |
-| BLOG_URL | `https://blog.811520.xyz/post/2025/04/domain-autocheck/`    | 页脚自定义博客地址   | 否 |
+| SITENAME | 域名到期监控    | 自定义站点名称    | 否 |
+| ICON | `https://pan.811520.xyz/icon/domain.png` | 自定义站点LOGO，**必须是png格式**    | 否 |
+| BGIMG | `https://pan.811520.xyz/icon/back.webp` | 自定义站点背景图    | 否 |
+| GITHUB_URL | `https://github.com/yutian81/domain-check` | 页脚自定义github仓库地址   | 否 |
+| BLOG_URL | `https://blog.811520.xyz/post/2025/04/domain-autocheck/` | 页脚自定义博客地址   | 否 |
 | BLOG_NAME | 青云志 Blog    | 页脚自定义博客名称   | 否 |
 
 - DOMAINS变量json格式示例
