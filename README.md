@@ -107,9 +107,9 @@ https://blog.811520.xyz/post/2025/04/domain-autocheck/
 
 ## 鸣谢
 
-感谢 [VTEXS](https://console.vtexs.com/) / [ZMTO](https://zmto.com/) / [Netjett](https://netjett.com/index.php) 提供的免费服务器
+感谢 [Netjett](https://netjett.com/index.php) 提供的免费服务器
 
-Thanks to [VTEXS](https://console.vtexs.com/) / [ZMTO](https://zmto.com/) / [Netjett](https://netjett.com/index.php) for the free server
+Thanks to [Netjett](https://netjett.com/index.php) for the free server
 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
