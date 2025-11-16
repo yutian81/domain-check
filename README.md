@@ -14,19 +14,13 @@
 
 ## 快速开始
 
-### 1. 前置要求
-
-- Cloudflare 账号
-- Node.js 和 npm/pnpm
-- Wrangler CLI
-
-### 2. 安装依赖
+### 1. 安装依赖
 
 ```bash
 npm install -g wrangler
 ```
 
-### 3. 配置环境变量
+### 2. 配置环境变量
 
 创建 `.dev.vars` 文件用于本地开发（不要提交到 Git）：
 
@@ -47,12 +41,12 @@ SITENAME=域名到期监控
 DAYS=30
 ICON=https://example.com/icon.png
 BGIMG=https://example.com/bg.jpg
-GITHUB_URL=https://github.com/your/repo
-BLOG_URL=https://yourblog.com
-BLOG_NAME=Your Blog
+GITHUB_URL=https://github.com/yutian81/domain-check
+BLOG_URL=https://blog.notett.com
+BLOG_NAME=QingYun Blog
 ```
 
-### 4. 创建 KV 命名空间
+### 3. 创建 KV 命名空间
 
 ```bash
 # 创建 KV 命名空间
@@ -61,13 +55,13 @@ wrangler kv:namespace create "DOMAIN_KV"
 # 更新 wrangler.json 中的 id 为返回的 ID
 ```
 
-### 5. 本地开发
+### 4. 本地开发
 
 ```bash
 wrangler pages dev public --kv DOMAIN_KV
 ```
 
-### 6. 部署
+### 5. 部署
 
 ```bash
 wrangler pages deploy public
@@ -82,8 +76,8 @@ wrangler pages deploy public
 | 变量名 | 说明 | 默认值 | 必填 |
 |--------|------|--------|------|
 | `PASSWORD` | 访问密码 | `123123` | ❌ |
-| `API_URL` | WHOIS API 地址 | - | ❌ |
-| `API_KEY` | WHOIS API 密钥 | - | ❌ |
+| `API_URL` | WHOIS API 地址 | `https://your-whois-api.example.com/api/` | ❌ |
+| `API_KEY` | WHOIS API 密钥 | abc123 | ❌ |
 | `TGID` | Telegram Chat ID | - | ❌ |
 | `TGTOKEN` | Telegram Bot Token | - | ❌ |
 | `DAYS` | 到期提醒天数 | `30` | ❌ |
