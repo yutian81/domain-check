@@ -14,79 +14,26 @@
 
 ## 快速开始
 
-### 1. 安装依赖
-
-```bash
-npm install -g wrangler
-```
-
-### 2. 配置环境变量
-
-创建 `.dev.vars` 文件用于本地开发（不要提交到 Git）：
-
-```bash
-# 登录密码（必填）
-PASSWORD=your_secure_password
-
-# WHOIS API 配置（可选，用于自动查询一级域名信息）
-API_URL=https://your-whois-api.example.com/api/
-API_KEY=your_api_key
-
-# Telegram 通知配置（可选）
-TGID=your_telegram_chat_id
-TGTOKEN=your_telegram_bot_token
-
-# 其他配置（可选）
-SITENAME=域名到期监控
-DAYS=30
-ICON=https://example.com/icon.png
-BGIMG=https://example.com/bg.jpg
-GITHUB_URL=https://github.com/yutian81/domain-check
-BLOG_URL=https://blog.notett.com
-BLOG_NAME=QingYun Blog
-```
-
-### 3. 创建 KV 命名空间
-
-```bash
-# 创建 KV 命名空间
-wrangler kv:namespace create "DOMAIN_KV"
-
-# 更新 wrangler.json 中的 id 为返回的 ID
-```
-
-### 4. 本地开发
-
-```bash
-wrangler pages dev public --kv DOMAIN_KV
-```
-
-### 5. 部署
-
-```bash
-wrangler pages deploy public
-```
-
-部署后，在 Cloudflare Dashboard 中配置环境变量和 KV 绑定。
+使用 cloudflare pages 部署
 
 ## 配置说明
 
 ### 环境变量
 
-| 变量名 | 说明 | 默认值 | 必填 |
+| 变量名 | 说明 | 默认值/示例值 | 必填 |
 |--------|------|--------|------|
 | `PASSWORD` | 访问密码 | `123123` | ❌ |
 | `API_URL` | WHOIS API 地址 | `https://your-whois-api.example.com/api/` | ❌ |
-| `API_KEY` | WHOIS API 密钥 | abc123 | ❌ |
+| `API_KEY` | WHOIS API 密钥 | `abc123` | ❌ |
 | `TGID` | Telegram Chat ID | - | ❌ |
 | `TGTOKEN` | Telegram Bot Token | - | ❌ |
 | `DAYS` | 到期提醒天数 | `30` | ❌ |
 | `SITENAME` | 网站名称 | `域名到期监控` | ❌ |
-| `ICON` | 网站图标 | - | ❌ |
-| `BGIMG` | 背景图片 | - | ❌ |
+| `ICON` | 网站图标 | `https://example.com/icon.png` | ❌ |
+| `BGIMG` | 背景图片 | `https://example.com/bg.png` | ❌ |
 | `GITHUB_URL` | GitHub 链接 | - | ❌ |
-| `BLOG_URL` | 博客链接 | - | ❌ |
-| `BLOG_NAME` | 博客名称 | - | ❌ |
+| `BLOG_URL` | 博客链接 | `https://github.com/yutian81/domain-check` | ❌ |
+| `BLOG_NAME` | 博客名称 | `https://blog.notett.com` | ❌ |
 
 ### KV 命名空间
 
@@ -98,24 +45,6 @@ wrangler pages deploy public
 
 ```
 0 9 * * *  # 每天上午 9 点执行
-```
-
-## 项目结构
-
-```
-.
-├── functions/              # Pages Functions (后端 API)
-│   ├── _middleware.js      # 认证中间件
-│   ├── api/
-│   │   └── domains.js      # 域名 CRUD API
-│   ├── scheduled.js        # 定时任务
-│   └── utils.js            # 工具函数
-├── public/                 # 静态前端资源
-│   ├── index.html          # 主页面
-│   ├── script.js           # 前端逻辑
-│   └── style.css           # 样式
-├── wrangler.json           # Wrangler 配置
-└── README.md               # 本文档
 ```
 
 ## API 接口
@@ -146,11 +75,10 @@ wrangler pages deploy public
 
 ⚠️ **重要提示**：
 
-1. **不要在 `wrangler.json` 中写入真实密码**，使用 Cloudflare Dashboard 的环境变量或 `.dev.vars`
+1. 不要在 `wrangler.json` 中写入真实密码，应使用 Cloudflare Dashboard 的环境变量
 2. 使用强密码并定期更换
-3. 考虑添加更强的认证机制（如 JWT、OAuth）
-4. 定期备份 KV 数据
-5. 限制 API 访问频率
+3. 定期备份 KV 数据
+4. 限制 API 访问频率
 
 ## 常见问题
 
@@ -162,9 +90,6 @@ wrangler kv:key get --namespace-id=YOUR_ID "DOMAIN_LIST"
 
 ### Q: WHOIS 查询失败怎么办？
 A: 可以手动输入域名信息，系统会保存手动输入的数据。
-
-### Q: 如何自定义界面？
-A: 修改 `public/style.css` 和环境变量中的图标、背景等配置。
 
 ## 许可证
 
