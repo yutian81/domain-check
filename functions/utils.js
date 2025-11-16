@@ -13,15 +13,14 @@ export function getConfig(env) {
         days: Number(env.DAYS || 30), // 用于前端即将到期判断
         tgid: env.TGID,
         tgtoken: env.TGTOKEN,
-        apiUrl: env.API_URL || 'https://whois.yuzong.nyc.mn/api/',
-        apiKey: env.API_KEY || 'abc123'
+        apiUrl: env.API_URL,
+        apiKey: env.API_KEY
     };
 }
 
 // 格式化日期为 YYYY-MM-DD
 export function formatDateToBeijing(dateStr) {
     const date = new Date(dateStr);
-    // 转换为北京时间 (UTC+8)
     const beijingTime = new Date(date.getTime() + 8 * 60 * 60 * 1000);
     return beijingTime.toISOString().split('T')[0];
 }
@@ -204,7 +203,7 @@ export function generateLoginPage(showError = false, siteName, siteIcon, bgimgUR
         }
         .footer {
           background-color: none;
-          color: white;
+          color: #555555;
           font-size: 0.8rem;
           width: 100%;
           text-align: center;
@@ -264,3 +263,4 @@ export function generateLoginPage(showError = false, siteName, siteIcon, bgimgUR
     </html>
   `;
 }
+
