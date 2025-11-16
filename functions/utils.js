@@ -219,7 +219,7 @@ export function generateLoginPage(showError = false, siteName, siteIcon, bgimgUR
           margin: 0;
         }
         .footer a {
-          color: white;
+          color: #555555;
           text-decoration: none;
           transition: color 0.3s ease;
           white-space: nowrap;
@@ -263,4 +263,5 @@ export function generateLoginPage(showError = false, siteName, siteIcon, bgimgUR
     </html>
   `;
 }
+
 
