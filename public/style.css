@@ -373,8 +373,8 @@ body {
         margin-bottom: 12px;
     }
     .tabs-container {
-        width: 100%;
-        padding: 0 20px;
+        width: auto;
+        padding: 0 12px;
         margin: 0;
         justify-content: center;
     }
@@ -385,9 +385,8 @@ body {
     .search-container {
         width: auto;
         align-self: stretch;
-        margin: 0 10px;
-        margin-top: 10px;
-        padding: 8px 10px;
+        margin: 10px 10px 0 10px;
+        padding: 8px 12px;
     }
 
     /* 域名卡片网格 */
