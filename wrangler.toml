@@ -1,4 +1,4 @@
-name = "domain-check"
+name = "domain-checkin"
 main = "src/index.js"
 compatibility_date = "2025-11-17"
 keep_vars = true
