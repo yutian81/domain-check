@@ -1,0 +1,42 @@
+name: 部署域名监控到CF
+
+on:
+  #push:
+  #  branches:
+  #    - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Cloudflare Worker
+
+    steps:
+      - name: ⬇️ Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: ⚙️ Setup wrangler
+        run: |
+          sed -i 's/id = "ae781b92d2c14a55a32f7b094beb9ade"/id = "${{ secrets.CF_KV_ID }}"/' wrangler.toml
+          sed -i 's/crons = ["0 1,13 * * *"]/id = "${{ secrets.CHECK_CRON }}"/' wrangler.toml
+          
+      - name: 🚀 Deploy Worker to Cloudflare
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }} # 推荐使用 API Token
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          secrets: |
+            PASSWORD
+            TGID
+            TGTOKEN
+            WHOIS_API_URL
+            WHOIS_API_KEY
+        env:
+          PASSWORD: ${{ secrets.PASSWORD }}
+          TGID: ${{ secrets.TG_ID }}
+          TGTOKEN: ${{ secrets.TG_TOKEN }}
+          WHOIS_API_URL: ${{ secrets.WHOIS_API_URL }}
+          WHOIS_API_KEY: ${{ secrets.WHOIS_API_KEY }}
+          
+      - name: ✅ Deployment Successful
+        run: echo "Cloudflare Worker deployed successfully!"
