@@ -1,11 +1,13 @@
-name = "domain-check" # 替换为项目名称
+name = "domain-check"
+main = "src/index.js"
+compatibility_date = "2025-11-17"
+keep_vars = true
 
-[pages]
-pages_build_output_dir = "public"
-
-[triggers]
-crons = ["0 1,13 * * *"] # 每天9点和21点各检查一次（北京时间）
-
+# KV 命名空间绑定 (必须)
 [[kv_namespaces]]
-binding = "DOMAIN_KV" # KV绑定变量名
-id = "ae781b92d2c14a55a32f7b094beb9ade" # 替换为自己的 KV ID (可在 CF 仪表板获取)
+binding = "DOMAIN_KV" 
+id = "eefd3d2f4ab74929bf22f0d7f9701da4" # 替换成你实际的 KV ID
+
+# Cron Triggers 定时任务
+[triggers]
+crons = ["0 1,13 * * *"] # 北京时间 9:00 和 21:00
