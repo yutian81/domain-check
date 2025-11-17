@@ -22,6 +22,7 @@ body {
     align-items: center;
     gap: 8px;
 }
+#siteTitle { margin: 0; }
 .add-btn {
     background-color: #186db3;
     color: white;
@@ -154,7 +155,7 @@ body {
 }
 .card-info p {
     margin: 5px 0;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 .card-info strong {
     color: #333;
