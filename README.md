@@ -16,38 +16,11 @@
 
 ## 前置条件
 
-### 部署 whois api，仅支持查询一级域名
+### 部署 whois api
 
 - 部署方式: 复制根目录 whois.js 到 cf worker 部署，设环境变量 `WHOIS_API_KEY`，绑定一个自定义域，得到两个变量，记录下来备用
   - WHOIS_API_URL: 即部署的worker地址
   - WHOIS_API_KEY: 你自己设置的密钥
-
-- 请求示例
-
-```bash
-curl -X GET \
-  -H "X-API-KEY: 你的API密钥" \
-  https://whois.example.com/api/github.com
-```
-
-- 返回示例
-
-```json
-{
-  "domain": "bing.com",
-  "creationDate": "1997-03-24T00:00:00Z",
-  "updatedDate": "2024-04-20T10:11:47Z",
-  "expiryDate": "2025-03-23T00:00:00Z",
-  "registrar": "MarkMonitor Inc.",
-  "registrarUrl": "http://www.markmonitor.com",
-  "nameServers": [
-    "ns1.msft.net",
-    "ns2.msft.net",
-    "ns3.msft.net",
-    "ns4.msft.net"
-  ]
-}
-```
 
 ### 创建KV空间
 
@@ -88,7 +61,36 @@ id = "ae781b92d1586337122f7b094beb9ade" # 将 id 值改为自己创建的kv空�
 | `BLOG_URL` | 博客链接 | `https://github.com/yutian81/domain-check` | ❌ |
 | `BLOG_NAME` | 博客名称 | `https://blog.notett.com` | ❌ |
 
-## API 接口
+## whois api 简要说明
+
+### 请求示例
+
+```bash
+curl -X GET \
+  -H "X-API-KEY: 你的API密钥" \
+  https://whois.example.com/api/github.com
+```
+
+### 返回示例
+
+```json
+{
+  "domain": "bing.com",
+  "creationDate": "1997-03-24T00:00:00Z",
+  "updatedDate": "2024-04-20T10:11:47Z",
+  "expiryDate": "2025-03-23T00:00:00Z",
+  "registrar": "MarkMonitor Inc.",
+  "registrarUrl": "http://www.markmonitor.com",
+  "nameServers": [
+    "ns1.msft.net",
+    "ns2.msft.net",
+    "ns3.msft.net",
+    "ns4.msft.net"
+  ]
+}
+```
+
+## 本项目 API 接口
 
 ### GET /api/domains
 获取所有域名列表
