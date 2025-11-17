@@ -352,12 +352,13 @@ body {
         width: 100%; /* 按钮占满宽度 */
         padding: 12px 15px;
         font-size: 1rem;
+        margin-top: 10px;
     }
 
     /* 概览卡片 */
     .summary-container {
         flex-direction: column; /* 垂直堆叠，避免卡片过窄 */
-        padding: 10px 0;
+        padding: 12px 0;
         gap: 10px;
     }
     .summary-card {
@@ -370,8 +371,7 @@ body {
     /* 控制区 (Tabs & Search) */
     .controls-container {
         flex-direction: column; /* 垂直堆叠 */
-        padding: 10px;
-        margin-bottom: 15px;
+        padding: 12px 0;
     }
     .tabs-container {
         width: 100%;
@@ -394,7 +394,7 @@ body {
     .domain-grid {
         /* 在小屏幕上，让网格自动调整，至少显示一个大卡片 */
         grid-template-columns: repeat(auto-fill, minmax(95%, 1fr)); 
-        gap: 15px;
+        gap: 12px;
     }
     .card-header {
         flex-direction: column; /* 域名和状态垂直堆叠 */
