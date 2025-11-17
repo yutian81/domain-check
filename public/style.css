@@ -374,6 +374,8 @@ body {
     .tabs-container {
         width: 100%;
         padding: 0 12px;
+        margin-left: 0;
+        margin-bottom: 10px;
         justify-content: center;
     }
     .tab-btn {
