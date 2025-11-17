@@ -265,3 +265,4 @@ export function generateLoginPage(showError = false, siteName, siteIcon, bgimgUR
   `;
 }
 
+
