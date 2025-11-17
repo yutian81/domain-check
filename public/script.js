@@ -13,6 +13,46 @@ let globalConfig = {
     daysThreshold: 30 // 默认值
 };
 
+// 设置网站图标
+function setFavicon(iconUrl) {
+    if (!iconUrl) {
+        console.warn("未提供网站图标 URL，跳过设置 favicon。");
+        return;
+    }
+
+    let faviconLink = document.getElementById('faviconLink');
+    if (!faviconLink) {
+        // 如果没有找到带 ID 的 link 标签，就创建一个
+        faviconLink = document.createElement('link');
+        faviconLink.id = 'faviconLink';
+        faviconLink.rel = 'icon';
+        faviconLink.type = 'image/png';
+        document.head.appendChild(faviconLink);
+    }
+    faviconLink.href = iconUrl;
+    console.log(`Favicon 设置为: ${iconUrl}`);
+}
+
+// 渲染页脚
+function renderFooter() {
+    const footerEl = document.getElementById('footer');
+    if (!footerEl) return;
+    
+    const { githubURL, blogURL, blogName } = globalConfig;
+    const currentYear = new Date().getFullYear();
+    footerEl.innerHTML = `
+        <div class="footer">
+            <p>
+                <span>Copyright © ${currentYear} Yutian81</span><span>|</span>
+                <a href="${githubURL}" target="_blank">
+                    <i class="fab fa-github"></i> Github</a><span>|</span>
+                <a href="${blogURL}" target="_blank">
+                    <i class="fas fa-blog"></i> ${blogName}</a>
+            </p>
+        </div>
+    `;
+}
+
 // 异步获取全局配置
 async function fetchConfig() {
     try {
@@ -41,6 +81,8 @@ async function fetchConfig() {
             if (siteTitleEl && config.siteName) {
                 siteTitleEl.innerHTML = `<i class="fas fa-clock"></i> ${config.siteName}`;
             }
+            // 设置网站图标
+            if (globalConfig.siteIcon) { setFavicon(globalConfig.siteIcon); }
         }
     } catch (error) {
         console.error('获取配置信息失败:', error);
@@ -428,26 +470,6 @@ function applyFiltersAndSearch() {
 
     renderDomainCards();
     // renderPagination(); // renderDomainCards 内部会调用 renderPagination，避免重复
-}
-
-// 渲染页脚
-function renderFooter() {
-    const footerEl = document.getElementById('footer');
-    if (!footerEl) return;
-    
-    const { githubURL, blogURL, blogName } = globalConfig;
-    const currentYear = new Date().getFullYear();
-    footerEl.innerHTML = `
-        <div class="footer">
-            <p>
-                <span>Copyright © ${currentYear} Yutian81</span><span>|</span>
-                <a href="${githubURL}" target="_blank">
-                    <i class="fab fa-github"></i> Github</a><span>|</span>
-                <a href="${blogURL}" target="_blank">
-                    <i class="fas fa-blog"></i> ${blogName}</a>
-            </p>
-        </div>
-    `;
 }
 
 // --- 数据操作函数 ---
