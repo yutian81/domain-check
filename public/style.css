@@ -341,8 +341,7 @@ body {
     /* 头部区域 */
     .header {
         flex-direction: column; /* 垂直堆叠 */
-        padding-top: 20px;
-        padding-bottom: 10px;
+        padding-bottom: 12px;
     }
     .header h1 {
         font-size: 1.5rem;
@@ -375,9 +374,8 @@ body {
     }
     .tabs-container {
         width: 100%;
-        margin-left: 0;
-        justify-content: center; /* 居中显示分组按钮 */
-        margin-bottom: 10px;
+        margin: 0 12px;
+        justify-content: center;
     }
     .tab-btn {
         flex-grow: 1; /* 按钮平均分配宽度 */
