@@ -370,11 +370,12 @@ body {
     .controls-container {
         flex-direction: column; /* 垂直堆叠 */
         padding: 12px 0;
+        margin-bottom: 12px;
     }
     .tabs-container {
         width: 100%;
-        padding: 0 12px;
-        margin: 0 10px 10px 10px;
+        padding: 0 10px;
+        margin: 0 0 10px 0;
         justify-content: center;
     }
     .tab-btn {
@@ -382,8 +383,9 @@ body {
         font-size: 0.9rem;
     }
     .search-container {
-        width: 90%;
-        margin-right: 0;
+        width: auto;
+        align-self: stretch;
+        margin: 0 10px;
         margin-top: 10px;
         padding: 8px 10px;
     }
