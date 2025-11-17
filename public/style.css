@@ -1,4 +1,4 @@
-/* public/style.css - 仅包含卡片和布局的关键部分 */
+/* public/style.css */
 
 body {
     background-color: #f4f7f6;
@@ -155,7 +155,7 @@ body {
 }
 .card-info p {
     margin: 5px 0;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
 }
 .card-info strong {
     color: #333;
@@ -195,7 +195,7 @@ body {
     z-index: 2;
 }
 .progress-text {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     text-align: center;
     margin-top: 5px;
     font-weight: bold;
