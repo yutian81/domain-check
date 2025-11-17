@@ -1,5 +1,8 @@
 name = "domain-check" # 替换为项目名称
 
+[pages]
+pages_build_output_dir = "public"
+
 [triggers]
 crons = ["0 1,13 * * *"] # 每天9点和21点各检查一次（北京时间）
 
