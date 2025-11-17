@@ -341,7 +341,6 @@ body {
     /* 头部区域 */
     .header {
         flex-direction: column; /* 垂直堆叠 */
-        padding-bottom: 12px;
     }
     .header h1 {
         font-size: 1.5rem;
@@ -374,7 +373,7 @@ body {
     }
     .tabs-container {
         width: 100%;
-        margin: 0 12px;
+        padding: 0 12px;
         justify-content: center;
     }
     .tab-btn {
