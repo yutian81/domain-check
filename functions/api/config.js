@@ -22,5 +22,4 @@ export async function onRequest(context) {
             'Cache-Control': 'public, max-age=86400' // 配置信息可以缓存
         }
     });
-
 }

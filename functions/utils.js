@@ -105,6 +105,7 @@ export async function sendtgMessage(message, tgid, tgtoken) {
 
 // 生成登录页面HTML (与原代码相同，为简洁，仅展示函数签名)
 export function generateLoginPage(showError = false, siteName, siteIcon, bgimgURL, githubURL, blogURL, blogName) {
+  const currentYear = new Date().getFullYear();
     return `
     <!DOCTYPE html>
     <html lang="zh-CN">
@@ -149,7 +150,7 @@ export function generateLoginPage(showError = false, siteName, siteIcon, bgimgUR
           background-position: center;
         }
         h1 {
-          color: #2573b3;
+          color: #186db3;
           margin: 0 0 20px 0;
           font-size: 1.8rem;
         }
@@ -168,23 +169,23 @@ export function generateLoginPage(showError = false, siteName, siteIcon, bgimgUR
           padding: 12px;
           background-color: rgba(255, 255, 255, 0.75);
           border: 1px solid #ddd;
-          border-radius: 4px;
+          border-radius: 8px;
           box-sizing: border-box;
           font-size: 16px;
           transition: border-color 0.3s;
         }
         input[type="password"]:focus {
-          border-color: #2573b3;
+          border-color: #186db3;
           outline: none;
           box-shadow: 0 0 0 2px rgba(37, 115, 179, 0.2);
         }
         button {
           width: 100%;
           padding: 12px;
-          background-color: #2573b3;
+          background-color: #186db3;
           color: white;
           border: none;
-          border-radius: 4px;
+          border-radius: 8px;
           cursor: pointer;
           font-size: 16px;
           font-weight: bold;
@@ -203,7 +204,7 @@ export function generateLoginPage(showError = false, siteName, siteIcon, bgimgUR
         }
         .footer {
           background-color: none;
-          color: #555555;
+          color: #333333;
           font-size: 0.8rem;
           width: 100%;
           text-align: center;
@@ -219,13 +220,13 @@ export function generateLoginPage(showError = false, siteName, siteIcon, bgimgUR
           margin: 0;
         }
         .footer a {
-          color: #555555;
+          color: #333333;
           text-decoration: none;
           transition: color 0.3s ease;
           white-space: nowrap;
         }
         .footer a:hover {
-          color: #f1c40f;
+          color: #186db3;
         }
         @media (max-width: 768px) {
           .footer p {
@@ -251,9 +252,9 @@ export function generateLoginPage(showError = false, siteName, siteIcon, bgimgUR
         </form>
         <div class="footer">
           <p>
-            <span>Copyright © 2025 Yutian81</span><span>|</span>
+            <span>Copyright © ${currentYear} Yutian81</span><span>|</span>
             <a href="${githubURL}" target="_blank">
-              <i class="fab fa-github"></i> GitHub</a><span>|</span>
+              <i class="fab fa-github"></i> Github</a><span>|</span>
             <a href="${blogURL}" target="_blank">
               <i class="fas fa-blog"></i> ${blogName}</a>
           </p>
@@ -263,5 +264,3 @@ export function generateLoginPage(showError = false, siteName, siteIcon, bgimgUR
     </html>
   `;
 }
-
-
