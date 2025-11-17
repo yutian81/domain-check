@@ -12,19 +12,31 @@
 - 🔐 **密码保护**：简单的访问控制机制
 - 💾 **KV 存储**：使用 Cloudflare Workers KV 持久化数据
 - 📱 **Telegram 通知**：定时检查并推送即将到期提醒
-- 🎨 **响应式设计**：支持移动端和桌面端访问（尚未优化手机端）
+- 🎨 **响应式设计**：支持移动端和桌面端访问
 
-## 部署平台
+## 部署平台：Cloudflare Pages
 
-Cloudflare Pages 部署
+### 前置条件
 
-## 配置说明
+- 创建一个 KV 空间，名称随意，例如：`DOMAIN_KV`
+- 修改 `wrangler.toml` 文件，绑定KV空间和设置定时通知
+
+```toml
+name = "domain-check" 
+
+[triggers]
+crons = ["0 1,13 * * *"]  # 可自行修改，此处为北京时间每天9点和21点
+
+[[kv_namespaces]]
+binding = "DOMAIN_KV" 
+id = "ae781b92d2c14a55a32f7b094beb9ade" # 将 id 值改为自己创建的kv空间的 id
+```
 
 ### 环境变量
 
 | 变量名 | 说明 | 默认值/示例值 | 必填 |
 |--------|------|--------|------|
-| `PASSWORD` | 访问密码 | `123123` | ❌ |
+| `PASSWORD` | 访问密码 | `123123` | ✔️ |
 | `API_URL` | WHOIS API 地址 | `https://your-whois-api.example.com/api/` | ❌ |
 | `API_KEY` | WHOIS API 密钥 | `abc123` | ❌ |
 | `TGID` | Telegram Chat ID | - | ❌ |
@@ -37,17 +49,7 @@ Cloudflare Pages 部署
 | `BLOG_URL` | 博客链接 | `https://github.com/yutian81/domain-check` | ❌ |
 | `BLOG_NAME` | 博客名称 | `https://blog.notett.com` | ❌ |
 
-### KV 命名空间
-
-需要绑定一个名为 `DOMAIN_KV` 的 KV 命名空间来存储域名数据。
-
-### 定时任务（可选）
-
-如需启用 Telegram 定时通知，在 Cloudflare Dashboard 中添加 Cron Trigger：
-
-```
-0 9 * * *  # 每天上午 9 点执行
-```
+API_URL 和 API_KEY 可通过部署仓库 `worker分支` 的 [whois-api.js](https://github.com/yutian81/domain-check/blob/worker/whois-api.js) 获得（worker 部署） 
 
 ## API 接口
 

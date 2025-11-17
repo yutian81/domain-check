@@ -1,0 +1,8 @@
+name = "domain-check" # 替换为项目名称
+
+[triggers]
+crons = ["0 1,13 * * *"] # 每天9点和21点各检查一次（北京时间）
+
+[[kv_namespaces]]
+binding = "DOMAIN_KV" # KV绑定变量名
+id = "ae781b92d2c14a55a32f7b094beb9ade" # 替换为自己的 KV ID (可在 CF 仪表板获取)

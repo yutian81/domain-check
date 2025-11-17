@@ -27,13 +27,9 @@ async function checkDomainsScheduled(env) {
     today.setHours(0, 0, 0, 0);
 
     for (const domainInfo of allDomains) {
-        // 使用配置中的 DAYS (默认为 30) 来判断
-        const maxDaysForAlert = config.days; 
-        
-        // 确保 expirationDate 是 Date 对象
+        const maxDaysForAlert = config.days; // 使用配置中的 DAYS (默认为 30) 来判断
         const expirationDate = new Date(domainInfo.expirationDate);
         expirationDate.setHours(0, 0, 0, 0);
-
         const daysRemaining = Math.ceil((expirationDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
         
         // 只对即将到期 (1 < 剩余天数 <= maxDaysForAlert) 的域名发送通知
@@ -47,17 +43,31 @@ async function checkDomainsScheduled(env) {
 🔗 注册商: <a href="${domainInfo.systemURL}">${domainInfo.system}</a>
 👤 注册账号: ${domainInfo.registerAccount || 'N/A'}`;
 
-            // 注意: KV 中没有 DOMAINS_TG_KV 命名空间。
-            // 简单起见，我们假设每天运行一次，并发送一次通知。
-            // 如果需要防止重复发送，你需要配置另一个 KV 命名空间（比如 DOMAIN_ALERTS_KV）来存储上次发送日期。
             await sendtgMessage(message, config.tgid, config.tgtoken);
             console.log(`已发送 ${domainInfo.domain} 的到期通知.`);
         }
     }
 }
 
-export const onScheduled = async (event, env, ctx) => {
-    ctx.waitUntil(checkDomainsScheduled(env).catch(err => {
-        console.error('定时任务执行失败:', err);
-    }));
-}
+export default {
+    // 定时任务处理器，由 Cron Triggers 触发
+    async scheduled(event, env, ctx) {
+        ctx.waitUntil(checkDomainsScheduled(env).catch(err => {
+            console.error('定时任务执行失败:', err);
+        }));
+    },
+    
+    // HTTP 请求处理器，允许通过访问 URL 手动触发定时检查。访问路径: /scheduled
+    async fetch(request, env, ctx) {
+        const url = new URL(request.url);
+        if (url.pathname === '/scheduled') {
+            try {
+                await checkDomainsScheduled(env);
+                return new Response("成功触发计划检查", { status: 200 });
+            } catch (e) {
+                return new Response(`计划检查失败: ${e.message}`, { status: 500 });
+            }
+        }
+        return new Response('Not Found', { status: 404 });
+    }
+};
