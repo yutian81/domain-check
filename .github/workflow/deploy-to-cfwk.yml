@@ -24,11 +24,11 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           secrets: |
-            ${{ secrets.PASSWORD }}
-            ${{ secrets.TG_ID }}
-            ${{ secrets.TG_TOKEN }}
-            ${{ secrets.WHOIS_API_URL }}
-            ${{ secrets.WHOIS_API_KEY }}
+            PASSWORD=${{ secrets.PASSWORD }}
+            TGID=${{ secrets.TG_ID }}
+            TGTOKEN=${{ secrets.TG_TOKEN }}
+            WHOIS_API_URL=${{ secrets.WHOIS_API_URL }}
+            WHOIS_API_KEY=${{ secrets.WHOIS_API_KEY }}
 
       - name: ✅ 部署成功
         run: echo "Cloudflare Worker 域名监控项目部署成功!"
