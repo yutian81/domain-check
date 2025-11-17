@@ -90,7 +90,7 @@ function updateFormRequiredStatus(domainValue) {
     } else {
         // 二级域名：所有字段必填
         if (warningEl) {
-            warningEl.textContent = '检测为二级域名，注册信息均为必填项';
+            warningEl.textContent = '检测为二级域名，注册信息为必填项';
             warningEl.style.color = '#e74c3c';
         }
         
@@ -126,7 +126,7 @@ function getDomainStatus(expirationDateStr) {
         statusText = '已到期';
         statusColor = '#e74c3c'; // 红色
     } else if (daysRemaining <= globalConfig.daysThreshold) {
-        statusText = '即将到期';
+        statusText = '将到期';
         statusColor = '#f39c12'; // 黄色
     }
 
@@ -145,7 +145,7 @@ function renderSummary() {
         const { statusText } = getDomainStatus(domain.expirationDate);
         if (statusText === '正常') {
             normalCount++;
-        } else if (statusText === '即将到期') {
+        } else if (statusText === '将到期') {
             expiringCount++;
         } else if (statusText === '已到期') {
             expiredCount++;
@@ -156,19 +156,19 @@ function renderSummary() {
 
     summaryEl.innerHTML = `
         <div class="summary-card" style="--color: #186db3;">
-            <h3>总域名</h3>
+            <h3><i class="fa fa-list-ol"></i> 总域名</h3>
             <p>${total}</p>
         </div>
         <div class="summary-card" style="--color: #2ecc71;">
-            <h3>正常状态</h3>
+            <h3><i class="fa fa-check"></i> 正常</h3>
             <p>${usableCount}</p>
         </div>
         <div class="summary-card" style="--color: #f39c12;">
-            <h3>将到期</h3>
+            <h3><i class="fa fa-exclamation-triangle"></i> 将到期</h3>
             <p>${expiringCount}</p>
         </div>
         <div class="summary-card" style="--color: #e74c3c;">
-            <h3>已到期</h3>
+            <h3><i class="fa fa-times"></i> 已到期</h3>
             <p>${expiredCount}</p>
         </div>
     `;
@@ -244,16 +244,24 @@ function createDomainCard(info) {
     let totalDays = 0;
     let daysElapsed = 0;
     let remainingText = daysRemaining;
+    let elapsedText = 'N/A';
+    let progressPercentText = 'N/A';
 
     if (info.registrationDate && info.expirationDate) {
          totalDays = (expirationDate - registrationDate) / (1000 * 60 * 60 * 24);
          daysElapsed = (today - registrationDate) / (1000 * 60 * 60 * 24);
          progressPercentage = Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100));
+         progressPercentText = progressPercentage.toFixed(1) + '%'; // 计算百分比文本
+         const elapsedDays = Math.floor(daysElapsed); // 已使用天数取整数
+         elapsedText = elapsedDays > 0 ? elapsedDays + ' 天' : '0 天';
          remainingText = daysRemaining > 0 ? daysRemaining + ' 天' : '已到期';
+         if (daysRemaining <= 0) { elapsedText = Math.floor(totalDays) + ' 天'; }
     } else {
         // 如果信息缺失，进度条显示 N/A
         progressPercentage = 0;
         remainingText = 'N/A';
+        elapsedText = 'N/A';
+        progressPercentText = 'N/A';
     }
 
     // 根据状态调整边框颜色
@@ -266,17 +274,18 @@ function createDomainCard(info) {
                 <span class="card-status">${statusText}</span>
             </div>
             <div class="card-info">
-                <p><strong>注册商:</strong> <a href="${info.systemURL || '#!'}" target="_blank">${info.system || 'N/A'}</a></p>
-                <p><strong>注册账号:</strong> ${info.registerAccount || 'N/A'}</p>
-                <p><strong>注册时间:</strong> ${info.registrationDate || 'N/A'}</p>
-                <p><strong>过期时间:</strong> ${info.expirationDate || 'N/A'}</p>
-                <p><strong>分组:</strong> ${info.groups || '无'}</p>
+                <p><strong><i class="fa fa-certificate"></i> 注册商: </strong> <a href="${info.systemURL || '#!'}" target="_blank">${info.system || 'N/A'}</a></p>
+                <p><strong><i class="fa fa-user"></i> 注册账号: </strong> ${info.registerAccount || 'N/A'}</p>
+                <p><strong><i class="fa fa-calendar"></i> 注册时间: </strong> ${info.registrationDate || 'N/A'}</p>
+                <p><strong><i class="fa fa-calendar"></i> 到期时间: </strong> ${info.expirationDate || 'N/A'}</p>
+                <p><strong><i class="fa fa-folder"></i> 所属分组: </strong> ${info.groups || '无'}</p>
             </div>
             <div class="card-footer">
                 <div class="progress-bar-container">
                     <div class="progress-bar" style="width: ${progressPercentage}%;"></div>
+                    <span class="progress-percent-display">${progressPercentText}</span>
                 </div>
-                <div class="progress-text">已使用 ${progressPercentage.toFixed(1)}% | 剩余 ${remainingText}</div>
+                <div class="progress-text">已使用 ${elapsedText} | 剩余 ${remainingText}</div>
                 <div style="text-align: right; margin-top: 10px;">
                     <i class="fas fa-edit edit-icon" data-domain="${info.domain}" title="编辑"></i>
                     <i class="fas fa-trash-alt delete-icon" data-domain="${info.domain}" title="删除"></i>
@@ -453,14 +462,16 @@ async function fetchDomains() {
         allDomains = data.map(d => ({
             ...d,
         })).sort((a, b) => {
-            // 排序逻辑：先按级别，后按首字母
+            // 排序逻辑：先按级别，后按注册商首字母
             const levelA = getDomainLevel(a.domain);
             const levelB = getDomainLevel(b.domain);
             const isPrimaryA = levelA === '一级域名';
             const isPrimaryB = levelB === '一级域名';
             if (isPrimaryA && !isPrimaryB) { return -1; } // A (一级) 在前
             if (!isPrimaryA && isPrimaryB) { return 1; } // B (一级) 在前
-            return a.domain.localeCompare(b.domain);
+            const systemA = a.system || '';  // 按注册商首字母升序
+            const systemB = b.system || '';
+            return systemA.localeCompare(systemB);
         });
             
         renderSummary();

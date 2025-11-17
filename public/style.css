@@ -20,7 +20,7 @@ body {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
-    margin-bottom: 0;
+    gap: 8px;
 }
 .add-btn {
     background-color: #186db3;
@@ -61,7 +61,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 15px 0;
     border-radius: 8px;
     max-width: 1200px;
     margin: 0 auto;
@@ -79,7 +79,7 @@ body {
 }
 .tab-btn {
     padding: 8px 15px;
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
     cursor: pointer;
@@ -93,7 +93,7 @@ body {
     align-items: center;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
     padding: 5px 10px;
@@ -142,7 +142,7 @@ body {
 .card-domain {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #186db3;
+    color: #000000;
     cursor: pointer;
 }
 .card-status {
@@ -157,7 +157,7 @@ body {
     font-size: 0.9rem;
 }
 .card-info strong {
-    color: #555;
+    color: #333;
     font-weight: normal;
 }
 .card-info a {
@@ -172,15 +172,26 @@ body {
     padding-top: 15px;
 }
 .progress-bar-container {
-    background-color: #e0e0e0;
+    background-color: rgba(255, 255, 255, 0.35);
     border-radius: 5px;
     overflow: hidden;
     height: 15px;
+    position: relative;
 }
 .progress-bar {
     height: 100%;
     background-color: var(--status-color); /* 状态颜色 */
     transition: width 0.5s ease;
+}
+.progress-percent-display {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    color: #333;
+    line-height: 1;
+    z-index: 2;
 }
 .progress-text {
     font-size: 0.85rem;
@@ -294,7 +305,7 @@ body {
     width: 100%;
     text-align: center;
     padding: 16px 0;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 .footer p {
     display: flex;
@@ -305,7 +316,7 @@ body {
     margin: 0;
 }
 .footer a {
-    color: white;
+    color: #333333;
     text-decoration: none;
     transition: color 0.3s ease;
     white-space: nowrap;
