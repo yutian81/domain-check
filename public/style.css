@@ -347,7 +347,7 @@ body {
         margin-bottom: 10px;
     }
     .add-btn {
-        width: 100%; /* 按钮占满宽度 */
+        width: 100%;
         padding: 12px 15px;
         font-size: 1rem;
         margin-top: 10px;
@@ -355,7 +355,7 @@ body {
 
     /* 概览卡片 */
     .summary-container {
-        flex-direction: column; /* 垂直堆叠，避免卡片过窄 */
+        flex-direction: column; /* 垂直堆叠 */
         padding: 12px 0;
         gap: 10px;
     }
@@ -363,7 +363,7 @@ body {
         padding: 10px 15px;
     }
     .summary-card p {
-        font-size: 1.5rem; /* 缩小字体，避免在小卡片中过大 */
+        font-size: 1.5rem;
     }
 
     /* 控制区 (Tabs & Search) */
@@ -386,7 +386,7 @@ body {
         width: auto;
         align-self: stretch;
         margin: 10px 12px 0 12px;
-        padding: 8px 12px;
+        padding: 5px 12px;
     }
 
     /* 域名卡片网格 */
@@ -396,22 +396,22 @@ body {
         gap: 12px;
     }
     .card-header {
-        flex-direction: column; /* 域名和状态垂直堆叠 */
+        flex-direction: column;
         align-items: flex-start;
         gap: 5px;
     }
     .card-domain {
         font-size: 1.1rem;
-        word-break: break-all; /* 确保长域名不会撑破卡片 */
+        word-break: break-all;
     }
     .card-status {
-        align-self: flex-start; /* 状态标签靠左 */
+        align-self: flex-start;
     }
 
     /* 模态框 */
     .modal-content {
-        margin: 5% auto; /* 靠近顶部 */
-        width: 95%;
+        margin: 5% auto;
+        width: 90%;
         padding: 15px;
     }
 
