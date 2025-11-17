@@ -8,7 +8,7 @@ export function getConfig(env) {
         bgimgURL: env.BGIMG || 'https://pan.811520.xyz/icon/bg_light.webp',
         githubURL: env.GITHUB_URL || 'https://github.com/yutian81/domain-check',
         blogURL: env.BLOG_URL || 'https://blog.811520.xyz/post/2025/04/domain-autocheck/',
-        blogName: env.BLOG_NAME || '青云志 Blog',
+        blogName: env.BLOG_NAME || 'QingYun Blog',
         password: env.PASSWORD || "123123",
         days: Number(env.DAYS || 30), // 用于前端即将到期判断
         tgid: env.TGID,
@@ -264,3 +264,4 @@ export function generateLoginPage(showError = false, siteName, siteIcon, bgimgUR
     </html>
   `;
 }
+
