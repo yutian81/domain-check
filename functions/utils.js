@@ -4,7 +4,7 @@
 export function getConfig(env) {
     return {
         siteName: env.SITENAME || "域名到期监控",
-        siteIcon: env.ICON || 'https://pan.811520.xyz/icon/domain.png',
+        siteIcon: env.ICON || 'https://pan.811520.xyz/icon/domain-check.png',
         bgimgURL: env.BGIMG || 'https://pan.811520.xyz/icon/bg_light.webp',
         githubURL: env.GITHUB_URL || 'https://github.com/yutian81/domain-check',
         blogURL: env.BLOG_URL || 'https://blog.811520.xyz/post/2025/04/domain-autocheck/',
