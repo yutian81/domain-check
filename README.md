@@ -1,6 +1,6 @@
 # 域名到期监控系统
 
-**对原有的worker版（见worker分支）彻底重构，使用pages部署，kv作为数据储存，前端界面大升级，采用现代化卡片式布局**
+**对原有的worker版（见worker2分支）彻底重构，使用worker部署，kv作为数据储存，前端界面大升级，采用现代化卡片式布局**
 
 基于 Cloudflare Pages 和 Worker KV 构建的域名到期监控仪表盘，支持自动 WHOIS 查询、分组管理、到期提醒等功能。
 
@@ -14,33 +14,70 @@
 - 📱 **Telegram 通知**：定时检查并推送即将到期提醒
 - 🎨 **响应式设计**：支持移动端和桌面端访问
 
-## 部署平台：Cloudflare Pages
-
 ## 前置条件
 
-### 部署 whois api
+### 部署 whois api，仅支持查询一级域名
 
-- 创建一个 KV 空间，名称随意，例如：`DOMAIN_KV`
-- 修改 `wrangler.toml` 文件，绑定KV空间和设置定时通知
+- 部署方式: 复制根目录 whois.js 到 cf worker 部署，设环境变量 `WHOIS_API_KEY`，绑定一个自定义域，得到两个变量，记录下来备用
+  - WHOIS_API_URL: 即部署的worker地址
+  - WHOIS_API_KEY: 你自己设置的密钥
+
+- 请求示例
+
+```bash
+curl -X GET \
+  -H "X-API-KEY: 你的API密钥" \
+  https://whois.example.com/api/github.com
+```
+
+- 返回示例
+
+```json
+{
+  "domain": "bing.com",
+  "creationDate": "1997-03-24T00:00:00Z",
+  "updatedDate": "2024-04-20T10:11:47Z",
+  "expiryDate": "2025-03-23T00:00:00Z",
+  "registrar": "MarkMonitor Inc.",
+  "registrarUrl": "http://www.markmonitor.com",
+  "nameServers": [
+    "ns1.msft.net",
+    "ns2.msft.net",
+    "ns3.msft.net",
+    "ns4.msft.net"
+  ]
+}
+```
+
+### 创建KV空间
+
+- 名称随意，例如：`DOMAIN_KV`，记录其ID值备用
+- 修改 wrangler.toml，将kv空间的ID替换为你自己的ID
 
 ```toml
-name = "domain-check" 
+name = "domain-check"
 
 [triggers]
 crons = ["0 1,13 * * *"]  # 可自行修改，此处为北京时间每天9点和21点
 
 [[kv_namespaces]]
 binding = "DOMAIN_KV" 
-id = "ae781b92d2c14a55a32f7b094beb9ade" # 将 id 值改为自己创建的kv空间的 id
+id = "ae781b92d1586337122f7b094beb9ade" # 将 id 值改为自己创建的kv空间的 id
 ```
+
+## 开始部署
+
+- 部署平台: cloudflare worker
+- 部署方式: 链接github项目仓库
+- 部署参数: CF网页端部署，参数全部默认
 
 ### 环境变量
 
 | 变量名 | 说明 | 默认值/示例值 | 必填 |
 |--------|------|--------|------|
 | `PASSWORD` | 访问密码 | `123123` | ✔️ |
-| `API_URL` | WHOIS API 地址 | `https://your-whois-api.example.com/api/` | ❌ |
-| `API_KEY` | WHOIS API 密钥 | `abc123` | ❌ |
+| `WHOIS_API_URL` | WHOIS API 地址 | `https://your-whois-api.example.com/api/` | ❌ |
+| `WHOIS_API_KEY` | WHOIS API 密钥 | `abc123` | ❌ |
 | `TGID` | Telegram Chat ID | - | ❌ |
 | `TGTOKEN` | Telegram Bot Token | - | ❌ |
 | `DAYS` | 到期提醒天数 | `30` | ❌ |
@@ -50,8 +87,6 @@ id = "ae781b92d2c14a55a32f7b094beb9ade" # 将 id 值改为自己创建的kv空�
 | `GITHUB_URL` | GitHub 链接 | - | ❌ |
 | `BLOG_URL` | 博客链接 | `https://github.com/yutian81/domain-check` | ❌ |
 | `BLOG_NAME` | 博客名称 | `https://blog.notett.com` | ❌ |
-
-API_URL 和 API_KEY 可通过部署仓库 `worker分支` 的 [whois-api.js](https://github.com/yutian81/domain-check/blob/worker/whois-api.js) 获得（worker 部署） 
 
 ## API 接口
 
