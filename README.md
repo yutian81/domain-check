@@ -16,7 +16,9 @@
 
 ## 部署平台：Cloudflare Pages
 
-### 前置条件
+## 前置条件
+
+### 部署 whois api
 
 - 创建一个 KV 空间，名称随意，例如：`DOMAIN_KV`
 - 修改 `wrangler.toml` 文件，绑定KV空间和设置定时通知
