@@ -9,16 +9,16 @@ jobs:
     name: Deploy to Cloudflare Worker
 
     steps:
-      - name: ⬇️ Checkout Repository
+      - name: ⬇️ 检出仓库代码
         uses: actions/checkout@v4
         
-      - name: ⚙️ Setup wrangler
+      - name: ⚙️ 替换 wrangler 中的kv和定时器字段
         run: |
           sed -i 's/id = "ae781b92d2c14a55a32f7b094beb9ade"/id = "${{ secrets.CF_KV_ID }}"/' wrangler.toml
           # 注意：CHECK_CRON 必须是有效的 cron 表达式字符串，例如 "0 1 * * *"
           sed -i 's/crons = \["0 1,13 \* \* \*\"\]/crons = \["${{ secrets.CHECK_CRON }}\"\]/' wrangler.toml
           
-      - name: 🚀 Deploy Worker to Cloudflare
+      - name: 🚀 部署worker项目到CF
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
@@ -30,5 +30,5 @@ jobs:
             ${{ secrets.WHOIS_API_URL }}
             ${{ secrets.WHOIS_API_KEY }}
 
-      - name: ✅ Deployment Successful
-        run: echo "Cloudflare Worker deployed successfully!"
+      - name: ✅ 部署成功
+        run: echo "Cloudflare Worker 域名监控项目部署成功!"
