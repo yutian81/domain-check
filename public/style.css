@@ -325,3 +325,100 @@ body {
 .footer a:hover {
     color: #186db3;
 }
+
+/* --- 移动端优化 (Media Queries) --- */
+@media (max-width: 768px) {
+    /* 核心布局约束 */
+    .header,
+    .summary-container,
+    .controls-container,
+    .domain-grid,
+    .pagination {
+        max-width: 95%; /* 适应屏幕，两侧留出小边距 */
+        margin: 0 auto;
+    }
+
+    /* 头部区域 */
+    .header {
+        flex-direction: column; /* 垂直堆叠 */
+        padding-top: 20px;
+        padding-bottom: 10px;
+    }
+    .header h1 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+    .add-btn {
+        width: 100%; /* 按钮占满宽度 */
+        padding: 12px 15px;
+        font-size: 1rem;
+    }
+
+    /* 概览卡片 */
+    .summary-container {
+        flex-direction: column; /* 垂直堆叠，避免卡片过窄 */
+        padding: 10px 0;
+        gap: 10px;
+    }
+    .summary-card {
+        padding: 10px 15px;
+    }
+    .summary-card p {
+        font-size: 1.5rem; /* 缩小字体，避免在小卡片中过大 */
+    }
+
+    /* 控制区 (Tabs & Search) */
+    .controls-container {
+        flex-direction: column; /* 垂直堆叠 */
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+    .tabs-container {
+        width: 100%;
+        margin-left: 0;
+        justify-content: center; /* 居中显示分组按钮 */
+        margin-bottom: 10px;
+    }
+    .tab-btn {
+        flex-grow: 1; /* 按钮平均分配宽度 */
+        font-size: 0.9rem;
+    }
+    .search-container {
+        width: 90%;
+        margin-right: 0;
+        margin-top: 10px;
+        padding: 8px 10px;
+    }
+
+    /* 域名卡片网格 */
+    .domain-grid {
+        /* 在小屏幕上，让网格自动调整，至少显示一个大卡片 */
+        grid-template-columns: repeat(auto-fill, minmax(95%, 1fr)); 
+        gap: 15px;
+    }
+    .card-header {
+        flex-direction: column; /* 域名和状态垂直堆叠 */
+        align-items: flex-start;
+        gap: 5px;
+    }
+    .card-domain {
+        font-size: 1.1rem;
+        word-break: break-all; /* 确保长域名不会撑破卡片 */
+    }
+    .card-status {
+        align-self: flex-start; /* 状态标签靠左 */
+    }
+
+    /* 模态框 */
+    .modal-content {
+        margin: 5% auto; /* 靠近顶部 */
+        width: 95%;
+        padding: 15px;
+    }
+
+    /* 页脚 */
+    .footer p {
+        font-size: 0.7rem;
+        gap: 6px;
+    }
+}
