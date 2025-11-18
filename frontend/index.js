@@ -15,7 +15,11 @@ export const HTML_TEMPLATE = `
 <body>
     <div class="header">
         <h1 id="siteTitle"><i class="fas fa-clock"></i> 域名到期监控</h1>
-        <button id="addDomainBtn" class="add-btn"><i class="fas fa-plus"></i> 添加域名</button>
+        <div class="action-buttons">
+            <button id="addDomainBtn" class="action-btn add-btn"><i class="fas fa-plus"></i> 添加域名</button>
+            <button id="exportDataBtn" class="action-btn export-btn"><i class="fas fa-file-export"></i> 导出数据</button>
+            <button id="importDataBtn" class="action-btn import-btn"><i class="fas fa-file-import"></i> 导入数据</button>
+        </div>
     </div>
 
     <div id="domainFormModal" class="modal">
@@ -44,7 +48,7 @@ export const HTML_TEMPLATE = `
                 <label for="registerAccount"><i class="fa fa-user"></i> 注册账号</label>
                 <input type="text" id="registerAccount">
 
-                <label for="groups"><i class="fa fa-tags"></i> 分组 (英文逗号分隔)</label>
+                <label for="groups"><i class="fa fa-tags"></i> 分组 (多个分组用英文逗号分隔)</label>
                 <input type="text" id="groups" placeholder="例如: 主要, 个人, 待续费">
 
                 <button type="submit"><i class="fa fa-save"></i> 保存</button>

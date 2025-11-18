@@ -23,15 +23,23 @@ body {
     gap: 8px;
 }
 #siteTitle { margin: 0; }
-.add-btn {
-    background-color: #186db3;
-    color: white;
-    border: none;
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    /*margin-bottom: 20px;*/
+}
+.action-btn {
     padding: 10px 15px;
     border-radius: 8px;
+    border: none;
     cursor: pointer;
     transition: background-color 0.3s;
 }
+.export-btn, .import-btn { background-color: #2ecc71; color: white; }
+.export-btn:hover, .import-btn:hover { background-color: #27ae60; }
+.add-btn { background-color: #186db3; color: white; }
 .add-btn:hover { background-color: #1c5a8a; }
 
 /* 概览样式 */
