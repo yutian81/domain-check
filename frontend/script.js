@@ -177,6 +177,8 @@ function getDomainStatus(expirationDateStr) {
 // 渲染域名信息概览
 function renderSummary() {
     const summaryEl = document.getElementById('summary');
+    if (!summaryEl) return;
+
     const total = allDomains.length;
     let normalCount = 0;
     let expiringCount = 0;
@@ -193,7 +195,7 @@ function renderSummary() {
         }
     });
 
-    const usableCount = normalCount + expiringCount;
+    const usableCount = normalCount + expiringCount; // 状态“正常”和“将到期”的域名都视为“可用”
 
     summaryEl.innerHTML = \`
         <div class="summary-card" style="--color: #186db3;">
@@ -213,6 +215,39 @@ function renderSummary() {
             <p>\${expiredCount}</p>
         </div>
     \`;
+    
+    // 绑定点击事件
+    summaryEl.querySelectorAll('.summary-card').forEach(card => {
+        card.addEventListener('click', handleSummaryClick);
+    });
+}
+
+// 处理概览卡片点击事件
+let currentStatusFilter = '全部';
+
+function handleSummaryClick(e) {
+    const clickedCard = e.currentTarget;
+    const filterValue = clickedCard.dataset.filter;
+    
+    document.querySelectorAll('#summary .summary-card').forEach(card => {
+        card.classList.remove('active');
+    }); // 移除所有卡片的 active 状态
+
+    clickedCard.classList.add('active'); // 为当前点击的卡片添加 active 状态
+    currentStatusFilter = filterValue; // 1. 更新状态筛选变量
+    currentGroup = '全部'; 将分组筛选重置为“全部”
+    
+    document.querySelectorAll('#groupTabs .tab-btn').forEach(tab => {
+        tab.classList.remove('active');
+    }); // 移除分组标签的 active 状态
+    
+    const allTab = document.querySelector('#groupTabs .tab-btn[data-group="全部"]'); // 重新激活 "全部" 标签
+    if (allTab) {
+        allTab.classList.add('active');
+    }
+
+    currentPage = 1; // 重置页码并应用新的筛选
+    applyFiltersAndSearch();
 }
 
 // 渲染分组标签
@@ -265,6 +300,18 @@ function handleTabClick(e) {
 
     // 为当前点击的标签添加 active 类
     clickedTab.classList.add('active');
+
+    // 清除概览卡片的筛选状态
+    currentStatusFilter = '全部';
+    const allSummaryCards = document.querySelectorAll('#summary .summary-card');
+    allSummaryCards.forEach(card => {
+        card.classList.remove('active');
+    });
+    // 激活 “总域名” 卡片
+    const totalCard = document.querySelector('#summary .summary-card[data-filter="全部"]');
+    if (totalCard) {
+        totalCard.classList.add('active');
+    }
 
     // 更新全局变量并应用筛选
     currentGroup = clickedTab.dataset.group;
@@ -432,10 +479,24 @@ function renderPagination() {
     });
 }
 
-// 应用分组和搜索过滤
+// 应用状态、分组、搜索过滤、状态筛选
 function applyFiltersAndSearch() {
     currentFilteredDomains = allDomains.filter(domain => {
-        // 1. 分组过滤
+
+        // 1. 状态过滤
+        const { statusText } = getDomainStatus(domain.expirationDate);
+        let statusMatch = true;
+
+        if (currentStatusFilter !== '全部') {
+            if (currentStatusFilter === '正常') {
+                statusMatch = (statusText === '正常' || statusText === '将到期');
+            } else {
+                statusMatch = (statusText === currentStatusFilter);
+            }
+        }
+        if (!statusMatch) return false;
+
+        // 2. 分组过滤
         const domainGroups = (domain.groups || '').split(',').map(g => g.trim()).filter(g => g);
         const domainLevel = getDomainLevel(domain.domain);
         let groupMatch = true;
@@ -466,7 +527,6 @@ function applyFiltersAndSearch() {
     });
 
     renderDomainCards();
-    // renderPagination(); // renderDomainCards 内部会调用 renderPagination，避免重复
 }
 
 // --- 数据操作函数 ---
@@ -496,6 +556,19 @@ async function fetchDomains() {
         renderSummary();
         renderGroupTabs();
         applyFiltersAndSearch(); // 首次渲染
+        currentStatusFilter = '全部';
+        currentGroup = '全部';
+        
+        // 激活总域名卡片
+        const totalCard = document.querySelector('#summary .summary-card[data-filter="全部"]');
+        if (totalCard) {
+            totalCard.classList.add('active');
+        }
+        // 激活全部标签（renderGroupTabs 应该已经激活了 '全部' 标签，但这里确保一下）
+        // const allTab = document.querySelector('#groupTabs .tab-btn[data-group="全部"]');
+        // if (allTab) {
+        //     allTab.classList.add('active');
+        // }
     } catch (error) {
         console.error('获取域名失败:', error);
         alert('无法加载域名数据, 请检查API连接或登录状态。');
@@ -566,7 +639,7 @@ async function submitDomainForm(e) {
     }
 }
 
-// 删除域名，支持单个和批量删除
+// 删除域名
 async function deleteDomain(domain) {
     const domainsToDelete = [domain]; 
 
