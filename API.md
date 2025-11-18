@@ -11,7 +11,6 @@ https://your-domain-check.pages.dev
 - 请求示例（无需鉴权）
 
 ```bash
-# 无需鉴权
 curl -X GET https://your-domain-check.pages.dev/api/config
 ```
 
@@ -29,12 +28,14 @@ curl -X GET https://your-domain-check.pages.dev/api/config
 }
 ```
 
-## GET /cron —— 手动检查域名到期情况
+## GET 或 POST /cron —— 手动检查域名到期情况
 
 - 请求示例（无需鉴权）
 
 ```
 curl -X GET https://your-domain-check.pages.dev/cron
+# 或
+curl -X POST https://your-domain-check.pages.dev/cron
 ```
 
 - 返回示例
