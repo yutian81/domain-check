@@ -14,7 +14,7 @@ export const HTML_TEMPLATE = `
 </head>
 <body>
     <div class="header">
-        <h1 id="siteTitle"><i class="fas fa-clock"></i> 域名到期监控</h1>
+        <h1 id="siteTitle"><i class="fas fa-clock"></i></h1>
         <div class="action-buttons">
             <button id="addDomainBtn" class="action-btn add-btn"><i class="fas fa-plus"></i> 添加域名</button>
             <button id="exportDataBtn" class="action-btn export-btn"><i class="fas fa-file-export"></i> 导出数据</button>
