@@ -45,7 +45,7 @@ crons = ["0 1,13 * * *"] # 北京时间 9:00 和 21:00
 - 链接 Github 账户，选择刚刚 fork 的项目，点击 `开始设置`
 - 填写项目名称，其他保持默认，点击 `创建和部署`
 - 添加变量 `PASSWORD`，设置自己的访问密码，默认密码为 `123123`
-- 访问你的 pages 默认地址，输入登录密码，进入管理页面
+- 访问你的 workers 默认地址，输入登录密码，进入管理页面
 - 界面预览
 
 <img width="1894" height="879" alt="image" src="https://github.com/user-attachments/assets/f36e4e11-14d9-45d3-a456-38e19d3a0762" />
