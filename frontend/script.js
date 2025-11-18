@@ -306,11 +306,6 @@ function handleTabClick(e) {
     allSummaryCards.forEach(card => {
         card.classList.remove('active');
     });
-    // 激活 “总域名” 卡片
-    const totalCard = document.querySelector('#summary .summary-card[data-filter="全部"]');
-    if (totalCard) {
-        totalCard.classList.add('active');
-    }
 
     // 更新全局变量并应用筛选
     currentGroup = clickedTab.dataset.group;
@@ -558,11 +553,6 @@ async function fetchDomains() {
         currentStatusFilter = '全部';
         currentGroup = '全部';
         
-        // 激活全部标签（renderGroupTabs 应该已经激活了 '全部' 标签，但这里确保一下）
-        // const allTab = document.querySelector('#groupTabs .tab-btn[data-group="全部"]');
-        // if (allTab) {
-        //     allTab.classList.add('active');
-        // }
     } catch (error) {
         console.error('获取域名失败:', error);
         alert('无法加载域名数据, 请检查API连接或登录状态。');
