@@ -1,9 +1,8 @@
-// src/api/domains.js
-
 import { isPrimaryDomain, fetchDomainFromAPI } from '../utils';
 
 const KV_KEY = 'DOMAIN_LIST';
 
+// 从KV中获取域名列表
 export async function getDomainsFromKV(env) {
     if (!env.DOMAIN_KV) {
         throw new Error('未配置KV命名空间 DOMAIN_KV。请检查您的配置');
@@ -12,6 +11,7 @@ export async function getDomainsFromKV(env) {
     return Array.isArray(data) ? data : [];
 }
 
+// 保存域名信息到KV
 export async function setDomainsToKV(env, domains) {
     if (!env.DOMAIN_KV) {
         throw new Error('未配置KV命名空间 DOMAIN_KV。请检查您的配置');
@@ -92,12 +92,58 @@ async function handlePostDomain(request, env) {
         }
 
         await setDomainsToKV(env, updatedDomains);
-
         return new Response(JSON.stringify({ success: true, domain: newDomainData.domain }), {
             headers: { 'Content-Type': 'application/json' }
         });
     } catch (error) {
         console.error('Error in handlePostDomain:', error);
+        return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+}
+
+// 删除域名
+async function handleDeleteDomain(request, env) {
+    let deleteData;
+    let domainsToDelete = [];
+    
+    try {
+        deleteData = await request.json();
+        if (Array.isArray(deleteData)) { // 批量删除
+            domainsToDelete = deleteData.filter(d => typeof d === 'string' && d.length > 0);
+        } else if (deleteData && deleteData.domain) { // 单个删除
+            domainsToDelete = [deleteData.domain];
+        } else {
+            return new Response(JSON.stringify({ error: '无效的删除请求格式。期望 {"domain": "..."} 或 ["d1", "d2"] 数组。' }), { status: 400 });
+        }
+
+        if (domainsToDelete.length === 0) {
+            return new Response(JSON.stringify({ error: '未提供有效的域名进行删除。' }), { status: 400 });
+        }
+    } catch (e) {
+        return new Response(JSON.stringify({ error: '无效的 JSON 格式。' }), { status: 400 });
+    }
+
+    try {
+        const allDomains = await getDomainsFromKV(env);
+        // 过滤掉 domainsToDelete 列表中的所有域名
+        const initialLength = allDomains.length;
+        const updatedDomains = allDomains.filter(d => !domainsToDelete.includes(d.domain));
+        const deletedCount = initialLength - updatedDomains.length;
+        
+        if (deletedCount === 0) {
+            return new Response(JSON.stringify({ success: false, message: `未找到任何要删除的域名。` }), { status: 404 });
+        }
+        
+        await setDomainsToKV(env, updatedDomains);
+        return new Response(JSON.stringify({ success: true, message: `成功删除 ${deletedCount} 个域名。`, deletedCount: deletedCount }), {
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+    } catch (error) {
+        console.error('handleDeleteDomain中的错误:', error);
         return new Response(JSON.stringify({ error: error.message }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }
@@ -125,14 +171,19 @@ export async function onRequest(context) {
             let newDomains;
             try {
                 newDomains = await request.json();
-                if (!Array.isArray(newDomains)) throw new Error('Input must be an array.');
+                if (!Array.isArray(newDomains)) throw new Error('输入必须是数组');
             } catch (e) {
-                return new Response('Invalid JSON format or not an array.', { status: 400 });
+                return new Response('无效的JSON格式或不是数组', { status: 400 });
             }
             await setDomainsToKV(env, newDomains);
             return new Response(JSON.stringify({ success: true, count: newDomains.length }), {
                 headers: { 'Content-Type': 'application/json' }
             });
+        }
+
+        // 删除域名 DELETE 路由处理
+        if (request.method === 'DELETE') {
+            return handleDeleteDomain(request, env);
         }
 
         return new Response('Method Not Allowed', { status: 405 });
