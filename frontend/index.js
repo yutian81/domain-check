@@ -17,8 +17,9 @@ export const HTML_TEMPLATE = `
         <h1 id="siteTitle"><i class="fas fa-clock"></i> 域名到期监控</h1>
         <div class="action-buttons">
             <button id="addDomainBtn" class="action-btn add-btn"><i class="fas fa-plus"></i> 添加域名</button>
-            <button id="exportDataBtn" class="action-btn export-btn"><i class="fas fa-download"></i> 导出数据</button>
-            <button id="importDataBtn" class="action-btn import-btn"><i class="fas fa-upload"></i> 导入数据</button>
+            <button id="exportDataBtn" class="action-btn export-btn"><i class="fas fa-file-export"></i> 导出数据</button>
+            <button id="importDataBtn" class="action-btn import-btn"><i class="fas fa-file-import"></i> 导入数据</button>
+            <input type="file" id="importFileInput" accept=".json" style="display: none;">
         </div>
     </div>
 
