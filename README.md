@@ -17,8 +17,8 @@
 ## 部署平台：Cloudflare Workers
 
 ### 前置条件
-
-- 创建一个 KV 空间，名称随意，例如：`DOMAIN_KV`
+- 先 Fork 本项目，[点击直达](https://github.com/yutian81/domain-check/fork)
+- 在 [Cloudflare](https://dash.cloudflare.com) 创建一个 KV 空间，名称随意，例如：`DOMAIN_KV`
 - 修改 `wrangler.toml` 文件，绑定KV空间和设置定时通知
 
 ```toml
@@ -39,7 +39,6 @@ crons = ["0 1,13 * * *"] # 北京时间 9:00 和 21:00
 
 ### 部署方法
 
-- 先 Fork 本项目，[点击直达](https://github.com/yutianqq/domain-check-pages/fork)
 - 打开 Cloudflare 的 Woerks and Pages
 - `创建应用程序` —— 选择 `workers` —— 选择 `导入存储库`
 - 链接 Github 账户，选择刚刚 fork 的项目，点击 `开始设置`
