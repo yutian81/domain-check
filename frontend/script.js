@@ -203,7 +203,7 @@ function renderSummary() {
             <h3><i class="fa fa-list-ol"></i> 总域名</h3>
             <p>\${total}</p>
         </div>
-        <div class="summary-card" style="--color: #178d48;" data-filter="正常">
+        <div class="summary-card" style="--color: #19994e;" data-filter="正常">
             <h3><i class="fa fa-check"></i> 正常</h3>
             <p>\${usableCount}</p>
         </div>
