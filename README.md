@@ -66,9 +66,19 @@ crons = ["0 1,13 * * *"] # 北京时间 9:00 和 21:00
 | `BLOG_URL` | 博客链接 | `https://blog.notett.com` | ❌ |
 | `BLOG_NAME` | 博客名称 | `QingYun Blog` | ❌ |
 
-API_URL 和 API_KEY 可通过部署 [whois.js](https://github.com/yutian81/domain-check/blob/main/whois.js) 代码获得（worker 部署） 
+### Whois API 部署方法
 
-## API 接口
+> 此步骤为可选，仅支持一级域名的信息查询
+
+`WHOIS_API_URL` 和 `WHOIS_API_KEY` 可通过部署 [whois.js](https://github.com/yutian81/domain-check/blob/main/whois.js) 代码获得（worker 部署）
+
+- 部署平台：CF workers
+- 环境变量 `WHOIS_API_KEY`：自行设置，调用 API 需要用到，如：abcabc
+- 环境变量 CACHE_HOURS：缓存时间（单位：小时），默认为24小时，不用修改
+- 绑定域名（因为worker被墙，建议绑定域名）
+- 得到API接口地址：`WHOIS_API_URL` = `https://<worker项目地址>/api/` （末尾的/必须保留）
+
+## 本项目 API 接口
 
 https://github.com/yutianqq/domain-check-pages/blob/main/API.md
 
