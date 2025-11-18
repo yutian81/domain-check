@@ -722,7 +722,7 @@ function openDomainForm(domainInfo = null) {
     const modal = document.getElementById('domainFormModal');
     const form = document.getElementById('domainForm');
     const title = modal.querySelector('h2');
-    
+    const warningEl = document.getElementById('domainFillWarning');
     form.reset();
 
     // 打开模态框时隐藏域名级别提示
