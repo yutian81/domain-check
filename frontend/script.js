@@ -23,6 +23,12 @@ function formatDate(date) {
     return [year, month, day].join('-');
 }
 
+// 简单的域名格式验证
+function isValidDomainFormat(domain) {
+    const domainRegex = /^(?!-)(?!.*--)([a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,}$/;
+    return domainRegex.test(domain.toLowerCase());
+}
+
 // 判断是一级域名还是二级域名
 function getDomainLevel(domain) {
     const parts = domain.split('.');
@@ -31,44 +37,6 @@ function getDomainLevel(domain) {
 }
 function isPrimaryDomain(domain) {
     return getDomainLevel(domain) === '一级域名';
-}
-
-// 动态切换表单必填项的提示
-function updateFormRequiredStatus(domainValue) {
-    // 检查返回值是否为 '一级域名' 来进行布尔判断
-    const isPrimary = isPrimaryDomain(domainValue);
-    const requiredFields = ['registrationDate', 'expirationDate', 'system', 'systemURL'];
-    const warningEl = document.getElementById('domainFillWarning');
-    
-    if (isPrimary) {
-        // 一级域名：提示 WHOIS 自动填充
-        if (warningEl) {
-            warningEl.textContent = '若为一级域名，可不填写注册信息，将使用 WHOIS API 自动获取';
-            warningEl.style.color = '#f39c12';
-        }
-        
-        requiredFields.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.required = false; // 允许为空
-                el.placeholder = '一级域名可留空；二级域名必填';
-            }
-        });
-    } else {
-        // 二级域名：所有字段必填
-        if (warningEl) {
-            warningEl.textContent = '检测为二级域名，注册信息为必填项';
-            warningEl.style.color = '#e74c3c';
-        }
-        
-        requiredFields.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.required = true;
-                el.placeholder = '必填';
-            }
-        });
-    }
 }
 
 // 设置网站图标
@@ -650,10 +618,14 @@ async function fetchDomains() {
 async function submitDomainForm(e) {
     e.preventDefault();
     const modal = document.getElementById('domainFormModal');
-    
     const domainValue = document.getElementById('domain').value.trim();
-    const isPrimary = isPrimaryDomain(domainValue);
+    // 验证域名格式
+    if (!isValidDomainFormat(domainValue)) {
+        alert('请输入有效的域名格式，例如: example.com 或 sub.example.com');
+        return;
+    }
     
+    const isPrimary = isPrimaryDomain(domainValue);
     let newDomainData = {
         // 使用一个唯一标识，确保编辑时提交的还是同一个域名
         originalDomain: document.getElementById('editOriginalDomain').value || domainValue,
@@ -752,6 +724,11 @@ function openDomainForm(domainInfo = null) {
     const title = modal.querySelector('h2');
     
     form.reset();
+
+    // 打开模态框时隐藏域名级别提示
+    if (warningEl) {
+        warningEl.style.display = 'none';
+    }
     
     if (domainInfo) {
         title.textContent = '编辑域名';
@@ -771,14 +748,70 @@ function openDomainForm(domainInfo = null) {
     }
     
     // 调用状态更新函数，根据当前域名值显示提示和必填项
-    updateFormRequiredStatus(document.getElementById('domain').value);
-    
+    updateFormRequiredStatus(document.getElementById('domain').value); 
     modal.style.display = 'block';
 }
 
+// 动态切换表单必填项的提示
+function updateFormRequiredStatus(domainValue) {
+    // 检查返回值是否为 '一级域名' 来进行布尔判断
+    const isPrimary = isPrimaryDomain(domainValue);
+    const requiredFields = ['registrationDate', 'expirationDate', 'system', 'systemURL'];
+    const warningEl = document.getElementById('domainFillWarning');
+
+    // 判断是否显示域名级别提示
+    if (!domainValue || domainValue.trim() === '') {
+        if (warningEl) {
+            warningEl.style.display = 'none';
+        }
+        // 域名为空时，保留原始的 required 属性，以确保二级域名验证正常
+        requiredFields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.required = true; // 默认为必填，直到判断为一级域名
+                el.placeholder = '必填';
+            }
+        });
+        return;
+    } else {
+        // 域名不为空时，显示提示
+        if (warningEl) {
+            warningEl.style.display = 'block';
+        }
+    }
+    
+    if (isPrimary) {
+        // 一级域名：提示 WHOIS 自动填充
+        if (warningEl) {
+            warningEl.textContent = '若为一级域名，可不填写注册信息，将使用 WHOIS API 自动获取';
+            warningEl.style.color = '#f39c12';
+        }
+        
+        requiredFields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.required = false; // 允许为空
+                el.placeholder = '一级域名可留空；二级域名必填';
+            }
+        });
+    } else {
+        // 二级域名：所有字段必填
+        if (warningEl) {
+            warningEl.textContent = '检测为二级域名，注册信息为必填项';
+            warningEl.style.color = '#e74c3c';
+        }
+        
+        requiredFields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.required = true;
+                el.placeholder = '必填';
+            }
+        });
+    }
+}
 
 // --- 事件监听和初始化 ---
-
 window.onload = async () => {
     await fetchConfig();  // 加载全局配置
     renderFooter();       // 渲染页脚
