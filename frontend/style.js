@@ -363,11 +363,10 @@ body {
         font-size: 1.5rem;
         margin-bottom: 10px;
     }
-    .add-btn {
+    .action-buttons {
+        flex-direction: column;
         width: 100%;
-        padding: 12px 15px;
-        font-size: 1rem;
-        margin-top: 10px;
+        gap: 10px;
     }
 
     /* 概览卡片 */
