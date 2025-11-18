@@ -81,7 +81,7 @@ crons = ["0 1,13 * * *"] # 北京时间 9:00 和 21:00
 
 ## 本项目 API 接口
 
-https://github.com/yutianqq/domain-check-pages/blob/main/API.md
+https://github.com/yutian81/domain-check/blob/main/API.md
 
 ## 安全建议
 
