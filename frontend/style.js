@@ -363,12 +363,7 @@ body {
         font-size: 1.5rem;
         margin-bottom: 10px;
     }
-    /*.action-buttons {
-        flex-direction: column;
-        width: auto;
-        gap: 10px;
-        margin-top: 10px;
-    }*/
+    .action-buttons { margin-top: 10px; }
 
     /* 概览卡片 */
     .summary-container {
