@@ -20,6 +20,10 @@ export default {
 
         // 处理手动触发 /cron 路由
         if (pathname === '/cron') {
+            if (request.method !== 'GET' && request.method !== 'POST') {
+                return new Response('Method Not Allowed', { status: 405 });
+            }
+            
             try {
                 const expiringDomains = await checkDomainsScheduled(env); 
                 const responseBody = {
@@ -34,7 +38,7 @@ export default {
                 return new Response(JSON.stringify(responseBody), {
                     headers: { 'Content-Type': 'application/json' },
                 });
-
+        
             } catch (error) {
                 console.error("手动触发 cron 失败:", error);
                 return new Response(JSON.stringify({
@@ -43,7 +47,7 @@ export default {
                     details: error.message
                 }), { status: 500, headers: { 'Content-Type': 'application/json' } });
             }
-        }    
+        }
         
         if (pathname === '/login') {
             return handleLogin(request, env);
