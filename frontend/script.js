@@ -566,28 +566,40 @@ async function submitDomainForm(e) {
     }
 }
 
-// 删除域名
+// 删除域名，支持单个和批量删除
 async function deleteDomain(domain) {
-    // 筛选出要删除的域名，然后使用 PUT 提交整个列表进行保存
-    const updatedDomains = allDomains.filter(d => d.domain !== domain);
+    const domainsToDelete = [domain]; 
 
     try {
         const response = await fetch(DOMAINS_API, {
-            method: 'PUT',
+            method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedDomains),
+            body: JSON.stringify(domainsToDelete), 
         });
 
-        if (!response.ok) throw new Error('删除失败');
+        let responseData = {};
+        try {
+            responseData = await response.json();
+        } catch (e) {
+            // 忽略 JSON 解析错误
+        }
+
+        if (response.status === 404) {
+             alert(\`域名 \${domain} 未找到或已被删除\`);
+        } else if (!response.ok) {
+            throw new Error(responseData.error || response.statusText || '删除失败');
+        }
         
-        alert(\`域名 \${domain} 已删除\`);
+        // 使用后端返回的统计信息
+        const deletedCount = responseData.deletedCount || domainsToDelete.length;
+        alert(\`域名 \${domain} 已删除 (\${deletedCount} 个记录被移除)\`);
+        
         await fetchDomains(); // 重新加载数据
     } catch (error) {
         console.error('删除域名失败:', error);
         alert('删除域名失败: ' + error.message);
     }
 }
-
 
 // 打开添加/编辑表单 (原始代码中的函数，已合并)
 function openDomainForm(domainInfo = null) {
