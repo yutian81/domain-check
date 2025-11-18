@@ -37,8 +37,8 @@ body {
     cursor: pointer;
     transition: background-color 0.3s;
 }
-.export-btn, .import-btn { background-color: #2ecc71; color: white; }
-.export-btn:hover, .import-btn:hover { background-color: #27ae60; }
+.export-btn, .import-btn { background-color: #1eaf5b; color: white; }
+.export-btn:hover, .import-btn:hover { background-color: #1c914d; }
 .add-btn { background-color: #186db3; color: white; }
 .add-btn:hover { background-color: #1c5a8a; }
 
