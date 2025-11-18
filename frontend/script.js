@@ -783,7 +783,7 @@ function updateFormRequiredStatus(domainValue) {
     if (isPrimary) {
         // 一级域名：提示 WHOIS 自动填充
         if (warningEl) {
-            warningEl.textContent = '若为一级域名，可不填写注册信息，将使用 WHOIS API 自动获取';
+            warningEl.textContent = '检测为一级域名，可不填写日期和注册商，将使用 WHOIS API 自动获取';
             warningEl.style.color = '#f39c12';
         }
         
@@ -797,7 +797,7 @@ function updateFormRequiredStatus(domainValue) {
     } else {
         // 二级域名：所有字段必填
         if (warningEl) {
-            warningEl.textContent = '检测为二级域名，注册信息为必填项';
+            warningEl.textContent = '检测为二级域名，日期和注册商为必填项, 无法使用 WHOIS API 自动获取';
             warningEl.style.color = '#e74c3c';
         }
         
