@@ -558,11 +558,6 @@ async function fetchDomains() {
         currentStatusFilter = '全部';
         currentGroup = '全部';
         
-        // 激活总域名卡片
-        const totalCard = document.querySelector('#summary .summary-card[data-filter="全部"]');
-        if (totalCard) {
-            totalCard.classList.add('active');
-        }
         // 激活全部标签（renderGroupTabs 应该已经激活了 '全部' 标签，但这里确保一下）
         // const allTab = document.querySelector('#groupTabs .tab-btn[data-group="全部"]');
         // if (allTab) {
