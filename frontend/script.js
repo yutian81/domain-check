@@ -14,6 +14,63 @@ let globalConfig = {
     daysThreshold: 30 // 默认值
 };
 
+// 格式化日期为 YYYY-MM-DD
+function formatDate(date) {
+    const d = new Date(date);
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const year = d.getFullYear();
+    return [year, month, day].join('-');
+}
+
+// 判断是一级域名还是二级域名
+function getDomainLevel(domain) {
+    const parts = domain.split('.');
+    if (parts.length <= 2) return '一级域名';
+    return '二级域名';
+}
+function isPrimaryDomain(domain) {
+    return getDomainLevel(domain) === '一级域名';
+}
+
+// 动态切换表单必填项的提示
+function updateFormRequiredStatus(domainValue) {
+    // 检查返回值是否为 '一级域名' 来进行布尔判断
+    const isPrimary = isPrimaryDomain(domainValue);
+    const requiredFields = ['registrationDate', 'expirationDate', 'system', 'systemURL'];
+    const warningEl = document.getElementById('domainFillWarning');
+    
+    if (isPrimary) {
+        // 一级域名：提示 WHOIS 自动填充
+        if (warningEl) {
+            warningEl.textContent = '若为一级域名，可不填写注册信息，将使用 WHOIS API 自动获取';
+            warningEl.style.color = '#f39c12';
+        }
+        
+        requiredFields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.required = false; // 允许为空
+                el.placeholder = '一级域名可留空；二级域名必填';
+            }
+        });
+    } else {
+        // 二级域名：所有字段必填
+        if (warningEl) {
+            warningEl.textContent = '检测为二级域名，注册信息为必填项';
+            warningEl.style.color = '#e74c3c';
+        }
+        
+        requiredFields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.required = true;
+                el.placeholder = '必填';
+            }
+        });
+    }
+}
+
 // 设置网站图标
 function setFavicon(iconUrl) {
     if (!iconUrl) {
@@ -89,61 +146,91 @@ async function fetchConfig() {
     }
 }
 
-// 格式化日期为 YYYY-MM-DD
-function formatDate(date) {
-    const d = new Date(date);
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    const year = d.getFullYear();
-    return [year, month, day].join('-');
-}
+// 导出数据: GET /api/domains
+async function exportData() {
+    try {
+        const response = await fetch(DOMAINS_API);
+        if (!response.ok) throw new Error('获取数据失败');
 
-// 判断是一级域名还是二级域名
-function getDomainLevel(domain) {
-    const parts = domain.split('.');
-    if (parts.length <= 2) return '一级域名';
-    return '二级域名';
-}
-function isPrimaryDomain(domain) {
-    return getDomainLevel(domain) === '一级域名';
-}
-
-// 动态切换表单必填项的提示
-function updateFormRequiredStatus(domainValue) {
-    // 检查返回值是否为 '一级域名' 来进行布尔判断
-    const isPrimary = isPrimaryDomain(domainValue);
-    const requiredFields = ['registrationDate', 'expirationDate', 'system', 'systemURL'];
-    const warningEl = document.getElementById('domainFillWarning');
-    
-    if (isPrimary) {
-        // 一级域名：提示 WHOIS 自动填充
-        if (warningEl) {
-            warningEl.textContent = '若为一级域名，可不填写注册信息，将使用 WHOIS API 自动获取';
-            warningEl.style.color = '#f39c12';
-        }
+        const data = await response.json();
+        const jsonString = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
         
-        requiredFields.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.required = false; // 允许为空
-                el.placeholder = '一级域名可留空；二级域名必填';
-            }
-        });
-    } else {
-        // 二级域名：所有字段必填
-        if (warningEl) {
-            warningEl.textContent = '检测为二级域名，注册信息为必填项';
-            warningEl.style.color = '#e74c3c';
-        }
+        // 创建下载链接
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const date = new Date().toISOString().split('T')[0];
+        a.download = \`domain_list_backup_\${date}.json\`;
         
-        requiredFields.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.required = true;
-                el.placeholder = '必填';
-            }
-        });
+        // 模拟点击下载
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        alert('域名数据已成功导出为 JSON 文件！');
+    } catch (error) {
+        console.error('导出数据失败:', error);
+        alert('导出数据失败: ' + error.message);
     }
+}
+
+// 导入数据: PUT /api/domains
+function importData() {
+    const fileInput = document.getElementById('importFileInput');
+    if (!fileInput) return;
+    fileInput.click(); // 触发文件选择框
+    
+    // 监听文件选择事件
+    fileInput.onchange = async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        if (!confirm(\`确定要导入文件 \${file.name} 吗？\n警告: 这将替换所有现有域名数据!\`)) {
+            fileInput.value = '';
+            return;
+        }
+
+        try {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const jsonContent = e.target.result;
+                    const domainsToImport = JSON.parse(jsonContent);
+                    
+                    if (!Array.isArray(domainsToImport)) {
+                        throw new Error('JSON 文件格式错误，期望一个域名数组。');
+                    }
+
+                    // 调用 PUT API 替换所有数据
+                    const response = await fetch(DOMAINS_API, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(domainsToImport),
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({ error: '服务器错误' }));
+                        throw new Error(errorData.error || response.statusText);
+                    }
+                    
+                    const result = await response.json();
+                    alert(\`数据导入成功！共导入 \${result.count} 个域名\`);
+                    await fetchDomains(); // 重新加载数据
+                } catch (jsonError) {
+                    console.error('导入文件处理失败:', jsonError);
+                    alert('导入文件处理失败: ' + jsonError.message);
+                } finally {
+                    fileInput.value = '';
+                }
+            };
+            reader.readAsText(file);
+        } catch (error) {
+            console.error('读取文件失败:', error);
+            alert('读取文件失败: ' + error.message);
+            fileInput.value = '';
+        }
+    };
 }
 
 // 获取域名状态信息
@@ -200,7 +287,7 @@ function renderSummary() {
 
     summaryEl.innerHTML = \`
         <div class="summary-card" style="--color: #186db3;" data-filter="全部">
-            <h3><i class="fa fa-list-ol"></i> 全部</h3>
+            <h3><i class="fa fa-list-ol"></i> 总域名</h3>
             <p>\${total}</p>
         </div>
         <div class="summary-card" style="--color: #1dab58;" data-filter="正常">
@@ -715,7 +802,11 @@ window.onload = async () => {
     });
 
     // 监听添加按钮
-    document.getElementById('addDomainBtn').addEventListener('click', () => openDomainForm(null)); 
+    document.getElementById('addDomainBtn').addEventListener('click', () => openDomainForm(null));
+    // 监听导出按钮
+    document.getElementById('exportDataBtn').addEventListener('click', exportData);
+    // 监听导入按钮
+    document.getElementById('importDataBtn').addEventListener('click', importData);
     
     // 监听表单提交
     document.getElementById('domainForm').addEventListener('submit', submitDomainForm);
