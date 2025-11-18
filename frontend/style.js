@@ -367,6 +367,7 @@ body {
         flex-direction: column;
         width: 100%;
         gap: 10px;
+        margin-top: 10px;
     }
 
     /* 概览卡片 */
