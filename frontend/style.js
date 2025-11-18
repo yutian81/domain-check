@@ -54,8 +54,17 @@ body {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     border-left: 5px solid var(--color);
 }
-.summary-card h3 { margin: 0 0 5px 0; font-size: 1.1rem; }
-.summary-card p { margin: 0; font-size: 2rem; font-weight: bold; }
+.summary-card.active {
+    background-color: var(--color); 
+    color: white; 
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+}
+.summary-card.active h3, .summary-card.active p { color: white; }
+.summary-card h3 { margin: 0 0 5px 0; font-size: 1.1rem; color: var(--color); }
+.summary-card p { margin: 0; font-size: 2rem; font-weight: bold; color: var(--color); }
 
 /* 控制区和搜索 */
 .controls-container {
