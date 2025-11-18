@@ -365,7 +365,7 @@ body {
     }
     .action-buttons {
         flex-direction: column;
-        width: 100%;
+        width: auto;
         gap: 10px;
         margin-top: 10px;
     }
