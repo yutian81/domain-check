@@ -287,7 +287,7 @@ function renderSummary() {
 
     summaryEl.innerHTML = \`
         <div class="summary-card" style="--color: #186db3;" data-filter="全部">
-            <h3><i class="fa fa-list-ol"></i> 总域名</h3>
+            <h3><i class="fa fa-list-ol"></i> 全部</h3>
             <p>\${total}</p>
         </div>
         <div class="summary-card" style="--color: #1dab58;" data-filter="正常">
