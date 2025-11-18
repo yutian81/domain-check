@@ -1,4 +1,4 @@
-# name = "domain-check"
+name = "domain-check"# name = "domain-check"
 main = "src/index.js"
 compatibility_date = "2025-11-17"
 keep_vars = true
