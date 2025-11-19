@@ -53,7 +53,8 @@ export default {
             return handleLogin(request, env);
         }
         
-        const config = getConfig(env);
+        const config = getConfig(env); // 加载环境变量
+        
         // 定义需要豁免认证的路径
         const authExemptPaths = ['/api/config', '/cron', '/login'];
         const isExempt = authExemptPaths.includes(pathname); 
@@ -77,14 +78,7 @@ export default {
  
         // 处理根目录请求
         if (pathname === '/') {
-            return new Response(HTML_TEMPLATE(
-                config.siteName, 
-                config.siteIcon, 
-                config.bgimgURL, 
-                config.githubURL, 
-                config.blogURL, 
-                config.blogName
-            ), {
+            return new Response(HTML_TEMPLATE(config.siteName, config.siteIcon, config.bgimgURL, config.githubURL, config.blogURL, config.blogName), {
                 headers: { 
                     'Content-Type': 'text/html;charset=UTF-8',
                     'Cache-Control': 'no-cache, no-store, must-revalidate'
