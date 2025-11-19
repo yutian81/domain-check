@@ -28,31 +28,35 @@ export const HTML_TEMPLATE = `
             <span class="close-btn">&times;</span>
             <h2>添加/编辑域名</h2>
             <form id="domainForm">
-                <input type="hidden" id="editOriginalDomain">
-                <label for="domain"><i class="fa fa-globe"></i> 域名</label>
+                <div class="form-group">
+                    <input type="hidden" id="editOriginalDomain">
+                    <label for="domain"><i class="fa fa-globe"></i> 域名</label>
+                    <input type="text" id="domain" placeholder="例如: example.com 或 example.com.cn" required>
+                    <label for="groups"><i class="fa fa-tags"></i> 分组</label>
+                    <input type="text" id="groups" placeholder="多个分组用英文逗号分隔，例如: 付费, 免费, 待续费">
+                </div>
 
-                <input type="text" id="domain" required>
                 <div id="domainFillWarning" class="form-warning"></div>
 
-                <label for="registrationDate"><i class="fa fa-calendar"></i> 注册时间 (YYYY-MM-DD)</label>
-                <input type="date" id="registrationDate" required maxlength="10">
+                <div class="form-group">
+                    <label for="registrationDate"><i class="fa fa-calendar"></i> 注册时间 (YYYY-MM-DD)</label>
+                    <input type="date" id="registrationDate" required maxlength="10">
+                    <label for="expirationDate"><i class="fa fa-calendar"></i> 到期时间 (YYYY-MM-DD)</label>
+                    <input type="date" id="expirationDate" required maxlength="10">
+                </div>
 
-                <label for="expirationDate"><i class="fa fa-calendar"></i> 到期时间 (YYYY-MM-DD)</label>
-                <input type="date" id="expirationDate" required maxlength="10">
+                <div class="form-group">
+                    <label for="system"><i class="fa fa-registered"></i> 注册商名称</label>
+                    <input type="text" id="system" placeholder="例如: cloudflare" required>
+                    <label for="systemURL"><i class="fa fa-link"></i> 注册商地址</label>
+                    <input type="url" id="systemURL" placeholder="例如: https://dash.cloudflare.com" required>
+                </div>
 
-                <label for="system"><i class="fa fa-registered"></i> 注册商名称</label>
-                <input type="text" id="system" required>
-
-                <label for="systemURL"><i class="fa fa-link"></i> 注册商地址</label>
-                <input type="url" id="systemURL" required>
-
-                <label for="registerAccount"><i class="fa fa-user"></i> 注册账号</label>
-                <input type="text" id="registerAccount">
-
-                <label for="groups"><i class="fa fa-tags"></i> 分组 (多个分组用英文逗号分隔)</label>
-                <input type="text" id="groups" placeholder="例如: 主要, 个人, 待续费">
-
-                <button type="submit"><i class="fa fa-save"></i> 保存</button>
+                <div class="form-group">
+                    <label for="registerAccount"><i class="fa fa-user"></i> 注册账号</label>
+                    <input type="text" id="registerAccount" placeholder="例如: domain@example.com">
+                    <button type="submit"><i class="fa fa-save"></i> 保存</button>
+                </div>   
             </form>
         </div>
     </div>
