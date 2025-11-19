@@ -2,14 +2,15 @@ export const HTML_JS = `
 
 const DOMAINS_API = '/api/domains';
 const CONFIG_API = '/api/config';
-const ITEMS_PER_PAGE = 12; // 3 * 4
+const ITEMS_PER_PAGE = 12; // 每页12个域名信息卡
 let allDomains = []; // 存储所有域名数据
 let currentFilteredDomains = []; // 存储当前过滤和搜索后的数据
-let currentPage = 1;
-let currentGroup = '全部';
-let currentSearchTerm = '';
-let currentStatusFilter = '全部';
-let globalConfig = { daysThreshold: 30 }; // 默认30天
+let currentPage = 1; // 默认显示第一页
+let currentGroup = '全部'; // 默认激活的分组
+let currentSearchTerm = ''; // 搜索框默认为空
+let currentStatusFilter = '全部'; // 默认显示的概览信息卡
+let globalConfig = { daysThreshold: 30 }; // 默认30天内为将到期
+let lastOperatedDomain = null; // 用于存储最近操作的域名，用于临时置顶
 
 // 格式化日期为 YYYY-MM-DD
 function formatDate(date) {
@@ -531,18 +532,37 @@ async function fetchDomains() {
         allDomains = data.map(d => ({
             ...d,
         })).sort((a, b) => {
-            // 排序逻辑：先按级别，后按注册商首字母
-            const levelA = getDomainLevel(a.domain);
-            const levelB = getDomainLevel(b.domain);
-            const isPrimaryA = levelA === '一级域名';
-            const isPrimaryB = levelB === '一级域名';
-            if (isPrimaryA && !isPrimaryB) { return -1; } // A (一级) 在前
-            if (!isPrimaryA && isPrimaryB) { return 1; } // B (一级) 在前
-            const systemA = a.system || '';  // 按注册商首字母升序
+            // 最新添加的域名在前
+            if (lastOperatedDomain) { 
+                if (a.domain === lastOperatedDomain) return -1;
+                if (b.domain === lastOperatedDomain) return 1;
+            }
+            // 根据域名状态排序 (已到期 < 将到期 < 正常)
+            const statusA = getDomainStatus(a.expirationDate).statusText;
+            const statusB = getDomainStatus(b.expirationDate).statusText;
+            const getStatusPriority = (status) => {
+                if (status === '已到期') return 1;
+                if (status === '将到期') return 2;
+                if (status === '正常') return 3;
+                return 4;
+            };
+            const priorityA = getStatusPriority(statusA);
+            const priorityB = getStatusPriority(statusB);
+            if (priorityA !== priorityB) { return priorityA - priorityB; }
+            // 正常域名排序：一级域名在前，二级域名在后
+            if (priorityA === 3) {
+                const isPrimaryA = isPrimaryDomain(a.domain);
+                const isPrimaryB = isPrimaryDomain(b.domain);
+                if (isPrimaryA && !isPrimaryB) return -1; // A (一级) 在前
+                if (!isPrimaryA && isPrimaryB) return 1; // B (一级) 在前
+            }
+            // 最终排序：按注册商首字母升序
+            const systemA = a.system || '';
             const systemB = b.system || '';
             return systemA.localeCompare(systemB);
         });
-            
+
+        lastOperatedDomain = null; // 清除临时置顶标记
         renderSummary();
         renderGroupTabs();
         applyFiltersAndSearch(); // 首次渲染
@@ -616,6 +636,7 @@ async function submitDomainForm(e) {
         
         modal.style.display = 'none';
         alert(\`域名 \${newDomainData.domain} 保存成功！\`);
+        lastOperatedDomain = newDomainData.domain; // 设置最近操作的域名，用于临时置顶
         await fetchDomains(); // 重新加载数据
     } catch (error) {
         console.error('保存域名失败:', error);
@@ -650,7 +671,8 @@ async function deleteDomain(domain) {
         // 使用后端返回的统计信息
         const deletedCount = responseData.deletedCount || domainsToDelete.length;
         alert(\`域名 \${domain} 已删除 (\${deletedCount} 个记录被移除)\`);
-        
+
+        currentPage = 1; // 删除后重置页码到第一页
         await fetchDomains(); // 重新加载数据
     } catch (error) {
         console.error('删除域名失败:', error);
