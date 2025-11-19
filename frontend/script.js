@@ -37,6 +37,16 @@ function isPrimaryDomain(domain) {
     return getDomainLevel(domain) === '一级域名';
 }
 
+function customAlert(message) {
+    const alertModal = document.getElementById('customAlertModal');
+    if (alertModal) {
+        document.getElementById('customAlertMessage').textContent = message;
+        alertModal.style.display = 'block';
+    } else {
+        alert(message); // 回退到浏览器标准警报
+    }
+}
+
 // 异步获取全局配置
 async function fetchConfig() {
     try {
@@ -79,10 +89,10 @@ async function exportData() {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        alert('域名数据已成功导出为 JSON 文件！');
+        customAlert('域名数据已成功导出为 JSON 文件！');
     } catch (error) {
         console.error('导出数据失败:', error);
-        alert('导出数据失败: ' + error.message);
+        customAlert('导出数据失败: ' + error.message);
     }
 }
 
@@ -125,11 +135,11 @@ function importData() {
                     }
                     
                     const result = await response.json();
-                    alert(\`数据导入成功！共导入 \${result.count} 个域名\`);
+                    customAlert(\`数据导入成功！共导入 \${result.count} 个域名\`);
                     await fetchDomains(); // 重新加载数据
                 } catch (jsonError) {
                     console.error('导入文件处理失败:', jsonError);
-                    alert('导入文件处理失败: ' + jsonError.message);
+                    customAlert('导入文件处理失败: ' + jsonError.message);
                 } finally {
                     fileInput.value = '';
                 }
@@ -137,7 +147,7 @@ function importData() {
             reader.readAsText(file);
         } catch (error) {
             console.error('读取文件失败:', error);
-            alert('读取文件失败: ' + error.message);
+            customAlert('读取文件失败: ' + error.message);
             fileInput.value = '';
         }
     };
@@ -391,7 +401,7 @@ function renderDomainCards() {
     listEl.querySelectorAll('.card-domain').forEach(el => {
         el.addEventListener('click', (e) => {
             navigator.clipboard.writeText(e.target.dataset.domain);
-            alert(\`已复制域名: \${e.target.dataset.domain}\`);
+            customAlert(\`已复制域名: \${e.target.dataset.domain}\`);
         });
     });
     
