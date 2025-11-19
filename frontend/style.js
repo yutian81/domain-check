@@ -269,7 +269,6 @@ export const HTML_CSS = `
     border-radius: 8px;
     position: relative;
 }
-.form-group { display: flex; }
 .close-btn {
     color: #aaa;
     float: right;
