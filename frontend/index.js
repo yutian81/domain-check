@@ -35,10 +35,10 @@ export const HTML_TEMPLATE = `
                 <div id="domainFillWarning" class="form-warning"></div>
 
                 <label for="registrationDate"><i class="fa fa-calendar"></i> 注册时间 (YYYY-MM-DD)</label>
-                <input type="date" id="registrationDate" required>
+                <input type="date" id="registrationDate" required maxlength="10">
 
                 <label for="expirationDate"><i class="fa fa-calendar"></i> 到期时间 (YYYY-MM-DD)</label>
-                <input type="date" id="expirationDate" required>
+                <input type="date" id="expirationDate" required maxlength="10">
 
                 <label for="system"><i class="fa fa-registered"></i> 注册商名称</label>
                 <input type="text" id="system" required>

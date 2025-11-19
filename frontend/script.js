@@ -620,10 +620,10 @@ async function submitDomainForm(e) {
     const modal = document.getElementById('domainFormModal');
     const domainValue = document.getElementById('domain').value.trim();
     // 验证域名格式
-    if (!isValidDomainFormat(domainValue)) {
-        alert('请输入有效的域名格式，例如: example.com 或 sub.example.com');
-        return;
-    }
+    if (!isValidDomainFormat(domainValue)) {
+        alert('请输入有效的域名格式，例如: example.com 或 sub.example.com');
+        return;
+    }
     
     const isPrimary = isPrimaryDomain(domainValue);
     let newDomainData = {
@@ -726,16 +726,16 @@ function openDomainForm(domainInfo = null) {
     form.reset();
 
     // 打开模态框时隐藏域名级别提示
-    if (warningEl) {
-        warningEl.style.display = 'none';
-    }
+    if (warningEl) {
+        warningEl.style.display = 'none';
+    }
     
     if (domainInfo) {
         title.textContent = '编辑域名';
         document.getElementById('editOriginalDomain').value = domainInfo.domain;
         document.getElementById('domain').value = domainInfo.domain;
-        document.getElementById('registrationDate').value = domainInfo.registrationDate ? formatDate(domainInfo.registrationDate) : '';
-        document.getElementById('expirationDate').value = domainInfo.expirationDate ? formatDate(domainInfo.expirationDate) : '';
+        document.getElementById('registrationDate').value = domainInfo.registrationDate || '';
+        document.getElementById('expirationDate').value = domainInfo.expirationDate || '';
         document.getElementById('system').value = domainInfo.system || '';
         document.getElementById('systemURL').value = domainInfo.systemURL || '';
         document.getElementById('registerAccount').value = domainInfo.registerAccount || '';
@@ -760,25 +760,25 @@ function updateFormRequiredStatus(domainValue) {
     const warningEl = document.getElementById('domainFillWarning');
 
     // 判断是否显示域名级别提示
-    if (!domainValue || domainValue.trim() === '') {
-        if (warningEl) {
-            warningEl.style.display = 'none';
-        }
-        // 域名为空时，保留原始的 required 属性，以确保二级域名验证正常
-        requiredFields.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.required = true; // 默认为必填，直到判断为一级域名
-                el.placeholder = '必填';
-            }
-        });
-        return;
-    } else {
-        // 域名不为空时，显示提示
-        if (warningEl) {
-            warningEl.style.display = 'block';
-        }
-    }
+    if (!domainValue || domainValue.trim() === '') {
+        if (warningEl) {
+            warningEl.style.display = 'none';
+        }
+        // 域名为空时，保留原始的 required 属性，以确保二级域名验证正常
+        requiredFields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.required = true; // 默认为必填，直到判断为一级域名
+                el.placeholder = '必填';
+            }
+        });
+        return;
+    } else {
+        // 域名不为空时，显示提示
+        if (warningEl) {
+            warningEl.style.display = 'block';
+        }
+    }
     
     if (isPrimary) {
         // 一级域名：提示 WHOIS 自动填充
@@ -790,8 +790,8 @@ function updateFormRequiredStatus(domainValue) {
         requiredFields.forEach(id => {
             const el = document.getElementById(id);
             if (el) {
-                el.required = false; // 允许为空
-                el.placeholder = '一级域名可留空；二级域名必填';
+                el.required = false;
+                el.placeholder = '一级域名可留空';
             }
         });
     } else {
@@ -805,7 +805,7 @@ function updateFormRequiredStatus(domainValue) {
             const el = document.getElementById(id);
             if (el) {
                 el.required = true;
-                el.placeholder = '必填';
+                el.placeholder = '二级域名必填';
             }
         });
     }
