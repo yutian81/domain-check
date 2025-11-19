@@ -77,7 +77,14 @@ export default {
  
         // 处理根目录请求
         if (pathname === '/') {
-            return new Response(HTML_TEMPLATE, {
+            return new Response(HTML_TEMPLATE(
+                config.siteName, 
+                config.siteIcon, 
+                config.bgimgURL, 
+                config.githubURL, 
+                config.blogURL, 
+                config.blogName
+            ), {
                 headers: { 
                     'Content-Type': 'text/html;charset=UTF-8',
                     'Cache-Control': 'no-cache, no-store, must-revalidate'
