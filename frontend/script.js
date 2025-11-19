@@ -10,7 +10,7 @@ let currentGroup = '全部'; // 默认激活的分组
 let currentSearchTerm = ''; // 搜索框默认为空
 let currentStatusFilter = '全部'; // 默认显示的概览信息卡
 let globalConfig = { daysThreshold: 30 }; // 默认30天内为将到期
-let lastOperatedDomain = null; // 用于存储最近操作的域名，用于临时置顶
+let lastOperatedDomain = null; // 存储最近操作的域名，用于临时置顶
 
 // 格式化日期为 YYYY-MM-DD
 function formatDate(date) {
@@ -379,7 +379,7 @@ function createDomainCard(info) {
                 <span class="card-status">\${statusText}</span>
             </div>
             <div class="card-info">
-                <p><strong><i class="fa fa-certificate"></i> 注册商: </strong> <a href="$\{info.systemURL || '#!'}" target="_blank">\${info.system || 'N/A'}</a></p>
+                <p><strong><i class="fa fa-registered"></i> 注册商: </strong> <a href="$\{info.systemURL || '#!'}" target="_blank">\${info.system || 'N/A'}</a></p>
                 <p><strong><i class="fa fa-user"></i> 注册账号: </strong> \${info.registerAccount || 'N/A'}</p>
                 <p><strong><i class="fa fa-calendar"></i> 注册时间: </strong> \${info.registrationDate || 'N/A'}</p>
                 <p><strong><i class="fa fa-calendar"></i> 到期时间: </strong> \${info.expirationDate || 'N/A'}</p>
