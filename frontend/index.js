@@ -104,7 +104,7 @@ export function HTML_TEMPLATE (siteName, siteIcon, bgimgURL, githubURL, blogURL,
             </div>
         <div class="search-container">
             <i class="fas fa-search"></i>
-            <input type="text" id="searchBox" placeholder="支持搜索域名、注册商、账号、分组">
+            <input type="text" id="searchBox" placeholder="支持全文模糊搜素">
         </div>
     </div>
 
