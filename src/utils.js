@@ -7,7 +7,7 @@ export function getConfig(env) {
         siteIcon: env.ICON || 'https://pan.811520.xyz/icon/domain-check.png',
         bgimgURL: env.BGIMG || 'https://pan.811520.xyz/icon/bg_light.webp',
         githubURL: env.GITHUB_URL || 'https://github.com/yutian81/domain-check',
-        blogURL: env.BLOG_URL || 'https://blog.811520.xyz/post/2025/04/domain-autocheck/',
+        blogURL: env.BLOG_URL || 'https://blog.notett.com/post/2025/11/251118-domain-check/',
         blogName: env.BLOG_NAME || 'QingYun Blog',
         password: env.PASSWORD || "123123",
         days: Number(env.DAYS || 30), // 用于前端即将到期判断
