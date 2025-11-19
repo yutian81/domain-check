@@ -62,13 +62,13 @@ export async function fetchDomainFromAPI(env, domainName) {
             return null;
         }
         
-        // --- 成功响应处理 ---
         const data = await response.json();
         if (!data.creationDate || !data.expiryDate) {
              console.error("WHOIS API返回数据缺少 creationDate 或 expiryDate 字段。");
              return null;
         }
 
+        // 成功并返回数据
         return {
             domain: domainName,
             registrationDate: formatDateToBeijing(data.creationDate),
