@@ -63,6 +63,15 @@ export function HTML_TEMPLATE (siteName, siteIcon, bgimgURL, githubURL, blogURL,
                 <label for="registrationDate"><i class="fa fa-calendar"></i> 注册时间 (YYYY-MM-DD)</label>
                 <input type="date" id="registrationDate" required>
 
+                <label for="renewalPeriod"><i class="fas fa-history"></i> 续费周期 (可选)</label>
+                <div class="renewal-group">
+                    <input type="number" id="renewalPeriod" min="1" max="100" placeholder="例如: 1, 填写后会自动计算到期时间" value="">
+                    <select id="renewalUnit">
+                        <option value="year">年</option>
+                        <option value="month">月</option>
+                    </select>
+                </div>
+
                 <label for="expirationDate"><i class="fa fa-calendar"></i> 到期时间 (YYYY-MM-DD)</label>
                 <input type="date" id="expirationDate" required>
 
