@@ -732,7 +732,7 @@ function updateFormRequiredStatus(domainValue) {
             const el = document.getElementById(id);
             if (el) {
                 el.required = true; // 默认为必填，直到判断为一级域名
-                el.placeholder = '必填';
+                el.placeholder = '二级域名必填';
             }
         });
         return;
