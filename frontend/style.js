@@ -1,11 +1,5 @@
 export const HTML_CSS = `
 
-body {
-    background-color: #f4f7f6;
-    background-image: url('https://pan.811520.xyz/icon/bg_light.webp');
-    background-size: cover;
-    background-attachment: fixed;
-}
 .header {
     display: flex;
     justify-content: space-between;
