@@ -92,8 +92,7 @@ export function HTML_TEMPLATE (siteName, siteIcon, bgimgURL, githubURL, blogURL,
         </div>
     </div>
 
-    <div id="summary" class="summary-container">
-        </div>
+    <div id="summary" class="summary-container"></div>
 
     <div class="controls-container">
         <div id="groupTabs" class="tabs-container">
@@ -101,10 +100,10 @@ export function HTML_TEMPLATE (siteName, siteIcon, bgimgURL, githubURL, blogURL,
             <button class="tab-btn" data-group="一级域名">一级域名</button>
             <button class="tab-btn" data-group="二级域名">二级域名</button>
             <button class="tab-btn" data-group="未分组">未分组</button>
-            </div>
+        </div>
         <div class="search-container">
             <i class="fas fa-search"></i>
-            <input type="text" id="searchBox" placeholder="支持全文模糊搜素">
+            <input type="text" id="searchBox" placeholder="支持全文模糊搜索">
         </div>
     </div>
 
