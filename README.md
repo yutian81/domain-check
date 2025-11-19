@@ -23,7 +23,7 @@
 - 修改 `wrangler.toml` 文件，绑定KV空间和设置定时通知
 
 ```toml
-# name = "domain-check"
+name = "domain-check"
 main = "src/index.js"
 compatibility_date = "2025-11-17"
 keep_vars = true
