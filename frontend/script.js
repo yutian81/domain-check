@@ -9,10 +9,7 @@ let currentPage = 1;
 let currentGroup = '全部';
 let currentSearchTerm = '';
 let currentStatusFilter = '全部';
-let globalConfig = {
-    bgimgURL: 'https://pan.811520.xyz/icon/bg_light.webp', // 默认值，以防API失败
-    daysThreshold: 30 // 默认值
-};
+let globalConfig = { daysThreshold: 30 }; // 默认30天
 
 // 格式化日期为 YYYY-MM-DD
 function formatDate(date) {
