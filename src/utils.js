@@ -18,7 +18,7 @@ export function getConfig(env) {
     };
 }
 
-// 格式化日期为 YYYY-MM-DD
+// 格式化日期为北京时间 YYYY-MM-DD
 export function formatDateToBeijing(dateStr) {
     const date = new Date(dateStr);
     const beijingTime = new Date(date.getTime() + 8 * 60 * 60 * 1000);
