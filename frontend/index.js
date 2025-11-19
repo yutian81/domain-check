@@ -67,10 +67,10 @@ export function HTML_TEMPLATE (siteName, siteIcon, bgimgURL, githubURL, blogURL,
                 <input type="date" id="expirationDate" required>
 
                 <label for="system"><i class="fa fa-registered"></i> 注册商名称</label>
-                <input type="text" id="system" placeholder="例如: cloudflare" required>
+                <input type="text" id="system" placeholder="例如: cloudflare">
 
                 <label for="systemURL"><i class="fa fa-link"></i> 注册商地址</label>
-                <input type="url" id="systemURL" placeholder="例如: https://dash.cloudflare.com" required>
+                <input type="url" id="systemURL" placeholder="例如: https://dash.cloudflare.com">
 
                 <label for="registerAccount"><i class="fa fa-user"></i> 注册账号 (可选)</label>
                 <input type="text" id="registerAccount" placeholder="例如: admin@example.com">
