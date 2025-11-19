@@ -1,20 +1,46 @@
 import { HTML_CSS } from './style';
 import { HTML_JS } from './script';
 
-export const HTML_TEMPLATE = `
+export function HTML_TEMPLATE (siteName, siteIcon, bgimgURL, githubURL, blogURL, blogName) {
+    const currentYear = new Date().getFullYear();
+    const bgimgStyle = bgimgURL ? 
+        `body { 
+            background-color: #e9eceb;
+            background-image: url('${bgimgURL}'); 
+            background-size: cover; 
+            background-attachment: fixed; 
+            background-position: center;
+        }` : 
+        '';
+    const footerHTML = `
+        <div class="footer">
+            <p>
+                <span>Copyright © ${currentYear} Yutian81</span><span>|</span>
+                <a href="${githubURL}" target="_blank">
+                    <i class="fab fa-github"></i> Github</a><span>|</span>
+                <a href="${blogURL}" target="_blank">
+                    <i class="fas fa-blog"></i> ${blogName}</a>
+            </p>
+        </div>
+    `;
+    
+    return `
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>域名到期监控</title>
-    <link id="faviconLink" rel="icon" href="https://pan.811520.xyz/icon/domain-check.png" type="image/png">
+    <title>${siteName}</title>
+    <link id="faviconLink" rel="icon" href="${siteIcon}" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <style>${HTML_CSS}</style>
+    <style>
+        ${bgimgStyle} 
+        ${HTML_CSS}
+    </style>
 </head>
 <body>
     <div class="header">
-        <h1 id="siteTitle"><i class="fas fa-clock"></i></h1>
+        <h1 id="siteTitle"><i class="fas fa-clock"></i> ${siteName}</h1>
         <div class="action-buttons">
             <button id="addDomainBtn" class="action-btn add-btn"><i class="fas fa-plus"></i> 添加域名</button>
             <button id="exportDataBtn" class="action-btn export-btn"><i class="fas fa-download"></i> 导出数据</button>
@@ -75,9 +101,10 @@ export const HTML_TEMPLATE = `
 
     <div id="domainList" class="domain-grid"></div>
     <div id="pagination" class="pagination"></div>
-    <div id="footer"></div>
+    <div id="footer">${footerHTML}</div>
 
     <script>${HTML_JS}</script>
 </body>
 </html>
-`;
+    `;
+}
