@@ -263,7 +263,7 @@ body {
     height: 100%;
     overflow: auto;
     background-color: rgba(0,0,0,0.4);
-    display: none; /* 默认隐藏 */
+    display: none;
 }
 .modal-content {
     background-color: #fefefe;
@@ -275,6 +275,7 @@ body {
     border-radius: 8px;
     position: relative;
 }
+.form-group { display: flex; }
 .close-btn {
     color: #aaa;
     float: right;
@@ -287,7 +288,7 @@ body {
     text-decoration: none;
     cursor: pointer;
 }
-.modal-content label { display: block; margin-top: 10px; font-weight: bold; }
+.modal-content label { display: block; margin-top: 5px; font-weight: bold; }
 .modal-content input[type="text"],
 .modal-content input[type="date"],
 .modal-content input[type="url"] {
@@ -299,7 +300,6 @@ body {
     border-radius: 8px;
     box-sizing: border-box;
 }
-
 .form-warning {
     font-size: 0.85rem;
     color: #f39c12;
@@ -316,6 +316,7 @@ body {
     width: 100%;
     border-radius: 8px;
 }
+
 .footer {
     background-color: none;
     color: #333333;
