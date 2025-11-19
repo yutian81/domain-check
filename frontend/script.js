@@ -755,8 +755,7 @@ function updateFormRequiredStatus(domainValue) {
 // --- 事件监听和初始化 ---
 window.onload = async () => {
     await fetchConfig();  // 加载全局配置
-    renderFooter();       // 渲染页脚
-    
+
     // 监听搜索框输入
     document.getElementById('searchBox').addEventListener('input', (e) => {
         currentSearchTerm = e.target.value.trim();
