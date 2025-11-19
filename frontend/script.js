@@ -831,13 +831,6 @@ window.addEventListener('load', async () => {
         }, 300);
     });
 
-    // 监听搜索框输入
-    document.getElementById('searchBox').addEventListener('input', (e) => {
-        currentSearchTerm = e.target.value.trim();
-        currentPage = 1;
-        applyFiltersAndSearch();
-    });
-
     // 绑定分组标签点击事件
     document.getElementById('groupTabs').addEventListener('click', handleTabClick);
 
@@ -852,13 +845,8 @@ window.addEventListener('load', async () => {
         el.addEventListener('input', calculateExpirationDate);
     });
 
-    // 域名输入时，实时更新表单提示
-    domainEl.addEventListener('input', (e) => {
-        updateFormRequiredStatus(e.target.value);
-    });
-
     // 监听域名输入，动态切换必填状态和提示
-    document.getElementById('domain').addEventListener('input', (e) => {
+    domainEl.addEventListener('input', (e) => {
         updateFormRequiredStatus(e.target.value);
     });
 });
