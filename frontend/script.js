@@ -37,6 +37,32 @@ function isPrimaryDomain(domain) {
     return getDomainLevel(domain) === '一级域名';
 }
 
+// 自动计算域名到期日期
+function calculateExpirationDate() {
+    const registrationDateEl = document.getElementById('registrationDate');
+    const renewalPeriodEl = document.getElementById('renewalPeriod');
+    const renewalUnitEl = document.getElementById('renewalUnit');
+    const expirationDateEl = document.getElementById('expirationDate');
+
+    const regDateStr = registrationDateEl.value;
+    const period = parseInt(renewalPeriodEl.value);
+    const unit = renewalUnitEl.value;
+
+    // 只有注册日期、续费周期数值和单位都有效时才计算
+    if (regDateStr && period > 0 && unit) {
+        const regDate = new Date(regDateStr);
+        let calculatedExpirationDate = new Date(regDateStr);
+
+        if (unit === 'year') {
+            calculatedExpirationDate.setFullYear(regDate.getFullYear() + period);
+        } else if (unit === 'month') {
+            calculatedExpirationDate.setMonth(regDate.getMonth() + period);
+        }
+        // 格式化日期为 YYYY-MM-DD
+        expirationDateEl.value = formatDate(calculatedExpirationDate);
+    }
+}
+
 // 异步获取全局配置
 async function fetchConfig() {
     try {
@@ -580,8 +606,8 @@ async function submitDomainForm(e) {
     e.preventDefault();
     const modal = document.getElementById('domainFormModal');
     const domainValue = document.getElementById('domain').value.trim();
-    // 验证域名格式
-    if (!isValidDomainFormat(domainValue)) {
+    
+    if (!isValidDomainFormat(domainValue)) { // 验证域名格式
         alert('请输入有效的域名格式，例如: example.com 或 sub.example.com');
         return;
     }
@@ -597,14 +623,14 @@ async function submitDomainForm(e) {
         systemURL: document.getElementById('systemURL').value,
         registerAccount: document.getElementById('registerAccount').value,
         groups: document.getElementById('groups').value,
+        renewalPeriod: document.getElementById('renewalPeriod').value ? parseInt(document.getElementById('renewalPeriod').value) : null,
+        renewalUnit: document.getElementById('renewalUnit').value || null,
     };
     
     // 如果是一级域名且字段为空，则删除这些键，让后端进行 WHOIS 查询和填充
     if (isPrimary) {
         ['registrationDate', 'expirationDate', 'system', 'systemURL'].forEach(key => {
-            if (!newDomainData[key]) {
-                newDomainData[key] = ""; // 确保后端接收到该键，值为空字符串
-            }
+            if (!newDomainData[key]) { newDomainData[key] = ""; }
         });
     }
 
@@ -623,16 +649,9 @@ async function submitDomainForm(e) {
             // 忽略 JSON 解析错误，如果响应体为空
         }
         
-        if (response.status === 409) {
-            alert('域名已存在，请勿重复添加。');
-            return;
-        }
-        if (response.status === 422) {
-            throw new Error(responseData.error || '信息不完整，请检查必填项');
-        }
-        if (!response.ok) {
-            throw new Error(responseData.error || response.statusText || '保存失败');
-        }
+        if (response.status === 409) { alert('域名已存在，请勿重复添加。'); return; }
+        if (response.status === 422) { throw new Error(responseData.error || '信息不完整，请检查必填项'); }
+        if (!response.ok) { throw new Error(responseData.error || response.statusText || '保存失败'); }
         
         modal.style.display = 'none';
         alert(\`域名 \${newDomainData.domain} 保存成功！\`);
@@ -686,12 +705,12 @@ function openDomainForm(domainInfo = null) {
     const form = document.getElementById('domainForm');
     const title = modal.querySelector('h2');
     const warningEl = document.getElementById('domainFillWarning');
+    const renewalPeriodEl = document.getElementById('renewalPeriod');
+    const renewalUnitEl = document.getElementById('renewalUnit');
+    const expirationDateEl = document.getElementById('expirationDate');
     form.reset();
 
-    // 打开模态框时隐藏域名级别提示
-    if (warningEl) {
-        warningEl.style.display = 'none';
-    }
+    if (warningEl) { warningEl.style.display = 'none'; } // 打开模态框时隐藏域名级别提示
     
     if (domainInfo) {
         title.textContent = '编辑域名';
@@ -703,15 +722,22 @@ function openDomainForm(domainInfo = null) {
         document.getElementById('systemURL').value = domainInfo.systemURL || '';
         document.getElementById('registerAccount').value = domainInfo.registerAccount || '';
         document.getElementById('groups').value = domainInfo.groups || '';
+        renewalPeriodEl.value = domainInfo.renewalPeriod || ''; // 续费周期
+        renewalUnitEl.value = domainInfo.renewalUnit || 'year'; // 周期单位
         document.getElementById('domain').disabled = false; // 编辑时允许修改域名
     } else {
         title.textContent = '添加域名';
         document.getElementById('editOriginalDomain').value = '';
         document.getElementById('domain').disabled = false;
+        renewalPeriodEl.value = '';
+        renewalUnitEl.value = 'year';
+        expirationDateEl.value = ''; 
     }
     
     // 调用状态更新函数，根据当前域名值显示提示和必填项
     updateFormRequiredStatus(document.getElementById('domain').value); 
+    // 如果是编辑模式且有续费周期信息，则触发一次计算
+    if (domainInfo && domainInfo.renewalPeriod && domainInfo.renewalUnit) { calculateExpirationDate(); }
     modal.style.display = 'block';
 }
 
@@ -775,8 +801,35 @@ function updateFormRequiredStatus(domainValue) {
 }
 
 // --- 事件监听和初始化 ---
-window.onload = async () => {
-    await fetchConfig();  // 加载全局配置
+window.addEventListener('load', async () => {
+    await fetchConfig(); // 获取配置
+    await fetchDomains(); // 获取域名数据
+
+    // 绑定按钮（添加、导出、导入）
+    document.getElementById('addDomainBtn').addEventListener('click', () => openDomainForm());
+    document.getElementById('exportDataBtn').addEventListener('click', exportData);
+    document.getElementById('importDataBtn').addEventListener('click', importData);
+
+    // 绑定模态框表单关闭和提交事件
+    const modal = document.getElementById('domainFormModal');
+    modal.querySelector('.close-btn').addEventListener('click', () => modal.style.display = 'none');
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+    document.getElementById('domainForm').addEventListener('submit', submitDomainForm);
+
+    // 绑定搜索事件 (输入停止 300ms 后进行搜索)
+    let searchTimeout;
+    document.getElementById('searchBox').addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            currentSearchTerm = e.target.value.trim();
+            currentPage = 1;
+            applyFiltersAndSearch();
+        }, 300);
+    });
 
     // 监听搜索框输入
     document.getElementById('searchBox').addEventListener('input', (e) => {
@@ -785,40 +838,29 @@ window.onload = async () => {
         applyFiltersAndSearch();
     });
 
-    // 监听标签页点击事件，并使用事件委托
-    const groupTabsContainer = document.getElementById('groupTabs');
-    if (groupTabsContainer) {
-        groupTabsContainer.addEventListener('click', handleTabClick);
-    }
+    // 绑定分组标签点击事件
+    document.getElementById('groupTabs').addEventListener('click', handleTabClick);
+
+    // 绑定注册日期和续费周期变动事件，触发到期日期计算
+    const registrationDateEl = document.getElementById('registrationDate');
+    const renewalPeriodEl = document.getElementById('renewalPeriod');
+    const renewalUnitEl = document.getElementById('renewalUnit');
+    const domainEl = document.getElementById('domain');
+    const calculationElements = [registrationDateEl, renewalPeriodEl, renewalUnitEl];
+    calculationElements.forEach(el => {
+        el.addEventListener('change', calculateExpirationDate);
+        el.addEventListener('input', calculateExpirationDate);
+    });
+
+    // 域名输入时，实时更新表单提示
+    domainEl.addEventListener('input', (e) => {
+        updateFormRequiredStatus(e.target.value);
+    });
 
     // 监听域名输入，动态切换必填状态和提示
     document.getElementById('domain').addEventListener('input', (e) => {
         updateFormRequiredStatus(e.target.value);
     });
-
-    // 监听添加按钮
-    document.getElementById('addDomainBtn').addEventListener('click', () => openDomainForm(null));
-    // 监听导出按钮
-    document.getElementById('exportDataBtn').addEventListener('click', exportData);
-    // 监听导入按钮
-    document.getElementById('importDataBtn').addEventListener('click', importData);
-    
-    // 监听表单提交
-    document.getElementById('domainForm').addEventListener('submit', submitDomainForm);
-    
-    // 监听模态框关闭
-    const modal = document.getElementById('domainFormModal');
-    if (modal) {
-        const closeBtn = modal.querySelector('.close-btn');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => modal.style.display = 'none');
-        }
-        window.addEventListener('click', (event) => {
-            if (event.target === modal) modal.style.display = 'none';
-        });
-    }
-
-    fetchDomains(); // 初始化数据加载
-};
+});
 
 `;
