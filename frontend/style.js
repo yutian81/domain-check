@@ -284,7 +284,9 @@ export const HTML_CSS = `
 .modal-content label { display: block; margin-top: 5px; font-weight: bold; }
 .modal-content input[type="text"],
 .modal-content input[type="date"],
-.modal-content input[type="url"] {
+.modal-content input[type="url"],
+.renewal-group input[type="number"],
+.renewal-group select {
     width: 100%;
     padding: 10px;
     margin: 5px 0 15px 0;
@@ -292,6 +294,20 @@ export const HTML_CSS = `
     border: 1px solid #ccc;
     border-radius: 8px;
     box-sizing: border-box;
+}
+.renewal-group {
+    display: flex;
+    gap: 10px;
+    margin: 5px 0 15px 0;
+}
+.renewal-group input[type="number"] {
+    flex-grow: 1;
+}
+.renewal-group select {
+    width: 120px;
+    flex-shrink: 0;
+    background-color: white;
+    cursor: pointer;
 }
 .form-warning {
     font-size: 0.85rem;
