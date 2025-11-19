@@ -295,20 +295,9 @@ export const HTML_CSS = `
     border-radius: 8px;
     box-sizing: border-box;
 }
-.renewal-group {
-    display: flex;
-    gap: 10px;
-    margin: 5px 0 15px 0;
-}
-.renewal-group input[type="number"] {
-    flex-grow: 1;
-}
-.renewal-group select {
-    width: 120px;
-    flex-shrink: 0;
-    background-color: white;
-    cursor: pointer;
-}
+.renewal-group { display: flex; gap: 10px; }
+.renewal-group input[type="number"] { flex-grow: 1; }
+.renewal-group select { width: 120px; flex-shrink: 0; cursor: pointer; }
 .form-warning {
     font-size: 0.85rem;
     color: #f39c12;
