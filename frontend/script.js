@@ -533,10 +533,12 @@ function applyFiltersAndSearch() {
         // 2. 搜索过滤
         const searchTerm = currentSearchTerm.toLowerCase();
         if (searchTerm) {
+            // 只要以下任何一个字段包含搜索词，即返回 true
             return (
-                domain.domain.toLowerCase().includes(searchTerm) ||
-                (domain.system || '').toLowerCase().includes(searchTerm) ||
-                (domain.registerAccount || '').toLowerCase().includes(searchTerm)
+                domain.domain.toLowerCase().includes(searchTerm) || // 域名
+                (domain.system || '').toLowerCase().includes(searchTerm) || // 注册商
+                (domain.registerAccount || '').toLowerCase().includes(searchTerm) || // 注册账号
+                (domain.groups || '').toLowerCase().includes(searchTerm) // 分组
             );
         }
 
