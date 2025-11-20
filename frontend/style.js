@@ -71,11 +71,11 @@ export const HTML_CSS = `
     box-shadow: 2px 4px 4px rgba(0,0,0,0.2);
     transition: all 0.3s ease;
 }
-.summary-card:hover { transform: translateY(-3px); box-shadow: 0 0 10px rgba(0,0,0,0.25); }
-.summary-card h3 { margin: 0 0 5px 0; font-size: 1.1rem; color: var(--color); text-shadow: 0.5px 0.5px 6px rgba(0, 0, 0, 0.6); }
-.summary-card.active h3 { color: white; text-shadow: 0.5px 0.5px 6px rgba(0, 0, 0, 0.6); }
-.summary-card p { margin: 0; font-size: 2rem; font-weight: bold; color: var(--color); text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.6); }
-.summary-card.active p { color: white; text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.6); }
+.summary-card:hover { transform: translateY(-3px); box-shadow: 0 0 8px rgba(0,0,0,0.25); }
+.summary-card h3 { margin: 0 0 5px 0; font-size: 1.1rem; color: var(--color); text-shadow: 0.5px 0.5px 4px rgba(0, 0, 0, 0.5); }
+.summary-card.active h3 { color: white; text-shadow: 0.5px 0.5px 4px rgba(0, 0, 0, 0.5); }
+.summary-card p { margin: 0; font-size: 2rem; font-weight: bold; color: var(--color); text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5); }
+.summary-card.active p { color: white; text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5); }
 
 /* 控制区分组标签和搜索 */
 .controls-container {
@@ -146,7 +146,7 @@ export const HTML_CSS = `
     display: flex;
     flex-direction: column;
 }
-.domain-card:hover { transform: translateY(-3px); box-shadow: 0 0 10px rgba(0,0,0,0.25); }
+.domain-card:hover { transform: translateY(-3px); box-shadow: 0 0 8px rgba(0,0,0,0.25); }
 .card-header {
     display: flex;
     justify-content: space-between;
