@@ -34,6 +34,7 @@ export const HTML_CSS = `
     border-radius: 8px;
     border: none;
     cursor: pointer;
+    box-shadow: 2px 4px 4px rgba(0,0,0,0.2);
     transition: background-color 0.3s;
 }
 .export-btn, .import-btn { background-color: #1eaf5b; color: white; }
@@ -59,7 +60,7 @@ export const HTML_CSS = `
     border-radius: 8px;
     text-align: center;
     flex-grow: 1;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 2px 4px 4px rgba(0,0,0,0.2);
     transition: transform 0.3s, box-shadow 0.3s;
 }
 .summary-card.active {
@@ -88,7 +89,7 @@ export const HTML_CSS = `
     background-color: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 2px 4px 4px rgba(0,0,0,0.2);
     margin-bottom: 20px;
 }
 .tabs-container {
@@ -140,7 +141,7 @@ export const HTML_CSS = `
     -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 2px 4px 4px rgba(0,0,0,0.2);
     transition: transform 0.3s, box-shadow 0.3s;
     display: flex;
     flex-direction: column;
