@@ -161,7 +161,7 @@ export const HTML_CSS = `
 }
 .card-status {
     padding: 3px 8px;
-    margin-left: 10px
+    margin-left: 8px;
     border-radius: 50px;
     color: white;
     font-size: 0.8rem;
