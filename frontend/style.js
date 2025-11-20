@@ -1,5 +1,11 @@
 export const HTML_CSS = `
 
+* {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, 
+                 "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", 
+                 sans-serif;
+}
+
 .header {
     display: flex;
     justify-content: space-between;
