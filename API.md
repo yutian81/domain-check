@@ -3,7 +3,7 @@
 ## BASE_URL
 
 ```
-https://your-domain-check.pages.dev
+https://your-domain-check.workers.dev
 ```
 
 ## GET api/config —— 获取项目全局配置
@@ -11,7 +11,7 @@ https://your-domain-check.pages.dev
 - 请求示例（无需鉴权）
 
 ```bash
-curl -X GET https://your-domain-check.pages.dev/api/config
+curl -X GET https://your-domain-check.workers.dev/api/config
 ```
 
 - 返回示例
@@ -33,9 +33,9 @@ curl -X GET https://your-domain-check.pages.dev/api/config
 - 请求示例（无需鉴权）
 
 ```
-curl -X GET https://your-domain-check.pages.dev/cron
+curl -X GET https://your-domain-check.workers.dev/cron
 # 或
-curl -X POST https://your-domain-check.pages.dev/cron
+curl -X POST https://your-domain-check.workers.dev/cron
 ```
 
 - 返回示例
@@ -62,7 +62,7 @@ curl -X POST https://your-domain-check.pages.dev/cron
 - 请求示例（需要鉴权）
 
 ```bash
-curl -X GET https://your-domain-check.pages.dev/api/domains \
+curl -X GET https://your-domain-check.workers/api/domains \
      -H "Cookie: auth=<PASSWORD>"
 ```
 
@@ -96,7 +96,7 @@ curl -X GET https://your-domain-check.pages.dev/api/domains \
 - 请求示例（需要鉴权）
 
 ```bash
-curl -X POST https://your-domain-check.pages.dev/api/domains \
+curl -X POST https://your-domain-check.workers.dev/api/domains \
      -H "Content-Type: application/json" \
      -H "Cookie: auth=<PASSWORD>" \
      -d '{
@@ -124,7 +124,7 @@ curl -X POST https://your-domain-check.pages.dev/api/domains \
 - 请求示例
 
 ```bash
-curl -X PUT https://your-domain-check.pages.dev/api/domains \
+curl -X PUT https://your-domain-check.workers.dev/api/domains \
      -H "Content-Type: application/json" \
      -H "Cookie: auth=<PASSWORD>" \
      -d '[
@@ -148,7 +148,7 @@ curl -X PUT https://your-domain-check.pages.dev/api/domains \
 - 请求示例：删除单个域名
 
 ```bash
-curl -X DELETE https://your-domain-check.pages.dev/api/domains \
+curl -X DELETE https://your-domain-check.workers.dev/api/domains \
      -H "Content-Type: application/json" \
      -H "Cookie: auth=<PASSWORD>" \
      -d '{ "domain": "domain-to-delete.com" }'
@@ -166,7 +166,7 @@ curl -X DELETE https://your-domain-check.pages.dev/api/domains \
 - 请求示例：删除多个域名
 
 ```bash
-curl -X DELETE https://your-domain-check.pages.dev/api/domains \
+curl -X DELETE https://your-domain-check.workers.dev/api/domains \
      -H "Content-Type: application/json" \
      -H "Cookie: auth=<PASSWORD>" \
      -d '["domain-to-delete-1.com", "domain-to-delete-2.net", "domain-to-delete-3.io"]'
@@ -182,12 +182,12 @@ curl -X DELETE https://your-domain-check.pages.dev/api/domains \
 }
 ```
 
-## GET /api/whois —— 手动检查域名到期情况
+## GET /api/whois —— whois查询（仅支持一级域名）
 
 - 请求示例（无需鉴权）
 
 ```bash
-curl -X GET https://your-domain-check.pages.dev/api/whois/<要查询的域名>
+curl -X GET https://your-domain-check.workers/api/whois/<要查询的域名>
 ```
 
 - 返回示例
