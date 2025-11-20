@@ -48,12 +48,13 @@ export const HTML_CSS = `
     background-color: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
+    border-left: 5px solid var(--color);
     padding: 15px 20px;
     border-radius: 8px;
     text-align: center;
     flex-grow: 1;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    border-left: 5px solid var(--color);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 .summary-card.active {
     background-color: var(--color); 
@@ -151,7 +152,6 @@ export const HTML_CSS = `
 .card-domain {
     font-size: 1.2rem;
     font-weight: bold;
-    line-height: 0.9;
     color: #000000;
     cursor: pointer;
     overflow-wrap: break-word;
@@ -163,6 +163,7 @@ export const HTML_CSS = `
     border-radius: 50px;
     color: white;
     font-size: 0.8rem;
+    line-height: 1;
     background-color: var(--status-color); /* 状态颜色 */
 }
 .card-info p {
