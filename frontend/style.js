@@ -158,12 +158,12 @@ export const HTML_CSS = `
     word-break: break-word;
 }
 .card-status {
-    padding: 3px 8px;
+    padding: 4px 8px;
     margin-left: 8px;
     border-radius: 50px;
     color: white;
     font-size: 0.8rem;
-    line-height: 1;
+    line-height: 1.05;
     background-color: var(--status-color); /* 状态颜色 */
 }
 .card-info p {
