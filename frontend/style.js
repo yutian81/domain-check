@@ -71,9 +71,9 @@ export const HTML_CSS = `
     transition: all 0.3s ease;
 }
 .summary-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
-.summary-card.active h3, .summary-card.active p { color: white; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); }
-.summary-card h3 { margin: 0 0 5px 0; font-size: 1.1rem; color: var(--color); text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); }
-.summary-card p { margin: 0; font-size: 2rem; font-weight: bold; color: var(--color); text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); }
+.summary-card.active h3, .summary-card.active p { color: white; text-shadow: 1px 1px 0.5px rgba(0, 0, 0, 0.7); }
+.summary-card h3 { margin: 0 0 5px 0; font-size: 1.1rem; color: var(--color); text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7); }
+.summary-card p { margin: 0; font-size: 2rem; font-weight: bold; color: var(--color); text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7); }
 
 /* 控制区分组标签和搜索 */
 .controls-container {
