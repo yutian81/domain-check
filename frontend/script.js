@@ -135,7 +135,7 @@ function importData() {
                     const domainsToImport = JSON.parse(jsonContent);
                     
                     if (!Array.isArray(domainsToImport)) {
-                        throw new Error('JSON 文件格式错误，期望一个域名数组。');
+                        throw new Error('JSON 文件格式错误，期望一个域名数组');
                     }
 
                     // 调用 PUT API 替换所有数据
@@ -599,7 +599,7 @@ async function fetchDomains() {
         
     } catch (error) {
         console.error('获取域名失败:', error);
-        alert('无法加载域名数据, 请检查API连接或登录状态。');
+        alert('无法加载域名数据, 请检查API连接或登录状态');
     }
 }
 
@@ -651,7 +651,7 @@ async function submitDomainForm(e) {
             // 忽略 JSON 解析错误，如果响应体为空
         }
         
-        if (response.status === 409) { alert('域名已存在，请勿重复添加。'); return; }
+        if (response.status === 409) { alert('域名已存在，请勿重复添加'); return; }
         if (response.status === 422) { throw new Error(responseData.error || '信息不完整，请检查必填项'); }
         if (!response.ok) { throw new Error(responseData.error || response.statusText || '保存失败'); }
         
