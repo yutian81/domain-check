@@ -6,6 +6,7 @@ export const HTML_CSS = `
                  sans-serif;
 }
 
+/* 顶部标题和操作按钮 */
 .header {
     display: flex;
     justify-content: space-between;
@@ -23,7 +24,6 @@ export const HTML_CSS = `
     gap: 8px;
 }
 #siteTitle { margin: 0; }
-
 .action-buttons {
     display: flex;
     gap: 10px;
@@ -41,7 +41,7 @@ export const HTML_CSS = `
 .add-btn { background-color: #186db3; color: white; }
 .add-btn:hover { background-color: #1c5a8a; }
 
-/* 概览样式 */
+/* 概览开片样式 */
 .summary-container {
     display: flex;
     justify-content: space-around;
@@ -71,11 +71,11 @@ export const HTML_CSS = `
     transition: all 0.3s ease;
 }
 .summary-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
-.summary-card.active h3, .summary-card.active p { color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); }
+.summary-card.active h3, .summary-card.active p { color: white; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); }
 .summary-card h3 { margin: 0 0 5px 0; font-size: 1.1rem; color: var(--color); text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); }
 .summary-card p { margin: 0; font-size: 2rem; font-weight: bold; color: var(--color); text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); }
 
-/* 控制区和搜索 */
+/* 控制区分组标签和搜索 */
 .controls-container {
     display: flex;
     justify-content: space-between;
