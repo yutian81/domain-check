@@ -375,7 +375,7 @@ function createDomainCard(info) {
     return \`
         <div class="domain-card" style="--status-color: \${statusColor}; --border-color: \${borderColor};">
             <div class="card-header">
-                <span class="card-domain" data-domain="\${info.domain}">\${info.domain}</span>
+                <span class="card-domain" data-domain="\${info.domain}" title="点击即可复制">\${info.domain}</span>
                 <span class="card-status">\${statusText}</span>
             </div>
             <div class="card-info">
