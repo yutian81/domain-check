@@ -113,7 +113,10 @@ curl -X POST https://your-domain-check.pages.dev/api/domains \
 - 返回示例
 
 ```json
-{"success": true, "domain": "example.com"}
+{
+  "success": true, 
+  "domain": "example.com"
+}
 ```
 
 ## PUT /api/domains —— 批量更新域名列表（用于编辑）
@@ -134,7 +137,10 @@ curl -X PUT https://your-domain-check.pages.dev/api/domains \
 - 返回示例
 
 ```json
-{"success": true, "count": 2}
+{
+  "success": true, 
+  "count": 2
+}
 ```
 
 ## DELETE /api/domains —— 删除域名
@@ -151,7 +157,10 @@ curl -X DELETE https://your-domain-check.pages.dev/api/domains \
 - 返回示例：删除单个域名
 
 ```json
-{"success": true, "message": "域名 domain-to-delete.com 已删除。"}
+{
+  "success": true, 
+  "message": "域名 domain-to-delete.com 已删除"
+}
 ```
 
 - 请求示例：删除多个域名
