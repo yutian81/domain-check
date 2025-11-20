@@ -153,13 +153,15 @@ export const HTML_CSS = `
 .card-domain {
     font-size: 1.2rem;
     font-weight: bold;
+    line-height: 1;
     color: #000000;
     cursor: pointer;
+    overflow-wrap: break-word;
     word-break: break-word;
-    white-space: normal;
 }
 .card-status {
     padding: 3px 8px;
+    margin-left: 10px
     border-radius: 50px;
     color: white;
     font-size: 0.8rem;
