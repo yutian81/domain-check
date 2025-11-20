@@ -81,7 +81,7 @@ export const HTML_CSS = `
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0;
+    padding: 15px 20px;
     border-radius: 8px;
     max-width: 1200px;
     margin: 0 auto;
