@@ -71,8 +71,8 @@ export const HTML_CSS = `
     transition: all 0.3s ease;
 }
 .summary-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
-.summary-card h3 { margin: 0 0 5px 0; font-size: 1.1rem; color: var(--color); text-shadow: 1px 1px 0.5px rgba(0, 0, 0, 0.7); }
-.summary-card.active h3 { color: white; text-shadow: 1px 1px 0.5px rgba(0, 0, 0, 0.7); }
+.summary-card h3 { margin: 0 0 5px 0; font-size: 1.1rem; color: var(--color); text-shadow: 0.5px 0.5px 0.5px rgba(0, 0, 0, 0.7); }
+.summary-card.active h3 { color: white; text-shadow: 0.5px 0.5px 0.5px rgba(0, 0, 0, 0.7); }
 .summary-card p { margin: 0; font-size: 2rem; font-weight: bold; color: var(--color); text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7); }
 .summary-card.active p { color: white; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7); }
 
@@ -157,12 +157,14 @@ export const HTML_CSS = `
     padding-bottom: 10px;
 }
 .card-domain {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: bold;
-    color: #000000;
+    color: #186db3;
     cursor: pointer;
     word-break: break-word;
+    transition: color 0.3s ease;
 }
+.card-domain:hover { color: #1c5a8a; }
 .card-status {
     padding: 4px 8px;
     margin-left: 8px;
