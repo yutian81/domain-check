@@ -95,7 +95,6 @@ export const HTML_CSS = `
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    /* margin-left: 20px; */
 }
 .tab-btn {
     padding: 8px 15px;
@@ -117,7 +116,6 @@ export const HTML_CSS = `
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
     padding: 5px 10px;
-    /* margin-right: 20px; */
 }
 #searchBox {
     border: none;
@@ -161,7 +159,7 @@ export const HTML_CSS = `
     font-weight: bold;
     color: #186db3;
     cursor: pointer;
-    word-break: break-word;
+    word-break: break-all;
     transition: color 0.3s ease;
 }
 .card-domain:hover { color: #1c5a8a; }
@@ -354,92 +352,32 @@ export const HTML_CSS = `
 
 /* --- 移动端优化 (Media Queries) --- */
 @media (max-width: 768px) {
-    /* 核心布局约束 */
-    .header,
-    .summary-container,
-    .controls-container,
-    .domain-grid,
-    .pagination {
-        max-width: 95%; /* 适应屏幕，两侧留出小边距 */
-        margin: 0 auto;
-    }
-
-    /* 头部区域 */
-    .header {
-        flex-direction: column; /* 垂直堆叠 */
-    }
-    .header h1 {
-        font-size: 1.5rem;
-        margin-bottom: 10px;
-    }
+    /* 头部 */
+    .header, .summary-container, .controls-container, .domain-grid, .pagination { max-width: 95%; margin: 0 auto; }
+    .header { flex-direction: column; }
+    .header h1 { font-size: 1.5rem; margin-bottom: 10px; }
     .action-buttons { margin-top: 10px; }
 
     /* 概览卡片 */
-    .summary-container {
-        flex-direction: column; /* 垂直堆叠 */
-        padding: 12px 0;
-        gap: 10px;
-    }
-    .summary-card {
-        padding: 10px 15px;
-    }
-    .summary-card p {
-        font-size: 1.5rem;
-    }
+    .summary-container { flex-direction: column; padding: 12px 0; gap: 10px; }
+    .summary-card { padding: 10px 15px; }
+    .summary-card p { font-size: 1.5rem; }
 
-    /* 控制区 (Tabs & Search) */
-    .controls-container {
-        flex-direction: column; /* 垂直堆叠 */
-        padding: 12px 0;
-        margin-bottom: 12px;
-    }
-    .tabs-container {
-        width: auto;
-        padding: 0 12px;
-        margin: 0;
-        justify-content: center;
-    }
-    .tab-btn {
-        flex-grow: 1; /* 按钮平均分配宽度 */
-        font-size: 0.9rem;
-    }
-    .search-container {
-        width: auto;
-        align-self: stretch;
-        margin: 10px 12px 0 12px;
-        padding: 5px 12px;
-    }
+    /* 控制区 (标签和搜索) */
+    .controls-container { flex-direction: column; padding: 12px 0; margin-bottom: 12px; }
+    .tabs-container { width: auto; padding: 0 12px; margin: 0; justify-content: center; }
+    .tab-btn { flex-grow: 1; font-size: 0.9rem; }
+    .search-container { width: auto; align-self: stretch; /* margin: 10px 12px 0 12px; */ padding: 5px 12px; }
 
     /* 域名卡片网格 */
-    .domain-grid {
-        /* 在小屏幕上，让网格自动调整，至少显示一个大卡片 */
-        grid-template-columns: repeat(auto-fill, minmax(95%, 1fr)); 
-        gap: 12px;
-    }
-    .card-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
-    .card-domain {
-        font-size: 1.1rem;
-        word-break: break-all;
-    }
-    .card-status {
-        align-self: flex-start;
-    }
+    .domain-grid { grid-template-columns: repeat(auto-fill, minmax(95%, 1fr));  gap: 12px; }
+    .card-header { align-items: flex-start; gap: 5px; }
+    .card-status { align-self: flex-start; }
 
     /* 模态框 */
-    .modal-content {
-        margin: 5% auto;
-        width: 90%;
-        padding: 15px;
-    }
+    .modal-content { margin: 5% auto; width: 90%; padding: 15px; }
 
     /* 页脚 */
-    .footer p {
-        font-size: 0.7rem;
-        gap: 6px;
-    }
+    .footer p { font-size: 0.7rem; gap: 6px; }
 }
 `;
