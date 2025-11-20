@@ -63,6 +63,7 @@ export const HTML_CSS = `
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
     transition: all 0.3s ease;
 }
+.summary-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
 .summary-card.active h3, .summary-card.active p { color: white; }
 .summary-card h3 { margin: 0 0 5px 0; font-size: 1.1rem; color: var(--color); }
 .summary-card p { margin: 0; font-size: 2rem; font-weight: bold; color: var(--color); }
@@ -138,10 +139,7 @@ export const HTML_CSS = `
     display: flex;
     flex-direction: column;
 }
-.domain-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-}
+.domain-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
 .card-header {
     display: flex;
     justify-content: space-between;
@@ -153,7 +151,7 @@ export const HTML_CSS = `
 .card-domain {
     font-size: 1.2rem;
     font-weight: bold;
-    line-height: 1;
+    line-height: 0.9;
     color: #000000;
     cursor: pointer;
     overflow-wrap: break-word;
