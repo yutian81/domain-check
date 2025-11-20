@@ -55,8 +55,8 @@ crons = ["0 1,13 * * *"] # 北京时间 9:00 和 21:00
 | 变量名 | 说明 | 默认值/示例值 | 必填 |
 |--------|------|--------|------|
 | `PASSWORD` | 访问密码 | `123123` | ✔️ |
-| `WHOIS_API_URL` | WHOIS API 地址 | `https://your-whois-api.example.com/api/` | ❌ |
-| `WHOIS_API_KEY` | WHOIS API 密钥 | `abc123` | ❌ |
+| ~~~WHOIS_API_URL~~~ | 已内置 | 不再需要，内置端点为 `GET /api/whois/<域名>` | ❌ |
+| ~~~WHOIS_API_KEY~~~ | 已内置 | 不再需要，内置端点为 `GET /api/whois/<域名>` | ❌ |
 | `TGID` | Telegram Chat ID | - | ❌ |
 | `TGTOKEN` | Telegram Bot Token | - | ❌ |
 | `DAYS` | 到期提醒天数 | `30` | ❌ |
@@ -66,18 +66,6 @@ crons = ["0 1,13 * * *"] # 北京时间 9:00 和 21:00
 | `GITHUB_URL` | GitHub 链接 | `https://github.com/yutian81` | ❌ |
 | `BLOG_URL` | 博客链接 | `https://blog.notett.com` | ❌ |
 | `BLOG_NAME` | 博客名称 | `QingYun Blog` | ❌ |
-
-### Whois API 部署方法
-
-> 此步骤为可选，仅支持一级域名的信息查询
-
-`WHOIS_API_URL` 和 `WHOIS_API_KEY` 可通过部署 [whois.js](https://github.com/yutian81/domain-check/blob/main/whois.js) 代码获得（worker 部署）
-
-- 部署平台：CF workers
-- 环境变量 `WHOIS_API_KEY`：自行设置，调用 API 需要用到，如：abcabc
-- 环境变量 CACHE_HOURS：缓存时间（单位：小时），默认为24小时，不用修改
-- 绑定域名（因为worker被墙，建议绑定域名）
-- 得到API接口地址：`WHOIS_API_URL` = `https://<worker项目地址>/api/` （末尾的/必须保留）
 
 ## 本项目 API 接口
 
