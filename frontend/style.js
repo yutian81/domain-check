@@ -330,8 +330,8 @@ export const HTML_CSS = `
     font-size: 0.8rem;
     width: 100%;
     text-align: center;
-    padding: 16px 0;
-    margin-bottom: 10px;
+    padding: 10px 0;
+    margin-bottom: 20px;
 }
 .footer p {
     display: flex;
