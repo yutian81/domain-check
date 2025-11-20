@@ -379,12 +379,7 @@ function createDomainCard(info) {
                 <span class="card-status">\${statusText}</span>
             </div>
             <div class="card-info">
-                <p><strong><i class="fa fa-registered"></i> 注册商: </strong> 
-                    \${info.systemURL ? 
-                        \`<a href="\${info.systemURL}" target="_blank" title="点击直达">\${info.system || 'N/A'}</a>\` : 
-                        \`<span class="no-link">\${info.system || 'N/A'}</span>\`
-                    }
-                </p>
+                <p><strong><i class="fa fa-registered"></i> 注册商: </strong> <a href="$\{info.systemURL}" target="_blank" title="点击直达">\${info.system || 'N/A'}</a></p>
                 <p><strong><i class="fa fa-user"></i> 注册账号: </strong> \${info.registerAccount || 'N/A'}</p>
                 <p><strong><i class="fa fa-calendar"></i> 注册时间: </strong> \${info.registrationDate || 'N/A'}</p>
                 <p><strong><i class="fa fa-calendar"></i> 到期时间: </strong> \${info.expirationDate || 'N/A'}</p>
