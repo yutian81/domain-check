@@ -156,7 +156,8 @@ export const HTML_CSS = `
     font-weight: bold;
     color: #000000;
     cursor: pointer;
-    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
 }
 .card-status {
     padding: 3px 8px;
