@@ -91,7 +91,7 @@ export default {
         return new Response('Not Found', { status: 404 });
     },
 
-    // Cron Triggers 定时任务处理器 (保持不变)
+    // Cron Triggers 定时任务处理器
     async scheduled(event, env, ctx) {
         ctx.waitUntil(checkDomainsScheduled(env).catch(err => {
             console.error('定时任务执行失败:', err);
