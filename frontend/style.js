@@ -183,7 +183,7 @@ export const HTML_CSS = `
     font-weight: normal;
 }
 .card-info a {
-    color: #186db3;
+    color: inherit;
     text-decoration: none;
 }
 .card-info a:hover {
