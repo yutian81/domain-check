@@ -55,8 +55,8 @@ crons = ["0 1,13 * * *"] # 北京时间 9:00 和 21:00
 | 变量名 | 说明 | 默认值/示例值 | 必填 |
 |--------|------|--------|------|
 | `PASSWORD` | 访问密码 | `123123` | ✔️ |
-| ~~~WHOIS_API_URL~~~ | 已内置 | 不再需要，内置端点为 `GET /api/whois/<域名>` | ❌ |
-| ~~~WHOIS_API_KEY~~~ | 已内置 | 不再需要，内置端点为 `GET /api/whois/<域名>` | ❌ |
+| <del>WHOIS_API_URL</del> | 已内置 | 不再需要，内置端点为 `GET /api/whois/<域名>` | ❌ |
+| <del>WHOIS_API_KEY</del> | 已内置 | 不再需要，内置端点为 `GET /api/whois/<域名>` | ❌ |
 | `TGID` | Telegram Chat ID | - | ❌ |
 | `TGTOKEN` | Telegram Bot Token | - | ❌ |
 | `DAYS` | 到期提醒天数 | `30` | ❌ |
