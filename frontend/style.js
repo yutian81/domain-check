@@ -95,7 +95,7 @@ export const HTML_CSS = `
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-left: 20px;
+    /* margin-left: 20px; */
 }
 .tab-btn {
     padding: 8px 15px;
@@ -117,7 +117,7 @@ export const HTML_CSS = `
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
     padding: 5px 10px;
-    margin-right: 20px;
+    /* margin-right: 20px; */
 }
 #searchBox {
     border: none;
