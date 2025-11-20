@@ -156,12 +156,13 @@ export const HTML_CSS = `
     font-weight: bold;
     color: #000000;
     cursor: pointer;
+    overflow-wrap: break-word;
 }
 .card-status {
-    padding: 5px 10px;
-    border-radius: 8px;
+    padding: 3px 8px;
+    border-radius: 1000px;
     color: white;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     background-color: var(--status-color); /* 状态颜色 */
 }
 .card-info p {
