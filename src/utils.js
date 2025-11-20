@@ -12,9 +12,7 @@ export function getConfig(env) {
         password: env.PASSWORD || "123123",
         days: Number(env.DAYS || 30), // 用于前端即将到期判断
         tgid: env.TGID || env.TG_CHAT_ID,
-        tgtoken: env.TGTOKEN || env.TG_BOT_TOKEN,
-        apiUrl: env.WHOIS_API_URL,
-        apiKey: env.WHOIS_API_KEY
+        tgtoken: env.TGTOKEN || env.TG_BOT_TOKEN
     };
 }
 
@@ -29,57 +27,6 @@ export function formatDateToBeijing(dateStr) {
 export function isPrimaryDomain(domain) {
     const parts = domain.split('.');
     return parts.length <= 2;
-}
-
-// WHOIS API 调用函数
-export async function fetchDomainFromAPI(env, domainName) {
-    const config = getConfig(env);
-    
-    if (!config.apiUrl || !config.apiKey) {
-        console.error("API_URL 或 API_KEY 未配置，无法进行 WHOIS 查询。");
-        return null;
-    }
-
-    try {
-        // 请求 URL 格式： <API_URL>/<域名>
-        const apiUrl = config.apiUrl.endsWith('/') 
-            ? `${config.apiUrl}${domainName}`
-            : `${config.apiUrl}/${domainName}`;
-
-        const response = await fetch(apiUrl, {
-            headers: { 'X-API-KEY': config.apiKey }
-        });
-
-        if (!response.ok) {
-            let errorDetail = '';
-            try {
-                const errorJson = await response.json(); // 尝试解析 JSON 错误体
-                errorDetail = errorJson.error || JSON.stringify(errorJson);
-            } catch (e) {
-                errorDetail = await response.text(); // 如果解析失败，回退到原始文本
-            }
-            console.error(`WHOIS API请求失败 (${domainName})，状态码: ${response.status}. 详情: ${errorDetail}`);
-            return null;
-        }
-        
-        const data = await response.json();
-        if (!data.creationDate || !data.expiryDate) {
-             console.error("WHOIS API返回数据缺少 creationDate 或 expiryDate 字段。");
-             return null;
-        }
-
-        // 成功并返回数据
-        return {
-            domain: domainName,
-            registrationDate: formatDateToBeijing(data.creationDate),
-            expirationDate: formatDateToBeijing(data.expiryDate),
-            system: data.registrar || '未知',
-            systemURL: data.registrarUrl || '未知'
-        };
-    } catch (error) {
-        console.error(`获取域名 ${domainName} 信息时发生网络或解析错误:`, error);
-        return null;
-    }
 }
 
 // TG通知函数

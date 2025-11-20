@@ -1,4 +1,7 @@
-import { isPrimaryDomain, fetchDomainFromAPI } from '../utils';
+// src/api/domains.js
+
+import { isPrimaryDomain } from '../utils';
+import { fetchDomainFromAPI } from './whois';
 
 const KV_KEY = 'DOMAIN_LIST';
 
@@ -46,11 +49,11 @@ async function handlePostDomain(request, env) {
             
             if (apiData) {
                 // 自动填充 WHOIS 查到的信息
-                newDomainData.registrationDate = apiData.registrationDate;
-                newDomainData.expirationDate = apiData.expirationDate;
-                newDomainData.system = apiData.system;
-                newDomainData.systemURL = apiData.systemURL;
-                console.log(`WHOIS 填充成功: 到期日期 ${apiData.expirationDate}`);
+                newDomainData.registrationDate = apiData.creationDate;
+                newDomainData.expirationDate = apiData.expiryDate;
+                newDomainData.system = apiData.registrar;
+                newDomainData.systemURL = apiData.registrarUrl;
+                console.log(`WHOIS 填充成功: 到期日期 ${apiData.expiryDate}`);
             } else if (!isEdit) {
                 // 如果是新增，且 WHOIS 查询失败，则要求手动输入
                 return new Response(JSON.stringify({ error: 'WHOIS查询失败，请手动输入注册信息。' }), { 

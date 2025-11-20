@@ -5,17 +5,27 @@ import { getConfig } from './utils';
 import { HTML_TEMPLATE } from '../frontend/index';
 import { onRequest as configApi } from './api/config';
 import { onRequest as domainsApi } from './api/domains';
+import { onRequest as whoisApi } from './api/whois';
 import { checkDomainsScheduled } from './cron';
-import { authenticate, handleLogin } from './_middleware';
+import { authenticate, handleLogin } from './auth';
 
 export default {
     async fetch(request, env, ctx) {
         const url = new URL(request.url);
         const pathname = url.pathname;
+        const config = getConfig(env); // 加载环境变量配置
         
+        if (pathname === '/login') { return handleLogin(request, env); }
+
         if (pathname === '/api/config') {
-            const context = { request, env, next: () => {} }; 
+            const context = { request, env, ctx, next: () => {} }; 
             return configApi(context);
+        }
+
+        if (pathname.startsWith('/api/whois/')) {
+            const context = { request, env, ctx, next: () => {} };
+            const domain = pathname.replace('/api/whois/', '');
+            return whoisApi(context, domain);
         }
 
         // 处理手动触发 /cron 路由
@@ -49,14 +59,8 @@ export default {
             }
         }
         
-        if (pathname === '/login') {
-            return handleLogin(request, env);
-        }
-        
-        const config = getConfig(env); // 加载环境变量
-        
         // 定义需要豁免认证的路径
-        const authExemptPaths = ['/api/config', '/cron', '/login'];
+        const authExemptPaths = ['/api/config', '/api/whois', '/cron', '/login'];
         const isExempt = authExemptPaths.includes(pathname); 
 
         // 如果设置了密码，且请求不是豁免路径，则执行认证
@@ -70,9 +74,7 @@ export default {
         // 处理 API 路由
         if (pathname.startsWith('/api/')) {
             const context = { request, env, ctx, next: () => {} };
-            if (url.pathname === '/api/domains') {
-                return domainsApi(context);
-            }
+            if (url.pathname === '/api/domains') { return domainsApi(context); }
             return new Response('API Not Found', { status: 404 });
         }
  
