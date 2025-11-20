@@ -72,7 +72,7 @@ export function generateLoginPage(showError = false, siteName, siteIcon, bgimgUR
           align-items: center;
         }
         .login-container {
-          background-color: rgba(255, 255, 255, 0.5);
+          background-color: rgba(255, 255, 255, 0.3);
           padding: 25px 25px 10px 25px;
           border-radius: 8px;
           box-shadow: 0 4px 15px rgba(0,0,0,0.15);
@@ -111,7 +111,7 @@ export function generateLoginPage(showError = false, siteName, siteIcon, bgimgUR
         input[type="password"] {
           width: 100%;
           padding: 12px;
-          background-color: rgba(255, 255, 255, 0.75);
+          background-color: rgba(255, 255, 255, 0.35);
           border: 1px solid #ddd;
           border-radius: 8px;
           box-sizing: border-box;
