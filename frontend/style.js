@@ -154,7 +154,6 @@ export const HTML_CSS = `
     font-weight: bold;
     color: #000000;
     cursor: pointer;
-    overflow-wrap: break-word;
     word-break: break-word;
 }
 .card-status {
@@ -163,7 +162,7 @@ export const HTML_CSS = `
     border-radius: 50px;
     color: white;
     font-size: 0.8rem;
-    line-height: 1.05;
+    line-height: 0.95;
     background-color: var(--status-color); /* 状态颜色 */
 }
 .card-info p {
