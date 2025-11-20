@@ -356,7 +356,7 @@ export const HTML_CSS = `
     .header, .summary-container, .controls-container, .domain-grid, .pagination { max-width: 95%; margin: 0 auto; }
     .header { flex-direction: column; }
     .header h1 { font-size: 1.5rem; margin-bottom: 10px; }
-    .action-buttons { margin-top: 10px; }
+    .action-buttons { flex-grow: 1; margin-top: 10px; }
 
     /* 概览卡片 */
     .summary-container { flex-direction: column; padding: 12px 0; gap: 10px; }
@@ -367,7 +367,7 @@ export const HTML_CSS = `
     .controls-container { flex-direction: column; padding: 12px 0; margin-bottom: 12px; }
     .tabs-container { width: auto; padding: 0 12px; margin: 0; justify-content: center; }
     .tab-btn { flex-grow: 1; font-size: 0.9rem; }
-    .search-container { width: auto; align-self: stretch; /* margin: 10px 12px 0 12px; */ padding: 5px 12px; }
+    .search-container { width: auto; align-self: stretch; margin: 10px 12px 0 12px; padding: 5px 12px; }
 
     /* 域名卡片网格 */
     .domain-grid { grid-template-columns: repeat(auto-fill, minmax(95%, 1fr));  gap: 12px; }
