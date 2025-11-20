@@ -22,7 +22,6 @@ export const HTML_CSS = `
     display: flex;
     gap: 10px;
     align-items: center;
-    /*margin-bottom: 20px;*/
 }
 .action-btn {
     padding: 10px 15px;
@@ -161,7 +160,7 @@ export const HTML_CSS = `
 }
 .card-status {
     padding: 3px 8px;
-    border-radius: 1000px;
+    border-radius: 50px;
     color: white;
     font-size: 0.8rem;
     background-color: var(--status-color); /* 状态颜色 */
