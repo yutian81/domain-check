@@ -83,7 +83,7 @@ export const HTML_CSS = `
     align-items: center;
     padding: 15px 20px;
     border-radius: 8px;
-    max-width: 1200px;
+    max-width: 1160px;
     margin: 0 auto;
     background-color: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
