@@ -356,7 +356,7 @@ export const HTML_CSS = `
     .header, .summary-container, .controls-container, .domain-grid, .pagination { max-width: 95%; margin: 0 auto; }
     .header { flex-direction: column; }
     .header h1 { font-size: 1.5rem; margin-bottom: 10px; }
-    .action-buttons { flex-grow: 1; margin-top: 10px; }
+    .action-buttons { width: 100%; justify-content: space-between; margin-top: 10px; }
 
     /* 概览卡片 */
     .summary-container { flex-direction: column; padding: 12px 0; gap: 10px; }
