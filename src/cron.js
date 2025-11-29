@@ -20,7 +20,7 @@ export async function checkDomainsScheduled(env) {
     const expiringDomains = []; // 收集即将到期的域名
 
     if (allDomains.length === 0) {
-        console.log("KV中没有域名数据，跳过定时检查。");
+        console.log("KV中没有域名数据，跳过定时检查");
         return expiringDomains;
     }
 
