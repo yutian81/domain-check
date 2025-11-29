@@ -6,7 +6,7 @@
 https://your-domain-check.workers.dev
 ```
 
-## GET api/config —— 获取项目全局配置
+## GET /api/config —— 获取项目全局配置
 
 - 请求示例（无需鉴权）
 
