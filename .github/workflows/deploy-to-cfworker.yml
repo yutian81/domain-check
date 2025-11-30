@@ -1,4 +1,4 @@
-name: 自动部署到CF Worker
+name: 自动部署到 CF Worker
 
 on:
   push:
@@ -50,6 +50,10 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ vars.CF_ACCOUNT_ID }}
+          vars: |
+            PASSWORD: ${{ secrets.PASSWORD }}
+            TGID: ${{ secrets.TGID }}
+            TGTOKEN: ${{ secrets.TGTOKEN }}
           
       - name: ✨ 输出项目地址
         env:
