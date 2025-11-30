@@ -25,8 +25,12 @@
 ### 设置仓库 action
 
 - 点开仓库 `settings` → `Secrets and variables` → `Actions`
-- 设置如下 `secrets`
-  - CF_API_TOKEN: 需要 worker 和 kv 权限
+- 设置如下 `secrets`:
+  - **CF_API_TOKEN**: 必须，需要 worker 和 kv 权限
+  - **CF_KV_ID**: 必须，创建KV得到的ID值
+- 转到 `variables` 选项卡，设置以下变量:
+  - **CF_ACCOUNT_ID**: 必须，CF的账户ID
+  - **CF_CRONS**: 可选，用于定时检查域名到期情况以发送tg通知
 
 - 访问你的 workers 默认地址，输入登录密码，进入管理页面
 - 界面预览
