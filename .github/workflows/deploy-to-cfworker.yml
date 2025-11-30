@@ -50,6 +50,6 @@ jobs:
         run: |
           echo "✨ ---部署完成---"
           echo "🌐 Worker管理后台:"
-          echo "https://dash.cloudflare.com/${ACCOUNT_ID}/workers/services/${WORKER_NAME}/settings"
+          echo "https://dash.cloudflare.com/${ACCOUNT_ID}/workers/services/view/${WORKER_NAME}/production/settings"
           echo "✅ 项目访问URL:"
           echo "${WORKER_URL}"
