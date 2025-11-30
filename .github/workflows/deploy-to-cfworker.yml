@@ -36,8 +36,7 @@ jobs:
           cat wrangler.toml
           
       - name: 🚀 部署到CF Worker
-        id: deploy_worker
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ vars.CF_ACCOUNT_ID }}
@@ -46,10 +45,7 @@ jobs:
         env:
           WORKER_NAME: ${{ steps.config_setup.outputs.worker_name }}
           ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
-          WORKER_URL: ${{ steps.deploy_worker.outputs.url }}
         run: |
           echo "✨ ---部署完成---"
           echo "🌐 Worker管理后台:"
           echo "https://dash.cloudflare.com/${ACCOUNT_ID}/workers/services/view/${WORKER_NAME}/production/settings"
-          echo "✅ 项目访问URL:"
-          echo "${WORKER_URL}"
