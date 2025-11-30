@@ -16,6 +16,14 @@ jobs:
     steps:
       - name: ⬇️ 检出仓库
         uses: actions/checkout@v4
+
+      - name: 🛠️ 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 🆙 更新并安装最新 Wrangler
+        run: npm install -g wrangler@latest
     
       - name: 🔄 替换wrangler.toml中的变量
         id: config_setup
