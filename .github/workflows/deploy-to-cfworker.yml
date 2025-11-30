@@ -16,6 +16,8 @@ jobs:
       PASSWORD: ${{ secrets.PASSWORD }}
       TGID: ${{ secrets.TGID }}
       TGTOKEN: ${{ secrets.TGTOKEN }}
+      CF_KV_ID: ${{ secrets.CF_KV_ID }}
+      CF_CRONS: ${{ secrets.CF_CRONS || '0 1,13 * * *' }}
     
     steps:
       - name: ⬇️ 检出仓库
@@ -31,9 +33,6 @@ jobs:
     
       - name: 🔄 替换wrangler.toml中的变量
         id: config_setup
-        env:
-          CF_KV_ID: ${{ secrets.CF_KV_ID }}
-          CF_CRONS: ${{ secrets.CF_CRONS || '0 1,13 * * *' }}
         run: |
           sed -i "s#{CF_KV_ID}#${CF_KV_ID}#g" wrangler.toml
           sed -i "s#{CF_CRONS}#${CF_CRONS}#g" wrangler.toml
