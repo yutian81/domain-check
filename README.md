@@ -4,6 +4,10 @@
 
 基于 Cloudflare Worker 和 Worker KV 构建的域名到期监控仪表盘，支持自动 WHOIS 查询、分组管理、到期提醒等功能。
 
+- 界面预览
+
+<img width="1894" height="879" alt="image" src="https://github.com/user-attachments/assets/f36e4e11-14d9-45d3-a456-38e19d3a0762" />
+
 ## 功能特性
 
 - ✅ **域名管理**：支持一级和二级域名的添加、编辑、删除
@@ -28,24 +32,26 @@
 - 设置如下 `secrets`:
   - **CF_API_TOKEN**: 必须，需要 worker 和 kv 权限
   - **CF_KV_ID**: 必须，创建KV得到的ID值
+  - **PASSWORD**: 必须，访问项目前端网页的密码，默认为 `123123`
+  - **TGID**: 可选，tg机器人ID，用于发送tg通知
+  - **TGTOKEN**: 可选，tg聊天ID或频道ID，用于发送tg通知
 - 转到 `variables` 选项卡，设置以下变量:
   - **CF_ACCOUNT_ID**: 必须，CF的账户ID
   - **CF_CRONS**: 可选，用于定时检查域名到期情况以发送tg通知
 
-- 访问你的 workers 默认地址，输入登录密码，进入管理页面
-- 界面预览
+### 运行 action
 
-<img width="1894" height="879" alt="image" src="https://github.com/user-attachments/assets/f36e4e11-14d9-45d3-a456-38e19d3a0762" />
+- 点击仓库 `actions` → `all workerflows` → `自动部署到 CF worker`
+- 点击 `run workflow`
+- 等待 action 运行，查看运行日志，点击输出的 `worker 管理后台` 链接
 
-### 环境变量
+### 设置 CF worker
+
+- 进入 CF worker管理后台，给项目绑定一个自定义域名
+- 在 worker 的环境变量中，还可设置以下可选变量
 
 | 变量名 | 说明 | 默认值/示例值 | 必填 |
 |--------|------|--------|------|
-| `PASSWORD` | 访问密码 | `123123` | ✔️ |
-| <del>WHOIS_API_URL</del> | 已内置 | 不再需要，内置端点为 `GET /api/whois/<域名>` | ❌ |
-| <del>WHOIS_API_KEY</del> | 已内置 | 不再需要，内置端点为 `GET /api/whois/<域名>` | ❌ |
-| `TGID` | Telegram Chat ID | - | ❌ |
-| `TGTOKEN` | Telegram Bot Token | - | ❌ |
 | `DAYS` | 到期提醒天数 | `30` | ❌ |
 | `SITENAME` | 网站名称 | `域名到期监控` | ❌ |
 | `ICON` | 网站图标 | `https://example.com/icon.png` | ❌ |
@@ -63,7 +69,7 @@ https://github.com/yutian81/domain-check/blob/main/API.md
 ⚠️ **重要提示**：
 
 1. 使用强密码并定期更换
-2. 定期备份 KV 数据
+2. 定期备份 KV 数据，可在项目主页右上角点击 `导出数据` 来备份 (有计划升级自动备份到私有gist 及从 gist 还原数据)
 3. 限制 API 访问频率
 
 ## 许可证
