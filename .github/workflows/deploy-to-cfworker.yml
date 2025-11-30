@@ -36,7 +36,7 @@ jobs:
           cat wrangler.toml
           
       - name: 🚀 部署到CF Worker
-        uses: cloudflare/wrangler-action@v4
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ vars.CF_ACCOUNT_ID }}
