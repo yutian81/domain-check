@@ -38,12 +38,14 @@ jobs:
           if [ -z "$WORKER_NAME" ]; then
             echo "错误: 未能在 wrangler.toml 中找到 'name' 字段"; exit 1
           fi
-          echo "项目名称: $WORKER_NAME"
+          echo "🎉 项目名称: $WORKER_NAME"
           echo "worker_name=$WORKER_NAME" >> $GITHUB_OUTPUT
-          echo "WORKER 配置信息如下:"
+          echo "🎉 WORKER 配置信息如下:"
+          echo "–––––––––––––––––––––––"
           cat wrangler.toml
+          echo "–––––––––––––––––––––––"
           
-      - name: 🚀 部署到CF Worker
+      - name: 🚀 部署到 CF Worker
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
@@ -54,6 +56,6 @@ jobs:
           WORKER_NAME: ${{ steps.config_setup.outputs.worker_name }}
           ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
         run: |
-          echo "✨ ---部署完成---"
-          echo "🌐 Worker管理后台:"
+          echo "✨ –––––– 部署完成 ––––––"
+          echo "🌐 Worker 管理后台:"
           echo "https://dash.cloudflare.com/${ACCOUNT_ID}/workers/services/view/${WORKER_NAME}/production/settings"
