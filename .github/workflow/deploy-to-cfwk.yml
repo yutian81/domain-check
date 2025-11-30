@@ -6,6 +6,7 @@ on:
       - main
     paths-ignore:
       - '**/*.md'
+      - '.github/**'
   workflow_dispatch:
 
 jobs:
@@ -20,9 +21,8 @@ jobs:
         id: config_setup
         env:
           CF_KV_ID: ${{ secrets.CF_KV_ID }}
-          CF_CRONS: ${{ secrets.CF_CRONS }}
+          CF_CRONS: ${{ secrets.CF_CRONS || '0 1,13 * * *' }}
         run: |
-          CF_CRONS="${CF_CRONS:-0 1,13 * * *}"
           sed -i "s|\\$${CF_KV_ID}|${CF_KV_ID}|g" wrangler.toml
           sed -i "s|\\$${CF_CRONS}|${CF_CRONS}|g" wrangler.toml
           
@@ -31,7 +31,7 @@ jobs:
             echo "错误: 未能在 wrangler.toml 中找到 'name' 字段"; exit 1
           fi
           echo "项目名称: $WORKER_NAME"
-          echo "workerName=$WORKER_NAME" >> $GITHUB_OUTPUT
+          echo "worker_name=$WORKER_NAME" >> $GITHUB_OUTPUT
           echo "WORKER 配置信息如下:"
           cat wrangler.toml
       
@@ -44,7 +44,7 @@ jobs:
 
       - name: ✨ 输出项目地址
         env:
-          WORKER_NAME: ${{ steps.config_setup.outputs.workerName }}
+          WORKER_NAME: ${{ steps.config_setup.outputs.worker_name }}
           ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           WORKER_URL: ${{ steps.deploy_worker.outputs.url }}
         run: |
