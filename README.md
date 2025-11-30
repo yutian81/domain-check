@@ -18,33 +18,16 @@
 ## 部署平台：Cloudflare Workers
 
 ### 前置条件
-- 先 Fork 本项目，[点击直达](https://github.com/yutian81/domain-check/fork)
+- 先给把本项目点个⭐，再 Fork，[点击直达](https://github.com/yutian81/domain-check/fork)
 - 在 [Cloudflare](https://dash.cloudflare.com) 创建一个 KV 空间，名称随意，例如：`DOMAIN_KV`
-- 修改 `wrangler.toml` 文件，绑定KV空间和设置定时通知
+- 创建完KV后，KV名称右侧有一串字符，就是KV的ID值，保存下来备用
 
-```toml
-name = "domain-check"
-main = "src/index.js"
-compatibility_date = "2025-11-17"
-keep_vars = true
+### 设置仓库 action
 
-# KV 命名空间绑定 (必须)
-[[kv_namespaces]]
-binding = "DOMAIN_KV" 
-id = "ae781b4223338853ab094beb9ade" # 替换成你实际的 KV ID
+- 点开仓库 `settings` → `Secrets and variables` → `Actions`
+- 设置如下 `secrets`
+  - CF_API_TOKEN: 需要 worker 和 kv 权限
 
-# Cron Triggers 定时任务
-[triggers]
-crons = ["0 1,13 * * *"] # 北京时间 9:00 和 21:00
-```
-
-### 部署方法
-
-- 打开 Cloudflare 的 Woerks and Pages
-- `创建应用程序` —— 选择 `workers` —— 选择 `导入存储库`
-- 链接 Github 账户，选择刚刚 fork 的项目，点击 `开始设置`
-- 填写项目名称，其他保持默认，点击 `创建和部署`
-- 添加变量 `PASSWORD`，设置自己的访问密码，默认密码为 `123123`
 - 访问你的 workers 默认地址，输入登录密码，进入管理页面
 - 界面预览
 
