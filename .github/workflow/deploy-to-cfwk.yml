@@ -7,8 +7,8 @@ on:
     paths-ignore:
       - '**/*.md'
       - '.github/**'
-  workflow_dispatch:
-  
+    workflow_dispatch:
+
 jobs:
   auto-deploy:
     runs-on: ubuntu-latest
@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: ⬇️ 检出仓库
         uses: actions/checkout@v4
-
+    
       - name: 🔄 替换wrangler.toml中的变量
         id: config_setup
         env:
