@@ -1,4 +1,4 @@
-name: 自动部署到 CF Worker
+name: 自动部署到CF Worker
 
 on:
   push:
@@ -6,27 +6,26 @@ on:
       - main
     paths-ignore:
       - '**/*.md'
-      - '.github/**' 
-      - 'wrangler.toml'
+      - '.github/**'
   workflow_dispatch:
 
 jobs:
   auto-deploy:
     runs-on: ubuntu-latest
+    
     steps:
       - name: ⬇️ 检出仓库
         uses: actions/checkout@v4
 
-      - name: 🔄 替换 wrangler.toml 中的变量
+      - name: 🔄 替换wrangler.toml中的变量
         id: config_setup
         env:
-          CF_KV_ID: ${{ secrets.CF_KV_ID }} 
+          CF_KV_ID: ${{ secrets.CF_KV_ID }}
           CF_CRONS: ${{ secrets.CF_CRONS || '0 1,13 * * *' }}
         run: |
           sed -i "s|\\$${CF_KV_ID}|${CF_KV_ID}|g" wrangler.toml
           sed -i "s|\\$${CF_CRONS}|${CF_CRONS}|g" wrangler.toml
-
-          # 获取项目名称并输出为变量
+          
           WORKER_NAME=$(grep '^name =' wrangler.toml | awk -F '"' '{print $2}')
           if [ -z "$WORKER_NAME" ]; then
             echo "错误: 未能在 wrangler.toml 中找到 'name' 字段"; exit 1
@@ -36,7 +35,7 @@ jobs:
           echo "WORKER 配置信息如下:"
           cat wrangler.toml
       
-      - name: 🚀 部署到 CF Worker
+      - name: 🚀 部署到CF Worker
         id: deploy_worker
         uses: cloudflare/wrangler-action@v3
         with:
@@ -49,8 +48,8 @@ jobs:
           ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           WORKER_URL: ${{ steps.deploy_worker.outputs.url }}
         run: |
-          echo "✨ --- 部署完成 ---"
-          echo "🌐 Worker 管理后台:"
+          echo "✨ ---部署完成---"
+          echo "🌐 Worker管理后台:"
           echo "https://dash.cloudflare.com/${ACCOUNT_ID}/workers/services/${WORKER_NAME}/settings"
-          echo "✅ 项目 访问 URL:"
+          echo "✅ 项目访问URL:"
           echo "${WORKER_URL}"
