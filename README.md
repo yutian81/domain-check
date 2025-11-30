@@ -91,9 +91,3 @@ MIT License
 ## 贡献
 
 欢迎提交 Issue 和 Pull Request！
-
-## 相关链接
-
-- [Cloudflare Pages 文档](https://developers.cloudflare.com/pages/)
-- [Workers KV 文档](https://developers.cloudflare.com/workers/runtime-apis/kv/)
-- [Wrangler 文档](https://developers.cloudflare.com/workers/wrangler/)
