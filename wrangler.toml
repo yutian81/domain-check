@@ -5,7 +5,7 @@ keep_vars = true
 
 [[kv_namespaces]]
 binding = "DOMAIN_KV" 
-id = "${CF_KV_ID}" # action部署时被变量替换
+id = "<CF_KV_ID>" # action部署时被变量替换
 
 [triggers]
-crons = ["${CF_CRONS}"] # action部署时被变量替换，默认为北京时间 9:00 和 21:00
+crons = ["<CF_CRONS>"] # action部署时被变量替换，默认为北京时间 9:00 和 21:00
