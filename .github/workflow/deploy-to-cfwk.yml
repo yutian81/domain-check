@@ -1,34 +1,56 @@
-name: 部署域名监控到CF
+name: 自动部署到 CF Worker
 
 on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/*.md'
+      - '.github/**' 
+      - 'wrangler.toml'
   workflow_dispatch:
 
 jobs:
-  deploy:
+  auto-deploy:
     runs-on: ubuntu-latest
-    name: Deploy to Cloudflare Worker
-
     steps:
-      - name: ⬇️ 检出仓库代码
+      - name: ⬇️ 检出仓库
         uses: actions/checkout@v4
-        
-      - name: ⚙️ 替换 wrangler 中的kv和定时器字段
+
+      - name: 🔄 替换 wrangler.toml 中的变量
+        id: config_setup
+        env:
+          CF_KV_ID: ${{ secrets.CF_KV_ID }} 
+          CF_CRONS: ${{ secrets.CF_CRONS || '0 1,13 * * *' }}
         run: |
-          sed -i 's/id = "ae781b92d2c14a55a32f7b094beb9ade"/id = "${{ secrets.CF_KV_ID }}"/' wrangler.toml
-          # 注意：CHECK_CRON 必须是有效的 cron 表达式字符串，例如 "0 1 * * *"
-          sed -i 's/crons = \["0 1,13 \* \* \*\"\]/crons = \["${{ secrets.CHECK_CRON }}\"\]/' wrangler.toml
-          
-      - name: 🚀 部署worker项目到CF
+          sed -i "s|\\$${CF_KV_ID}|${CF_KV_ID}|g" wrangler.toml
+          sed -i "s|\\$${CF_CRONS}|${CF_CRONS}|g" wrangler.toml
+
+          # 获取项目名称并输出为变量
+          WORKER_NAME=$(grep '^name =' wrangler.toml | awk -F '"' '{print $2}')
+          if [ -z "$WORKER_NAME" ]; then
+            echo "错误: 未能在 wrangler.toml 中找到 'name' 字段"; exit 1
+          fi
+          echo "项目名称: $WORKER_NAME"
+          echo "workerName=$WORKER_NAME" >> $GITHUB_OUTPUT
+          echo "WORKER 配置信息如下:"
+          cat wrangler.toml
+      
+      - name: 🚀 部署到 CF Worker
+        id: deploy_worker
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          secrets: |
-            PASSWORD=${{ secrets.PASSWORD }}
-            TGID=${{ secrets.TG_ID }}
-            TGTOKEN=${{ secrets.TG_TOKEN }}
-            WHOIS_API_URL=${{ secrets.WHOIS_API_URL }}
-            WHOIS_API_KEY=${{ secrets.WHOIS_API_KEY }}
 
-      - name: ✅ 部署成功
-        run: echo "Cloudflare Worker 域名监控项目部署成功!"
+      - name: ✨ 输出项目地址
+        env:
+          WORKER_NAME: ${{ steps.config_setup.outputs.workerName }}
+          ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          WORKER_URL: ${{ steps.deploy_worker.outputs.url }}
+        run: |
+          echo "✨ --- 部署完成 ---"
+          echo "🌐 Worker 管理后台:"
+          echo "https://dash.cloudflare.com/${ACCOUNT_ID}/workers/services/${WORKER_NAME}/settings"
+          echo "✅ 项目 访问 URL:"
+          echo "${WORKER_URL}"
