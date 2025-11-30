@@ -41,7 +41,7 @@ export async function checkDomainsScheduled(env) {
         if (daysRemaining > 0 && daysRemaining <= maxDaysForAlert) {
             const message = `
 <b>🚨 域名到期提醒 🚨</b>
-==================           
+====================
 🌐 域名: <code>${domainInfo.domain}</code>
 ♻️ 将在 <b>${daysRemaining}天</b> 后过期！
 📅 过期日期: ${domainInfo.expirationDate}
