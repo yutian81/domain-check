@@ -59,7 +59,7 @@ jobs:
             TGID
             TGTOKEN
           
-      - name: ✨ 输出项目地址
+      - name: ✨ 输出 Worker 管理后台
         env:
           WORKER_NAME: ${{ steps.config_setup.outputs.worker_name }}
           ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
