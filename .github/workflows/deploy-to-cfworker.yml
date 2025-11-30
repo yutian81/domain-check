@@ -12,6 +12,10 @@ on:
 jobs:
   auto-deploy:
     runs-on: ubuntu-latest
+    env:
+      PASSWORD: ${{ secrets.PASSWORD }}
+      TGID: ${{ secrets.TGID }}
+      TGTOKEN: ${{ secrets.TGTOKEN }}
     
     steps:
       - name: ⬇️ 检出仓库
@@ -51,9 +55,9 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ vars.CF_ACCOUNT_ID }}
           vars: |
-            PASSWORD: ${{ secrets.PASSWORD }}
-            TGID: ${{ secrets.TGID }}
-            TGTOKEN: ${{ secrets.TGTOKEN }}
+            PASSWORD
+            TGID
+            TGTOKEN
           
       - name: ✨ 输出项目地址
         env:
