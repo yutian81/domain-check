@@ -23,8 +23,8 @@ jobs:
           CF_KV_ID: ${{ secrets.CF_KV_ID }}
           CF_CRONS: ${{ secrets.CF_CRONS || '0 1,13 * * *' }}
         run: |
-          sed -i "s|\\$${CF_KV_ID}|${CF_KV_ID}|g" wrangler.toml
-          sed -i "s|\\$${CF_CRONS}|${CF_CRONS}|g" wrangler.toml
+          sed -i "s#{CF_KV_ID}#${CF_KV_ID}#g" wrangler.toml
+          sed -i "s#{CF_CRONS}#${CF_CRONS}#g" wrangler.toml
           
           WORKER_NAME=$(grep '^name =' wrangler.toml | awk -F '"' '{print $2}')
           if [ -z "$WORKER_NAME" ]; then
