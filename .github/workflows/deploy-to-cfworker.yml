@@ -40,12 +40,12 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          accountId: ${{ vars.CF_ACCOUNT_ID }}
           
       - name: ✨ 输出项目地址
         env:
           WORKER_NAME: ${{ steps.config_setup.outputs.worker_name }}
-          ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
           WORKER_URL: ${{ steps.deploy_worker.outputs.url }}
         run: |
           echo "✨ ---部署完成---"
