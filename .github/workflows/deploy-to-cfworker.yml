@@ -47,16 +47,29 @@ jobs:
           echo "–––––––––––––––––––––––"
           cat wrangler.toml
           echo "–––––––––––––––––––––––"
+
+      - name: ⚙️ 动态配置 Worker 环境变量
+        id: dynamic_vars
+        run: |
+          DYNAMIC_VARS="PASSWORD"
+
+          if [ -n "$TGID" ] && [ -n "$TGTOKEN" ]; then
+            echo "发现 TG 配置，将其添加到 Worker 环境变量"
+            DYNAMIC_VARS="${DYNAMIC_VARS}\nTGID\nTGTOKEN"
+          else
+            echo "未发现 TG 配置，TG 通知将不可用"
+          fi
+
+          echo "vars_list<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$DYNAMIC_VARS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
           
       - name: 🚀 部署到 CF Worker
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ vars.CF_ACCOUNT_ID }}
-          vars: |
-            PASSWORD
-            TGID
-            TGTOKEN
+          vars: ${{ steps.dynamic_vars.outputs.vars_list }}
           
       - name: ✨ 输出 Worker 管理后台
         env:
