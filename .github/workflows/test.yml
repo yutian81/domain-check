@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PASSWORD: ${{ secrets.PASSWORD }}
-      TGID: ${{ secrets.TGID}}
-      TGTOKEN: ${{ secrets.TGTOKEN}}
+      TGID: ${{ secrets.TGID || '' }}
+      TGTOKEN: ${{ secrets.TGTOKEN ||'' }}
       CF_KV_ID: ${{ secrets.CF_KV_ID }}
       CF_CRONS: ${{ secrets.CF_CRONS || '0 1,13 * * *' }}
     
