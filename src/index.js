@@ -39,7 +39,7 @@ export default {
                 const responseBody = {
                     success: true,
                     message: expiringDomains.length > 0 
-                             ? `${expiringDomains.length} 个域名即将到期，Telegram通知已发送`
+                             ? `${expiringDomains.length} 个域名即将到期`
                              : "没有即将到期的域名",
                     expiringCount: expiringDomains.length,
                     domains: expiringDomains
