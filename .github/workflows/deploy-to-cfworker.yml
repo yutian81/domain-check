@@ -77,5 +77,6 @@ jobs:
           ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
         run: |
           echo "✨ –––––– 部署完成 ––––––"
-          echo "🌐 Worker 管理后台:"
+          echo "🌐 ${WORKER_NAME} 管理后台:"
           echo "https://dash.cloudflare.com/${ACCOUNT_ID}/workers/services/view/${WORKER_NAME}/production/settings"
+          echo "建议: 访问上述地址给项目绑定一个自定义域名"
