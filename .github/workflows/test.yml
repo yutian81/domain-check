@@ -1,0 +1,69 @@
+name: 自动部署到 CF Worker
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/*.md'
+      - '.github/**'
+  workflow_dispatch:
+
+jobs:
+  auto-deploy:
+    runs-on: ubuntu-latest
+    env:
+      PASSWORD: ${{ secrets.PASSWORD }}
+      TGID: ${{ secrets.TGID}}
+      TGTOKEN: ${{ secrets.TGTOKEN}}
+      CF_KV_ID: ${{ secrets.CF_KV_ID }}
+      CF_CRONS: ${{ secrets.CF_CRONS || '0 1,13 * * *' }}
+    
+    steps:
+      - name: ⬇️ 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 🛠️ 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 🆙 更新并安装最新 Wrangler
+        run: npm install -g wrangler@latest
+    
+      - name: 🔄 替换 wrangler.toml 中的变量
+        id: config_setup
+        run: |
+          sed -i "s#{CF_KV_ID}#${CF_KV_ID}#g" wrangler.toml
+          sed -i "s#{CF_CRONS}#${CF_CRONS}#g" wrangler.toml
+          
+          WORKER_NAME=$(grep '^name =' wrangler.toml | awk -F '"' '{print $2}')
+          if [ -z "$WORKER_NAME" ]; then
+            echo "🔴 错误: 未能在 wrangler.toml 中找到 'name' 字段"; exit 1
+          fi
+          echo "🎉 项目名称: $WORKER_NAME"
+          echo "worker_name=$WORKER_NAME" >> $GITHUB_OUTPUT
+          echo "🎉 WORKER 配置信息如下:"
+          echo "–––––––––––––––––––––––"
+          cat wrangler.toml
+          echo "–––––––––––––––––––––––"
+
+      - name: 🚀 部署到 CF Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ vars.CF_ACCOUNT_ID }}
+          vars: |
+            PASSWORD
+            TGID
+            TGTOKEN
+            
+      - name: ✨ 输出 Worker 管理后台
+        env:
+          WORKER_NAME: ${{ steps.config_setup.outputs.worker_name }}
+          ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
+        run: |
+          echo "✨ –––––– 部署完成 ––––––"
+          echo "🌐 ${WORKER_NAME} 管理后台:"
+          echo "https://dash.cloudflare.com/${ACCOUNT_ID}/workers/services/view/${WORKER_NAME}/production/settings"
+          echo "建议: 访问上述地址给项目绑定一个自定义域名"
