@@ -41,24 +41,32 @@ jobs:
           if [ -z "$WORKER_NAME" ]; then
             echo "🔴 错误: 未能在 wrangler.toml 中找到 'name' 字段"; exit 1
           fi
-          echo "🎉 项目名称: $WORKER_NAME"
-          echo "worker_name=$WORKER_NAME" >> $GITHUB_OUTPUT
-          echo "🎉 WORKER 配置信息如下:"
-          echo "–––––––––––––––––––––––"
+          
+          echo -e "\n🎉 项目配置信息如下:"
+          echo "–––––––––––––––––––"
           cat wrangler.toml
-          echo "–––––––––––––––––––––––"
+          echo "–––––––––––––––––––"
+          echo "worker_name=$WORKER_NAME" >> $GITHUB_OUTPUT
 
       - name: ⚙️ 动态配置 Worker 环境变量
         id: dynamic_vars
         run: |
+          if [ -z "$PASSWORD" ]; then
+            echo "🔴 错误: PASSWORD 变量未设置，停止部署"; exit 1
+          fi
           DYNAMIC_VARS="PASSWORD"
-
+          
           if [ -n "$TGID" ] && [ -n "$TGTOKEN" ]; then
             echo "🟢 发现 TG 配置，将其添加到 Worker 环境变量"
             DYNAMIC_VARS="${DYNAMIC_VARS}\nTGID\nTGTOKEN"
           else
             echo "⚠️ 警告: 未发现 TG 配置，TG 通知将不可用"
           fi
+
+          echo -e "\n🎉 项目环境变量如下:"
+          echo "––––––––––––––––––––"
+          echo -e "$DYNAMIC_VARS"
+          echo "––––––––––––––––––––"
 
           echo "vars_list<<EOF" >> $GITHUB_OUTPUT
           echo -e "$DYNAMIC_VARS" >> $GITHUB_OUTPUT
@@ -76,7 +84,7 @@ jobs:
           WORKER_NAME: ${{ steps.config_setup.outputs.worker_name }}
           ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
         run: |
-          echo "✨ –––––– 部署完成 ––––––"
-          echo "🌐 ${WORKER_NAME} 管理后台:"
+          echo -e "\n✨ –––––––– 部署完成 ––––––––"
+          echo "🌐 点击以下链接访问项目管理后台"
           echo "https://dash.cloudflare.com/${ACCOUNT_ID}/workers/services/view/${WORKER_NAME}/production/settings"
-          echo "建议: 访问上述地址给项目绑定一个自定义域名"
+          echo "🚀 建议: 访问上述地址给项目绑定一个自定义域名"
