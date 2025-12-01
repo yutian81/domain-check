@@ -87,4 +87,4 @@ jobs:
           echo -e "\n✨ –––––––– 部署完成 ––––––––"
           echo "🌐 点击以下链接可访问项目管理后台"
           echo "https://dash.cloudflare.com/${ACCOUNT_ID}/workers/services/view/${WORKER_NAME}/production/settings"
-          echo "🚀 建议: 访问上述地址给项目绑定一个自定义域名"
+          echo "🚀 建议: 给项目绑定一个自定义域名"
