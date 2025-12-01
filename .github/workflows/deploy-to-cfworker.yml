@@ -63,7 +63,7 @@ jobs:
             echo "⚠️ 警告: 未发现 TG 配置，TG 通知将不可用"
           fi
 
-          echo -e "\n🎉 项目环境变量如下:"
+          echo -e "\n🎉 项目环境变量列表如下:"
           echo "––––––––––––––––––––"
           echo -e "$DYNAMIC_VARS"
           echo "––––––––––––––––––––"
@@ -85,6 +85,6 @@ jobs:
           ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
         run: |
           echo -e "\n✨ –––––––– 部署完成 ––––––––"
-          echo "🌐 点击以下链接访问项目管理后台"
+          echo "🌐 点击以下链接可访问项目管理后台"
           echo "https://dash.cloudflare.com/${ACCOUNT_ID}/workers/services/view/${WORKER_NAME}/production/settings"
           echo "🚀 建议: 访问上述地址给项目绑定一个自定义域名"
