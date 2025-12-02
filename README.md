@@ -6,7 +6,7 @@
 
 - 界面预览
 
-<img width="1894" height="879" alt="image" src="https://github.com/user-attachments/assets/f36e4e11-14d9-45d3-a456-38e19d3a0762" />
+<img width="1894" height="879" alt="image" src="https://b2qq.24811213.xyz/2025-11/1763455544-image.webp" />
 
 ## 功能特性
 
