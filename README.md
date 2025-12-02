@@ -21,17 +21,12 @@
 
 ## 部署平台：Cloudflare Workers
 
-> 放弃在CF网页管理后台直接链接仓库部署的方式
-> 
-> 这种方式对于kv空间绑定和定时触发器的设置完全依赖于 wrangler.toml
-> 
-> 如果 wrangler.toml 没有进行这些配置，则项目在重新部署后会丢失这些参数，导致kv空间绑定丢失以及定时器丢失
-> 
-> 这是CF worker 链接仓库部署一直以来的bug
-> 
-> **因此，项目部署方式改为 github action，以确保相关参数配置持久化**
-> 
-> 或者你也可以手动通过上传代码的方式部署到 CF worker
+> 放弃在CF网页管理后台直接链接仓库部署的方式  
+> 这种方式对于kv空间绑定和定时触发器的设置完全依赖于 wrangler.toml  
+> 如果 wrangler.toml 没有进行这些配置，则项目在重新部署后会丢失这些参数，导致kv空间绑定丢失以及定时器丢失  
+> 这是CF worker 链接仓库部署一直以来的bug  
+> **因此，项目部署方式改为 github action，以确保相关参数配置持久化**  
+> 或者你也可以手动通过上传代码的方式部署到 CF worker  
 
 ### 前置条件
 - 先给把本项目点个⭐，再 Fork，[点击直达](https://github.com/yutian81/domain-check/fork)
