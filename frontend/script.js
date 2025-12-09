@@ -199,16 +199,17 @@ function getDomainStatus(expirationDateStr) {
 }
 
 // 渲染域名信息概览
-function renderSummary() {
+function renderSummary(domainsList) {
     const summaryEl = document.getElementById('summary');
     if (!summaryEl) return;
 
-    const total = allDomains.length;
+    // 使用传入的列表来计算总数
+    const total = domainsList.length;
     let normalCount = 0;
     let expiringCount = 0;
     let expiredCount = 0;
 
-    allDomains.forEach(domain => {
+    domainsList.forEach(domain => {
         const { statusText } = getDomainStatus(domain.expirationDate);
         if (statusText === '正常') {
             normalCount++;
@@ -498,22 +499,9 @@ function renderPagination() {
 
 // 应用状态、分组、搜索过滤、状态筛选
 function applyFiltersAndSearch() {
-    currentFilteredDomains = allDomains.filter(domain => {
-
-        // 1. 状态过滤
-        const { statusText } = getDomainStatus(domain.expirationDate);
-        let statusMatch = true;
-
-        if (currentStatusFilter !== '全部') {
-            if (currentStatusFilter === '正常') {
-                statusMatch = (statusText === '正常' || statusText === '将到期');
-            } else {
-                statusMatch = (statusText === currentStatusFilter);
-            }
-        }
-        if (!statusMatch) return false;
-
-        // 2. 分组过滤
+    // 通用的分组和搜索过滤逻辑
+    const commonFilters = (domain) => {
+        // 分组过滤 (Common)
         const domainGroups = (domain.groups || '').split(',').map(g => g.trim()).filter(g => g);
         const domainLevel = getDomainLevel(domain.domain);
         let groupMatch = true;
@@ -527,13 +515,11 @@ function applyFiltersAndSearch() {
         } else if (currentGroup !== '全部') {
             groupMatch = domainGroups.includes(currentGroup);
         }
-
         if (!groupMatch) return false;
 
-        // 2. 搜索过滤
+        // 搜索过滤 (Common)
         const searchTerm = currentSearchTerm.toLowerCase();
         if (searchTerm) {
-            // 只要以下任何一个字段包含搜索词，即返回 true
             return (
                 domain.domain.toLowerCase().includes(searchTerm) || // 域名
                 (domain.system || '').toLowerCase().includes(searchTerm) || // 注册商
@@ -541,8 +527,25 @@ function applyFiltersAndSearch() {
                 (domain.groups || '').toLowerCase().includes(searchTerm) // 分组
             );
         }
-
         return true;
+    };
+    
+    // 计算 domainsForSummary (应用通用过滤)
+    const domainsForSummary = allDomains.filter(commonFilters);
+    renderSummary(domainsForSummary);
+
+    // 计算 currentFilteredDomains (应用通用过滤 + 状态过滤)
+    currentFilteredDomains = domainsForSummary.filter(domain => {
+        const { statusText } = getDomainStatus(domain.expirationDate);
+        let statusMatch = true;
+        if (currentStatusFilter !== '全部') {
+            if (currentStatusFilter === '正常') {
+                statusMatch = (statusText === '正常' || statusText === '将到期');
+            } else {
+                statusMatch = (statusText === currentStatusFilter);
+            }
+        }
+        return statusMatch;
     });
 
     renderDomainCards();
@@ -591,9 +594,9 @@ async function fetchDomains() {
         });
 
         lastOperatedDomain = null; // 清除临时置顶标记
-        renderSummary();
-        renderGroupTabs();
-        applyFiltersAndSearch(); // 首次渲染
+        renderSummary(allDomains); // 渲染全部域名概览卡片
+        renderGroupTabs(); // 渲染分组标签
+        applyFiltersAndSearch(); // 首次渲染，包含搜索过滤
         currentStatusFilter = '全部';
         currentGroup = '全部';
         
