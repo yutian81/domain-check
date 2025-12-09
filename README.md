@@ -63,7 +63,7 @@
 | `SITENAME` | 网站名称 | `域名到期监控` | ❌ |
 | `ICON` | 网站图标 | `https://example.com/icon.png` | ❌ |
 | `BGIMG` | 背景图片 | `https://example.com/bg.png` | ❌ |
-| `GITHUB_URL` | GitHub 链接 | `https://github.com/yutian81` | ❌ |
+| `GITHUB_URL` | GitHub 链接 | `https://github.com/yutian81/domain-check` | ❌ |
 | `BLOG_URL` | 博客链接 | `https://blog.notett.com` | ❌ |
 | `BLOG_NAME` | 博客名称 | `QingYun Blog` | ❌ |
 
