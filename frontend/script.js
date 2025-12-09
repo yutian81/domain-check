@@ -8,7 +8,7 @@ let currentFilteredDomains = []; // 存储当前过滤和搜索后的数据
 let currentPage = 1; // 默认显示第一页
 let currentGroup = '全部'; // 默认激活的分组
 let currentSearchTerm = ''; // 搜索框默认为空
-let currentStatusFilter = '全部'; // 默认显示的概览信息卡
+let currentStatusFilter = ''; // 概览信息卡默认为空
 let globalConfig = { daysThreshold: 30 }; // 默认30天内为将到期
 let lastOperatedDomain = null; // 存储最近操作的域名，用于临时置顶
 
@@ -326,7 +326,7 @@ function handleTabClick(e) {
     clickedTab.classList.add('active');
 
     // 清除概览卡片的筛选状态
-    currentStatusFilter = '全部';
+    currentStatusFilter = '';
     const allSummaryCards = document.querySelectorAll('#summary .summary-card');
     allSummaryCards.forEach(card => {
         card.classList.remove('active');
@@ -538,15 +538,12 @@ function applyFiltersAndSearch() {
     // 计算 currentFilteredDomains (应用通用过滤 + 状态过滤)
     currentFilteredDomains = domainsForSummary.filter(domain => {
         const { statusText } = getDomainStatus(domain.expirationDate);
-        let statusMatch = true;
-        if (currentStatusFilter !== '全部') {
-            if (currentStatusFilter === '正常') {
-                statusMatch = (statusText === '正常' || statusText === '将到期');
-            } else {
-                statusMatch = (statusText === currentStatusFilter);
-            }
+        if (currentStatusFilter === '' || currentStatusFilter === '全部') { return true; }
+        if (currentStatusFilter === '正常') {
+            return (statusText === '正常' || statusText === '将到期');
+        } else {
+            return (statusText === currentStatusFilter);
         }
-        return statusMatch;
     });
 
     renderDomainCards();
@@ -594,12 +591,11 @@ async function fetchDomains() {
             return systemA.localeCompare(systemB);
         });
 
-        lastOperatedDomain = null; // 清除临时置顶标记
-        renderSummary(allDomains); // 渲染全部域名概览卡片
-        renderGroupTabs(); // 渲染分组标签
-        applyFiltersAndSearch(); // 首次渲染，包含搜索过滤
-        currentStatusFilter = '全部';
-        currentGroup = '全部';
+        lastOperatedDomain = null; 
+        currentStatusFilter = ''; // 设置概览信息默认值为空
+        currentGroup = '全部'; // 分组默认激活 '全部'
+        renderGroupTabs(); // 渲染所有分组标签
+        applyFiltersAndSearch(); // 应用筛选，并负责渲染 Summary 和 DomainCards
         
     } catch (error) {
         console.error('获取域名失败:', error);
