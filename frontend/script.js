@@ -651,7 +651,7 @@ async function submitDomainForm(e) {
             // 忽略 JSON 解析错误，如果响应体为空
         }
         
-        if (response.status === 409) { alert('域名已存在，请勿重复添加'); return; }
+        if (response.status === 409) { throw new Error('域名已存在，无需重复添加'); }
         if (response.status === 422) { throw new Error(responseData.error || '信息不完整，请检查必填项'); }
         if (!response.ok) { throw new Error(responseData.error || response.statusText || '保存失败'); }
         
@@ -745,45 +745,48 @@ function openDomainForm(domainInfo = null) {
 
 // 动态切换表单必填项的提示
 function updateFormRequiredStatus(domainValue) {
-    // 检查返回值是否为 '一级域名' 来进行布尔判断
-    const isPrimary = isPrimaryDomain(domainValue);
-    const requiredFields = ['registrationDate', 'expirationDate', 'system', 'systemURL'];
-    const warningEl = document.getElementById('domainFillWarning');
+    const domainValueTrimmed = domainValue.trim(); // 当前输入的域名
+    const isPrimary = isPrimaryDomain(domainValueTrimmed); // 当前输入域名是否为一级域名
+    const requiredFields = ['registrationDate', 'expirationDate', 'system', 'systemURL']; // 二级域名必填表单项
+    const warningEl = document.getElementById('domainFillWarning'); // 获取动态提示或警告元素
+    const originalDomain = document.getElementById('editOriginalDomain').value; // 获取编辑模式下的原域名
+    const domainExists = allDomains.some(d => d.domain === domainValueTrimmed && d.domain !== originalDomain); // 当前输入域名是否存在
 
-    // 判断是否显示域名级别提示
-    if (!domainValue || domainValue.trim() === '') {
-        if (warningEl) {
-            warningEl.style.display = 'none';
-        }
-        // 域名为空时，保留原始的 required 属性，以确保二级域名验证正常
+    // 处理域名为空的情况
+    if (!domainValueTrimmed) {
+        if (warningEl) { warningEl.style.display = 'none'; }
         requiredFields.forEach(id => {
             const el = document.getElementById(id);
-            if (el) {
-                el.required = true; // 默认为必填，直到判断为一级域名
-                el.placeholder = '二级域名必填';
-            }
+            if (el) { el.required = true; el.placeholder = '二级域名必填'; }
         });
         return;
-    } else {
-        // 域名不为空时，显示提示
-        if (warningEl) {
-            warningEl.style.display = 'block';
-        }
     }
     
+    // 处理域名已存在的情况 (仅在新增模式下或域名被修改为已存在的域名时触发)
+    if (domainExists) {
+        if (warningEl) {
+            warningEl.textContent = '操作失败：域名已存在，无需重复添加或修改';
+            warningEl.style.color = '#e74c3c'; 
+            warningEl.style.display = 'block';
+        }
+        requiredFields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) { el.required = false; el.placeholder = '已存在，无需填写'; }
+        });
+        return; 
+    }
+
+    // 处理域名不存在的情况 (一级/二级域名处理逻辑)
+    if (warningEl) { warningEl.style.display = 'block'; }
     if (isPrimary) {
         // 一级域名：提示 WHOIS 自动填充
         if (warningEl) {
             warningEl.textContent = '检测为一级域名，可不填写日期和注册商，将使用 WHOIS API 自动获取';
             warningEl.style.color = '#f39c12';
         }
-        
         requiredFields.forEach(id => {
             const el = document.getElementById(id);
-            if (el) {
-                el.required = false;
-                el.placeholder = '一级域名可留空';
-            }
+            if (el) { el.required = false; el.placeholder = '一级域名可留空'; }
         });
     } else {
         // 二级域名：所有字段必填
@@ -791,13 +794,9 @@ function updateFormRequiredStatus(domainValue) {
             warningEl.textContent = '检测为二级域名，日期和注册商为必填项, 无法使用 WHOIS API 自动获取';
             warningEl.style.color = '#e74c3c';
         }
-        
         requiredFields.forEach(id => {
             const el = document.getElementById(id);
-            if (el) {
-                el.required = true;
-                el.placeholder = '二级域名必填';
-            }
+            if (el) { el.required = true; el.placeholder = '二级域名必填'; }
         });
     }
 }
