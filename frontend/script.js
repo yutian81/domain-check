@@ -224,21 +224,21 @@ function renderSummary(domainsList) {
 
     // 生成 HTML 并根据 currentStatusFilter 动态添加 active 类
     summaryEl.innerHTML = `
-        <div class="summary-card ${currentStatusFilter === '全部' ? 'active' : ''}" style="--color: #186db3;" data-filter="全部">
+        <div class="summary-card \${currentStatusFilter === '全部' ? 'active' : ''}" style="--color: #186db3;" data-filter="全部">
             <h3><i class="fa fa-list-ol"></i> 全部</h3>
-            <p>${total}</p>
+            <p>\${total}</p>
         </div>
-        <div class="summary-card ${currentStatusFilter === '正常' ? 'active' : ''}" style="--color: #1dab58;" data-filter="正常">
+        <div class="summary-card \${currentStatusFilter === '正常' ? 'active' : ''}" style="--color: #1dab58;" data-filter="正常">
             <h3><i class="fa fa-check"></i> 正常</h3>
-            <p>${usableCount}</p>
+            <p>\${usableCount}</p>
         </div>
-        <div class="summary-card ${currentStatusFilter === '将到期' ? 'active' : ''}" style="--color: #f39c12;" data-filter="将到期">
+        <div class="summary-card \${currentStatusFilter === '将到期' ? 'active' : ''}" style="--color: #f39c12;" data-filter="将到期">
             <h3><i class="fa fa-exclamation-triangle"></i> 将到期</h3>
-            <p>${expiringCount}</p>
+            <p>\${expiringCount}</p>
         </div>
-        <div class="summary-card ${currentStatusFilter === '已到期' ? 'active' : ''}" style="--color: #e74c3c;" data-filter="已到期">
+        <div class="summary-card \${currentStatusFilter === '已到期' ? 'active' : ''}" style="--color: #e74c3c;" data-filter="已到期">
             <h3><i class="fa fa-times"></i> 已到期</h3>
-            <p>${expiredCount}</p>
+            <p>\${expiredCount}</p>
         </div>
     `;
 
