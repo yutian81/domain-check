@@ -223,7 +223,7 @@ function renderSummary(domainsList) {
     const usableCount = normalCount + expiringCount; // 状态“正常”和“将到期”的域名都视为“可用”
 
     // 生成 HTML 并根据 currentStatusFilter 动态添加 active 类
-    summaryEl.innerHTML = `
+    summaryEl.innerHTML = \`
         <div class="summary-card \${currentStatusFilter === '全部' ? 'active' : ''}" style="--color: #186db3;" data-filter="全部">
             <h3><i class="fa fa-list-ol"></i> 全部</h3>
             <p>\${total}</p>
@@ -240,7 +240,7 @@ function renderSummary(domainsList) {
             <h3><i class="fa fa-times"></i> 已到期</h3>
             <p>\${expiredCount}</p>
         </div>
-    `;
+    \`;
 
     // 重新绑定点击事件
     summaryEl.querySelectorAll('.summary-card').forEach(card => {
