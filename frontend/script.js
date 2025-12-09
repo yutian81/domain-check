@@ -43,7 +43,6 @@ function calculateExpirationDate() {
     const renewalPeriodEl = document.getElementById('renewalPeriod');
     const renewalUnitEl = document.getElementById('renewalUnit');
     const expirationDateEl = document.getElementById('expirationDate');
-
     const regDateStr = registrationDateEl.value;
     const period = parseInt(renewalPeriodEl.value);
     const unit = renewalUnitEl.value;
@@ -69,7 +68,6 @@ async function fetchConfig() {
         const response = await fetch(CONFIG_API);
         if (response.ok) {
             const config = await response.json();
-            
             // 更新全局配置
             globalConfig = {
                 ...globalConfig,
@@ -104,7 +102,6 @@ async function exportData() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        
         alert('域名数据已成功导出为 JSON 文件！');
     } catch (error) {
         console.error('导出数据失败:', error);
@@ -133,10 +130,7 @@ function importData() {
                 try {
                     const jsonContent = e.target.result;
                     const domainsToImport = JSON.parse(jsonContent);
-                    
-                    if (!Array.isArray(domainsToImport)) {
-                        throw new Error('JSON 文件格式错误，期望一个域名数组');
-                    }
+                    if (!Array.isArray(domainsToImport)) { throw new Error('JSON 文件格式错误，须为域名数组'); }
 
                     // 调用 PUT API 替换所有数据
                     const response = await fetch(DOMAINS_API, {
@@ -181,9 +175,9 @@ function getDomainStatus(expirationDateStr) {
     if (isNaN(expirationTime)) {
         return { statusText: '日期格式错误', statusColor: '#95a5a6', daysRemaining: 'N/A' };
     }
+    
     const timeDiff = expirationTime - todayUTC;
     const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-    
     let statusText = '正常';
     let statusColor = '#2ecc71'; // 绿色
 
@@ -299,13 +293,9 @@ function renderGroupTabs() {
     });
 
     tabsEl.innerHTML = html;
-    
+    // 绑定点击事件
     tabsEl.querySelectorAll('.tab-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            currentGroup = e.target.dataset.group;
-            currentPage = 1;
-            applyFiltersAndSearch();
-        });
+        button.addEventListener('click', handleTabClick);
     });
 }
 
@@ -340,9 +330,7 @@ function handleTabClick(e) {
 
 // 生成单个域名卡片的 HTML
 function createDomainCard(info) {
-    // 确保 info.expirationDate 存在，否则 getDomainStatus 会返回“信息缺失”
     const { statusText, statusColor, daysRemaining } = getDomainStatus(info.expirationDate);
-    
     const registrationDate = new Date(info.registrationDate);
     const expirationDate = new Date(info.expirationDate);
     const today = new Date();
@@ -364,7 +352,6 @@ function createDomainCard(info) {
          remainingText = daysRemaining > 0 ? daysRemaining + ' 天' : '已到期';
          if (daysRemaining <= 0) { elapsedText = Math.floor(totalDays) + ' 天'; }
     } else {
-        // 如果信息缺失，进度条显示 N/A
         progressPercentage = 0;
         remainingText = 'N/A';
         elapsedText = 'N/A';
@@ -373,7 +360,6 @@ function createDomainCard(info) {
 
     // 根据状态调整边框颜色
     let borderColor = statusColor;
-    
     return \`
         <div class="domain-card" style="--status-color: \${statusColor}; --border-color: \${borderColor};">
             <div class="card-header">
@@ -449,46 +435,33 @@ function renderDomainCards() {
 function renderPagination() {
     const paginationEl = document.getElementById('pagination');
     const totalPages = Math.ceil(currentFilteredDomains.length / ITEMS_PER_PAGE);
-    
-    if (totalPages <= 1) {
-        paginationEl.innerHTML = '';
-        return;
-    }
+    if (totalPages <= 1) { paginationEl.innerHTML = ''; return; }
 
     let html = '';
-    
     // 上一页
     html += \`<button class="page-btn" \${currentPage === 1 ? 'disabled' : ''} data-page="\${currentPage - 1}"><i class="fas fa-arrow-left"></i></button>\`;
-
     // 页码按钮 (简单显示)
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, currentPage + 2);
-
     if (startPage > 1) {
         html += \`<button class="page-btn" data-page="1">1</button>\`;
         if (startPage > 2) html += \`<span class="page-dots">...</span>\`;
     }
-
     for (let i = startPage; i <= endPage; i++) {
         html += \`<button class="page-btn \${currentPage === i ? 'active' : ''}" data-page="\${i}">\${i}</button>\`;
     }
-    
     if (endPage < totalPages) {
         if (endPage < totalPages - 1) html += \`<span class="page-dots">...</span>\`;
         html += \`<button class="page-btn" data-page="\${totalPages}">\${totalPages}</button>\`;
     }
-
-
     // 下一页
     html += \`<button class="page-btn" \${currentPage === totalPages ? 'disabled' : ''} data-page="\${currentPage + 1}"><i class="fas fa-arrow-right"></i></button>\`;
 
     paginationEl.innerHTML = html;
     paginationEl.querySelectorAll('.page-btn').forEach(button => {
         button.addEventListener('click', (e) => {
-            // 确保点击的是按钮本身或其直接的子元素
             const target = e.target.closest('.page-btn');
             if (!target) return;
-            
             const page = parseInt(target.dataset.page);
             if (page && page >= 1 && page <= totalPages) {
                 currentPage = page;
@@ -500,7 +473,6 @@ function renderPagination() {
 
 // 分组、搜索过滤、状态筛选
 function applyFiltersAndSearch() {
-    // 通用的分组和搜索过滤逻辑
     const commonFilters = (domain) => {
         // 分组过滤 (Common)
         const domainGroups = (domain.groups || '').split(',').map(g => g.trim()).filter(g => g);
@@ -531,11 +503,11 @@ function applyFiltersAndSearch() {
         return true;
     };
     
-    // 计算 domainsForSummary (应用通用过滤)
+    // 计算 domainsForSummary
     const domainsForSummary = allDomains.filter(commonFilters);
     renderSummary(domainsForSummary);
 
-    // 计算 currentFilteredDomains (应用通用过滤 + 状态过滤)
+    // 计算 currentFilteredDomains
     currentFilteredDomains = domainsForSummary.filter(domain => {
         const { statusText } = getDomainStatus(domain.expirationDate);
         if (currentStatusFilter === '' || currentStatusFilter === '全部') { return true; }
@@ -609,7 +581,7 @@ async function submitDomainForm(e) {
     const modal = document.getElementById('domainFormModal');
     const domainValue = document.getElementById('domain').value.trim();
     
-    if (!isValidDomainFormat(domainValue)) { // 验证域名格式
+    if (!isValidDomainFormat(domainValue)) {
         alert('请输入有效的域名格式，例如: example.com 或 sub.example.com');
         return;
     }
@@ -651,7 +623,7 @@ async function submitDomainForm(e) {
             // 忽略 JSON 解析错误，如果响应体为空
         }
         
-        if (response.status === 409) { throw new Error('域名已存在，无需重复添加'); }
+        if (response.status === 409) { throw new Error('域名已存在，请勿重复添加'); }
         if (response.status === 422) { throw new Error(responseData.error || '信息不完整，请检查必填项'); }
         if (!response.ok) { throw new Error(responseData.error || response.statusText || '保存失败'); }
         
@@ -693,7 +665,7 @@ async function deleteDomain(domain) {
         const deletedCount = responseData.deletedCount || domainsToDelete.length;
         alert(\`域名 \${domain} 已删除 (\${deletedCount} 个记录被移除)\`);
 
-        currentPage = 1; // 删除后重置页码到第一页
+        currentPage = 1;
         await fetchDomains(); // 重新加载数据
     } catch (error) {
         console.error('删除域名失败:', error);
@@ -765,7 +737,7 @@ function updateFormRequiredStatus(domainValue) {
     // 处理域名已存在的情况 (仅在新增模式下或域名被修改为已存在的域名时触发)
     if (domainExists) {
         if (warningEl) {
-            warningEl.textContent = '操作失败：域名已存在，无需重复添加或修改';
+            warningEl.textContent = '域名已存在，请勿重复添加';
             warningEl.style.color = '#e74c3c'; 
             warningEl.style.display = 'block';
         }
@@ -815,9 +787,7 @@ window.addEventListener('load', async () => {
     const modal = document.getElementById('domainFormModal');
     modal.querySelector('.close-btn').addEventListener('click', () => modal.style.display = 'none');
     window.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
+        if (event.target === modal) { modal.style.display = 'none'; }
     });
     document.getElementById('domainForm').addEventListener('submit', submitDomainForm);
 
