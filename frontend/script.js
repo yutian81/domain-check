@@ -222,26 +222,27 @@ function renderSummary(domainsList) {
 
     const usableCount = normalCount + expiringCount; // 状态“正常”和“将到期”的域名都视为“可用”
 
-    summaryEl.innerHTML = \`
-        <div class="summary-card" style="--color: #186db3;" data-filter="全部">
+    // 生成 HTML 并根据 currentStatusFilter 动态添加 active 类
+    summaryEl.innerHTML = `
+        <div class="summary-card ${currentStatusFilter === '全部' ? 'active' : ''}" style="--color: #186db3;" data-filter="全部">
             <h3><i class="fa fa-list-ol"></i> 全部</h3>
-            <p>\${total}</p>
+            <p>${total}</p>
         </div>
-        <div class="summary-card" style="--color: #1dab58;" data-filter="正常">
+        <div class="summary-card ${currentStatusFilter === '正常' ? 'active' : ''}" style="--color: #1dab58;" data-filter="正常">
             <h3><i class="fa fa-check"></i> 正常</h3>
-            <p>\${usableCount}</p>
+            <p>${usableCount}</p>
         </div>
-        <div class="summary-card" style="--color: #f39c12;" data-filter="将到期">
+        <div class="summary-card ${currentStatusFilter === '将到期' ? 'active' : ''}" style="--color: #f39c12;" data-filter="将到期">
             <h3><i class="fa fa-exclamation-triangle"></i> 将到期</h3>
-            <p>\${expiringCount}</p>
+            <p>${expiringCount}</p>
         </div>
-        <div class="summary-card" style="--color: #e74c3c;" data-filter="已到期">
+        <div class="summary-card ${currentStatusFilter === '已到期' ? 'active' : ''}" style="--color: #e74c3c;" data-filter="已到期">
             <h3><i class="fa fa-times"></i> 已到期</h3>
-            <p>\${expiredCount}</p>
+            <p>${expiredCount}</p>
         </div>
-    \`;
+    `;
 
-    // 绑定点击事件
+    // 重新绑定点击事件
     summaryEl.querySelectorAll('.summary-card').forEach(card => {
         card.addEventListener('click', handleSummaryClick);
     });
@@ -252,22 +253,22 @@ function handleSummaryClick(e) {
     const clickedCard = e.currentTarget;
     const filterValue = clickedCard.dataset.filter;
 
+    // 移除所有卡片的 active 状态
     document.querySelectorAll('#summary .summary-card').forEach(card => {
         card.classList.remove('active');
-    }); // 移除所有卡片的 active 状态
+    });
 
     clickedCard.classList.add('active'); // 为当前点击的卡片添加 active 状态
-    currentStatusFilter = filterValue; // 1. 更新状态筛选变量
+    currentStatusFilter = filterValue; // 更新状态筛选变量
     currentGroup = '全部'; // 将分组筛选重置为“全部”
 
+    // 移除分组标签的 active 状态
     document.querySelectorAll('#groupTabs .tab-btn').forEach(tab => {
         tab.classList.remove('active');
-    }); // 移除分组标签的 active 状态
-
-    const allTab = document.querySelector('#groupTabs .tab-btn[data-group="全部"]'); // 重新激活 "全部" 标签
-    if (allTab) {
-        allTab.classList.add('active');
-    }
+    });
+    // 重新激活 "全部" 标签
+    const allTab = document.querySelector('#groupTabs .tab-btn[data-group="全部"]');
+    if (allTab) { allTab.classList.add('active'); }
 
     currentPage = 1; // 重置页码并应用新的筛选
     applyFiltersAndSearch();
