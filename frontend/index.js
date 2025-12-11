@@ -2,7 +2,6 @@ import { HTML_CSS } from './style';
 import { HTML_JS } from './script';
 
 export function HTML_TEMPLATE (siteName, siteIcon, bgimgURL, githubURL, blogURL, blogName) {
-    const currentYear = new Date().getFullYear();
     const bgimgStyle = bgimgURL ? 
         `body { 
             background-color: #e9eceb;
@@ -10,16 +9,18 @@ export function HTML_TEMPLATE (siteName, siteIcon, bgimgURL, githubURL, blogURL,
             background-size: cover; 
             background-attachment: fixed; 
             background-position: center;
-        }` : 
-        '';
+        }` : '';
+    
+    const currentYear = new Date().getFullYear();
+    const startYear = 2025;
+    const yearText = currentYear === startYear 
+        ? `Copyright © ${startYear}`
+        : `Copyright © ${startYear}-${currentYear}`;
     const footerHTML = `
         <div class="footer">
-            <p>
-                <span>Copyright © ${currentYear} Yutian81</span><span>|</span>
-                <a href="${githubURL}" target="_blank">
-                    <i class="fab fa-github"></i> Github</a><span>|</span>
-                <a href="${blogURL}" target="_blank">
-                    <i class="fas fa-blog"></i> ${blogName}</a>
+            <p><span>Copyright © ${yearText} Yutian81</span><span>|</span>
+                <a href="${githubURL}" target="_blank"><i class="fab fa-github"></i> Github</a><span>|</span>
+                <a href="${blogURL}" target="_blank"><i class="fas fa-blog"></i> ${blogName}</a>
             </p>
         </div>
     `;
