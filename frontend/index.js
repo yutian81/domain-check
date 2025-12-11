@@ -1,22 +1,28 @@
 import { HTML_CSS } from './style';
 import { HTML_JS } from './script';
 
-export function HTML_TEMPLATE (siteName, siteIcon, bgimgURL, githubURL, blogURL, blogName) {
-    const bgimgStyle = bgimgURL ? 
-        `body { 
-            background-color: #e9eceb;
-            background-image: url('${bgimgURL}'); 
-            background-size: cover; 
-            background-attachment: fixed; 
-            background-position: center;
-        }` : '';
-    
+// 导出背景样式函数
+export function generateBgStyle(bgimgURL) {
+    if (!bgimgURL) return '';
+    return `
+    body { 
+        background-color: #e9eceb;
+        background-image: url('${bgimgURL}'); 
+        background-size: cover; 
+        background-attachment: fixed; 
+        background-position: center;
+    }`;
+}
+
+// 导出页脚生成函数
+export function generateFooter(githubURL, blogURL, blogName) {
     const currentYear = new Date().getFullYear();
     const startYear = 2025;
     const yearText = currentYear === startYear 
         ? `Copyright © ${startYear}`
         : `Copyright © ${startYear}-${currentYear}`;
-    const footerHTML = `
+    
+    return `
         <div class="footer">
             <p><span>Copyright © ${yearText} Yutian81</span><span>|</span>
                 <a href="${githubURL}" target="_blank"><i class="fab fa-github"></i> Github</a><span>|</span>
@@ -24,6 +30,11 @@ export function HTML_TEMPLATE (siteName, siteIcon, bgimgURL, githubURL, blogURL,
             </p>
         </div>
     `;
+}
+
+export function HTML_TEMPLATE (siteName, siteIcon, bgimgURL, githubURL, blogURL, blogName) {
+    const bgimgStyle = generateBgStyle(bgimgURL);
+    const footerHTML = generateFooter(githubURL, blogURL, blogName);
     
     return `
 <!DOCTYPE html>
