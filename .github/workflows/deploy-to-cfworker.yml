@@ -34,12 +34,12 @@ jobs:
       - name: 🔄 替换 wrangler.toml 中的变量
         id: config_setup
         run: |
-          [ -n "${CF_KV_ID}" ] || { echo "🔴 错误: 必须设置 'CF_KV_ID' 变量"; exit 1; }
-          [ -n "$WORKER_NAME" ] || { echo "🔴 错误: 未能在 wrangler.toml 中找到 'name' 字段"; exit 1; }
-          
+          [ -n "${CF_KV_ID}" ] || { echo "🔴 错误: 必须设置 'CF_KV_ID' 变量"; exit 1; }  
           sed -i "s#{CF_KV_ID}#${CF_KV_ID}#g" wrangler.toml
           sed -i "s#{CF_CRONS}#${CF_CRONS}#g" wrangler.toml
+          
           WORKER_NAME=$(grep '^name =' wrangler.toml | awk -F '"' '{print $2}')
+          [ -n "$WORKER_NAME" ] || { echo "🔴 错误: 未能在 wrangler.toml 中找到 'name' 字段"; exit 1; }
 
           echo -e "\n🎉 项目配置信息如下:"
           echo "–––––––––––––––––––"
