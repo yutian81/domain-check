@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - '**/*.md'
-      - '.github/**'
+    paths:
+      - 'src/**'
+      - 'frontend/**'
+      - 'wrangler.toml'
   workflow_dispatch:
 
 jobs:
