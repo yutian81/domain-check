@@ -19,7 +19,7 @@ jobs:
       TGTOKEN: ${{ secrets.TGTOKEN}}
       CF_KV_ID: ${{ secrets.CF_KV_ID }}
       CF_CRONS: ${{ vars.CF_CRONS || '0 1,13 * * *' }}
-    
+
     steps:
       - name: ⬇️ 检出仓库
         uses: actions/checkout@v4
@@ -31,49 +31,53 @@ jobs:
 
       - name: 🆙 更新并安装最新 Wrangler
         run: npm install -g wrangler@latest
-    
+
       - name: 🔄 替换 wrangler.toml 中的变量
         id: config_setup
         run: |
           [ -n "${CF_KV_ID}" ] || { echo "🔴 错误: 必须设置 'CF_KV_ID' 变量"; exit 1; }  
           sed -i "s#{CF_KV_ID}#${CF_KV_ID}#g" wrangler.toml
           sed -i "s#{CF_CRONS}#${CF_CRONS}#g" wrangler.toml
-          
+
           WORKER_NAME=$(grep '^name =' wrangler.toml | awk -F '"' '{print $2}')
           [ -n "$WORKER_NAME" ] || { echo "🔴 错误: 未能在 wrangler.toml 中找到 'name' 字段"; exit 1; }
 
           echo -e "\n🎉 项目配置信息如下:"
-          echo "–––––––––––––––––––"
+          echo "-------------------"
           cat wrangler.toml
-          echo "–––––––––––––––––––"
+          echo "-------------------"
           echo "worker_name=$WORKER_NAME" >> $GITHUB_OUTPUT
 
       - name: ⚙️ 动态配置 Worker 环境变量
         id: dynamic_vars
         run: |
           VARS=""
-          [ -n "$PASSWORD" ] && VARS+="PASSWORD"$'\n' || { echo "🔴 错误: PASSWORD 变量未设置"; exit 1; }
-          [ -n "$TGID" ] && [ -n "$TGTOKEN" ] && VARS+="TGID"$'\n'"TGTOKEN"$'\n' || echo "⚠️ 警告: 未发现 TG 配置"
+          [ -n "$PASSWORD" ] && VARS+="PASSWORD"$'\n' || echo "⚠️ 警告: PASSWORD 变量未设置，默认为 123123"
+          [ -n "$TGID" ] && [ -n "$TGTOKEN" ] && VARS+="TGID"$'\n'"TGTOKEN"$'\n' || echo "⚠️ 警告: TG 变量未设置，无法执行 TG 通知"
           printf 'vars_list<<EOF\n%sEOF\n' "$VARS" >>"$GITHUB_OUTPUT"
-          
-          echo -e "\n✅ 即将传递给 Wrangler 的环境变量名:"
-          echo "------------------"
-          printf '%s' "$VARS"
-          echo "------------------"
-          
+
+          if [ -n "$VARS" ]; then
+            printf 'vars_list<<EOF\n%sEOF\n' "$VARS" >>"$GITHUB_OUTPUT"
+            echo -e "\n✅ 传递给 Wrangler 的环境变量名:"
+            printf '%s' "$VARS"
+          else
+            echo -e "\n⚠️ 没有需要传递的变量名"
+            printf 'vars_list=\n' >>"$GITHUB_OUTPUT"
+          fi
+
       - name: 🚀 部署到 CF Worker
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ vars.CF_ACCOUNT_ID }}
           vars: ${{ steps.dynamic_vars.outputs.vars_list }}
-          
+
       - name: ✨ 输出 Worker 管理后台
         env:
           WORKER_NAME: ${{ steps.config_setup.outputs.worker_name }}
           ACCOUNT_ID: ${{ vars.CF_ACCOUNT_ID }}
         run: |
-          echo -e "\n✨ 部署完成 ✨"
+          echo -e "\n✨✨✨ 部署完成 ✨✨✨"
           echo "🌐 点击以下链接可访问项目管理后台"
           echo "https://dash.cloudflare.com/${ACCOUNT_ID}/workers/services/view/${WORKER_NAME}/production/settings"
           echo "🚀 建议: 给项目绑定一个自定义域名"
