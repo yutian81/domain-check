@@ -34,14 +34,13 @@ jobs:
       - name: 🔄 替换 wrangler.toml 中的变量
         id: config_setup
         run: |
+          [ -n "${CF_KV_ID}" ] || { echo "🔴 错误: 必须设置 'CF_KV_ID' 变量"; exit 1; }
+          [ -n "$WORKER_NAME" ] || { echo "🔴 错误: 未能在 wrangler.toml 中找到 'name' 字段"; exit 1; }
+          
           sed -i "s#{CF_KV_ID}#${CF_KV_ID}#g" wrangler.toml
           sed -i "s#{CF_CRONS}#${CF_CRONS}#g" wrangler.toml
-          
           WORKER_NAME=$(grep '^name =' wrangler.toml | awk -F '"' '{print $2}')
-          if [ -z "$WORKER_NAME" ]; then
-            echo "🔴 错误: 未能在 wrangler.toml 中找到 'name' 字段"; exit 1
-          fi
-          
+
           echo -e "\n🎉 项目配置信息如下:"
           echo "–––––––––––––––––––"
           cat wrangler.toml
@@ -52,23 +51,8 @@ jobs:
         id: dynamic_vars
         run: |
           VARS=""
-          
-          # 检查必填项 PASSWORD
-          if [ -n "$PASSWORD" ]; then
-            VARS+="PASSWORD"$'\n'
-          else
-            echo "🔴 错误: PASSWORD 变量未设置，停止部署"; exit 1
-          fi
-          
-          # 检查 TG 相关配置
-          if [ -n "$TGID" ] && [ -n "$TGTOKEN" ]; then
-            echo "🟢 发现 TG 配置，将其添加到部署列表"
-            VARS+="TGID"$'\n'"TGTOKEN"$'\n'
-          else
-            echo "⚠️ 警告: 未发现完整的 TG 配置，TG 通知可能不可用"
-          fi
-
-          # 输出到 GitHub Actions 输出流
+          [ -n "$PASSWORD" ] && VARS+="PASSWORD"$'\n' || { echo "🔴 错误: PASSWORD 变量未设置"; exit 1; }
+          [ -n "$TGID" ] && [ -n "$TGTOKEN" ] && VARS+="TGID"$'\n'"TGTOKEN"$'\n' || echo "⚠️ 警告: 未发现 TG 配置"
           printf 'vars_list<<EOF\n%sEOF\n' "$VARS" >>"$GITHUB_OUTPUT"
           
           echo -e "\n✅ 即将传递给 Wrangler 的环境变量名:"
