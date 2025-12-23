@@ -43,7 +43,7 @@
   - **TGID**: 可选，tg机器人ID，用于发送tg通知
   - **TGTOKEN**: 可选，tg聊天ID或频道ID，用于发送tg通知
 - 转到 `variables` 选项卡，设置以下变量:
-  - **CF_ACCOUNT_ID**: 必须，CF的账户ID
+  - **CF_ACCOUNT_ID**: 必须，CF的账户ID，**是ID不是邮箱账号**
   - **CF_CRONS**: 可选，用于定时检查域名到期情况以发送tg通知
 
 ### 运行 action
