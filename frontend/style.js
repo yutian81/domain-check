@@ -28,6 +28,7 @@ export const HTML_CSS = `
     display: flex;
     gap: 10px;
     align-items: center;
+    flex-wrap: wrap;
 }
 .action-btn {
     padding: 10px 15px;
@@ -41,8 +42,16 @@ export const HTML_CSS = `
 .export-btn:hover, .import-btn:hover { background-color: #1c914d; }
 .add-btn { background-color: #186db3; color: white; }
 .add-btn:hover { background-color: #1c5a8a; }
+.login-btn { background-color: #186db3; color: white; }
+.login-btn:hover { background-color: #1c5a8a; }
+.logout-btn { background-color: #e74c3c; color: white; }
+.logout-btn:hover { background-color: #c0392b; }
+.select-btn { background-color: #8e44ad; color: white; }
+.select-btn:hover { background-color: #7d3c9a; }
+.del-btn { background-color: #e74c3c; color: white; }
+.del-btn:hover { background-color: #c0392b; }
 
-/* 概览开片样式 */
+/* 概览卡片样式 */
 .summary-container {
     display: flex;
     justify-content: space-around;
@@ -54,7 +63,7 @@ export const HTML_CSS = `
 .summary-card {
     background-color: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
+    -webkit-backdrop-filter: blur(10px);
     border-left: 5px solid var(--color);
     padding: 15px 20px;
     border-radius: 8px;
@@ -62,6 +71,7 @@ export const HTML_CSS = `
     flex-grow: 1;
     box-shadow: 2px 4px 4px rgba(0,0,0,0.2);
     transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
 }
 .summary-card.active {
     background-color: var(--color); 
@@ -88,7 +98,7 @@ export const HTML_CSS = `
     margin: 0 auto;
     background-color: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
+    -webkit-backdrop-filter: blur(10px);
     box-shadow: 2px 4px 4px rgba(0,0,0,0.2);
     margin-bottom: 20px;
 }
@@ -101,7 +111,7 @@ export const HTML_CSS = `
     padding: 8px 15px;
     background-color: rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
+    -webkit-backdrop-filter: blur(10px);
     cursor: pointer;
     border-radius: 8px;
     transition: background-color 0.3s, border-color 0.3s;
@@ -115,7 +125,7 @@ export const HTML_CSS = `
     border-radius: 8px;
     background-color: rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
+    -webkit-backdrop-filter: blur(10px);
     padding: 5px 10px;
 }
 #searchBox {
@@ -129,7 +139,7 @@ export const HTML_CSS = `
 /* 域名卡片网格 */
 .domain-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* 横排3个或更多 */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     max-width: 1200px;
     margin: 0 auto;
     gap: 20px;
@@ -138,13 +148,14 @@ export const HTML_CSS = `
 .domain-card {
     background-color: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
+    -webkit-backdrop-filter: blur(10px);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 2px 4px 4px rgba(0,0,0,0.2);
     transition: transform 0.3s, box-shadow 0.3s;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 .domain-card:hover { transform: translateY(-3px); box-shadow: 0 0 8px rgba(0,0,0,0.25); }
 .card-header {
@@ -152,7 +163,7 @@ export const HTML_CSS = `
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
-    border-bottom: 2px solid var(--border-color); /* 状态颜色 */
+    border-bottom: 2px solid var(--border-color);
     padding-bottom: 10px;
 }
 .card-domain {
@@ -164,6 +175,12 @@ export const HTML_CSS = `
     transition: color 0.3s ease;
 }
 .card-domain:hover { color: #1c5a8a; }
+.card-domain-masked {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #555;
+    word-break: break-all;
+}
 .card-status {
     padding: 4px 8px;
     margin-left: 8px;
@@ -171,7 +188,7 @@ export const HTML_CSS = `
     color: white;
     font-size: 0.8rem;
     line-height: 0.95;
-    background-color: var(--status-color); /* 状态颜色 */
+    background-color: var(--status-color);
 }
 .card-info p {
     margin: 5px 0;
@@ -201,7 +218,7 @@ export const HTML_CSS = `
 }
 .progress-bar {
     height: 100%;
-    background-color: var(--status-color); /* 状态颜色 */
+    background-color: var(--status-color);
     transition: width 0.5s ease;
 }
 .progress-percent-display {
@@ -222,6 +239,41 @@ export const HTML_CSS = `
     color: #555;
 }
 
+/* 卡片操作按钮区域 */
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+.card-action-icons {
+    display: flex;
+    gap: 8px;
+}
+.card-action-icon {
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+.card-action-icon:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+.card-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #186db3;
+    flex-shrink: 0;
+}
+.edit-icon { color: #186db3; }
+.edit-icon:hover { color: #1c5a8a; }
+.delete-icon { color: #e74c3c; }
+.delete-icon:hover { color: #c0392b; }
+.copy-icon { color: #8e44ad; }
+.copy-icon:hover { color: #7d3c9a; }
+
 /* 分页样式 */
 .pagination {
     display: flex;
@@ -234,7 +286,7 @@ export const HTML_CSS = `
 .page-btn {
     background-color: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
+    -webkit-backdrop-filter: blur(10px);
     padding: 8px 12px;
     margin: 0 4px;
     cursor: pointer;
@@ -244,19 +296,8 @@ export const HTML_CSS = `
     background-color: #186db3;
     color: white;
 }
-.edit-icon, .delete-icon {
-    cursor: pointer;
-    margin-left: 10px;
-    color: #186db3;
-    transition: color 0.2s;
-}
-.delete-icon {
-    color: #e74c3c;
-}
-.edit-icon:hover { color: #1c5a8a; }
-.delete-icon:hover { color: #c0392b; }
 
-/* Modal 样式 (与 login 样式类似，但用于表单) */
+/* Modal 样式 */
 .modal {
     position: fixed;
     z-index: 1000;
@@ -351,35 +392,105 @@ export const HTML_CSS = `
     color: #186db3;
 }
 
+/* --- 自定义提示框（替换 alert/confirm） --- */
+.toast-overlay {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.35);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: center;
+}
+.toast-card {
+    background: rgba(255,255,255,0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    padding: 30px 35px 25px;
+    max-width: 400px;
+    width: 85%;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    animation: toastFadeIn 0.25s ease;
+}
+@keyframes toastFadeIn {
+    from { opacity: 0; transform: scale(0.92) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.toast-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    line-height: 1;
+}
+.toast-message {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    word-break: break-word;
+}
+.toast-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+.toast-btn {
+    padding: 10px 28px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background-color 0.2s, transform 0.1s;
+}
+.toast-btn:active {
+    transform: scale(0.97);
+}
+.toast-btn-primary {
+    background-color: #186db3;
+    color: white;
+}
+.toast-btn-primary:hover {
+    background-color: #1c5a8a;
+}
+.toast-btn-cancel {
+    background-color: #e0e0e0;
+    color: #555;
+}
+.toast-btn-cancel:hover {
+    background-color: #ccc;
+}
+
 /* --- 移动端优化 --- */
 @media (max-width: 768px) {
-    /* 头部 */
     .header, .summary-container, .controls-container, .domain-grid, .pagination { max-width: 95%; margin: 0 auto; }
     .header { flex-direction: column; }
     .header h1 { font-size: 1.8rem; margin-bottom: 10px; }
-    .action-buttons { width: 100%; margin-top: 10px; }
-    .action-btn { flex-grow: 1; text-align: center; }
+    .action-buttons { width: 100%; margin-top: 10px; justify-content: center; }
+    .action-btn { flex-grow: 1; text-align: center; font-size: 0.85rem; padding: 8px 10px; }
 
-    /* 概览卡片 */
     .summary-container { flex-direction: column; padding: 12px 0; gap: 10px; }
     .summary-card { padding: 10px 15px; }
     .summary-card p { font-size: 1.5rem; }
 
-    /* 控制区 (标签和搜索) */
     .controls-container { flex-direction: column; padding: 12px 0; margin-bottom: 12px; }
     .tabs-container { width: auto; padding: 0 12px; margin: 0; justify-content: center; }
     .tab-btn { flex-grow: 1; font-size: 0.9rem; }
     .search-container { width: auto; align-self: stretch; margin: 10px 12px 0 12px; padding: 5px 12px; }
 
-    /* 域名卡片网格 */
     .domain-grid { grid-template-columns: repeat(auto-fill, minmax(95%, 1fr));  gap: 12px; }
     .card-header { align-items: flex-start; gap: 5px; }
     .card-status { align-self: flex-start; }
 
-    /* 模态框 */
     .modal-content { margin: 5% auto; width: 90%; padding: 15px; }
 
-    /* 页脚 */
     .footer p { font-size: 0.7rem; gap: 6px; }
 }
 `;

@@ -32,35 +32,34 @@ export function generateFooter(githubURL, blogURL, blogName) {
     `;
 }
 
-export function HTML_TEMPLATE (siteName, siteIcon, bgimgURL, githubURL, blogURL, blogName) {
-    const bgimgStyle = generateBgStyle(bgimgURL);
-    const footerHTML = generateFooter(githubURL, blogURL, blogName);
-    
+function generatePublicHeader(siteName) {
     return `
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${siteName}</title>
-    <link id="faviconLink" rel="icon" href="${siteIcon}" type="image/png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <style>
-        ${bgimgStyle} 
-        ${HTML_CSS}
-    </style>
-</head>
-<body>
     <div class="header">
         <h1 id="siteTitle"><i class="fas fa-clock"></i> ${siteName}</h1>
         <div class="action-buttons">
-            <button id="addDomainBtn" class="action-btn add-btn"><i class="fas fa-plus"></i> 添加域名</button>
-            <button id="exportDataBtn" class="action-btn export-btn"><i class="fas fa-download"></i> 导出数据</button>
-            <button id="importDataBtn" class="action-btn import-btn"><i class="fas fa-upload"></i> 导入数据</button>
-            <input type="file" id="importFileInput" accept=".json" style="display: none;">
+            <button id="loginBtn" class="action-btn login-btn"><i class="fas fa-sign-in-alt"></i> 登录</button>
         </div>
-    </div>
+    </div>`;
+}
 
+function generateAdminHeader(siteName) {
+    return `
+    <div class="header">
+        <h1 id="siteTitle"><i class="fas fa-clock"></i> ${siteName}</h1>
+        <div class="action-buttons">
+            <button id="addDomainBtn" class="action-btn add-btn"><i class="fas fa-plus"></i> 添加</button>
+            <button id="selectAllBtn" class="action-btn select-btn"><i class="fas fa-check-square"></i> 全选</button>
+            <button id="batchDeleteBtn" class="action-btn del-btn"><i class="fas fa-trash"></i> 删除</button>
+            <button id="exportDataBtn" class="action-btn export-btn"><i class="fas fa-download"></i> 导出</button>
+            <button id="importDataBtn" class="action-btn import-btn"><i class="fas fa-upload"></i> 导入</button>
+            <input type="file" id="importFileInput" accept=".json" style="display: none;">
+            <button id="logoutBtn" class="action-btn logout-btn"><i class="fas fa-sign-out-alt"></i> 退出</button>
+        </div>
+    </div>`;
+}
+
+function generateFormModal() {
+    return `
     <div id="domainFormModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -68,7 +67,7 @@ export function HTML_TEMPLATE (siteName, siteIcon, bgimgURL, githubURL, blogURL,
             <form id="domainForm">
                 <input type="hidden" id="editOriginalDomain">
                 <label for="domain"><i class="fa fa-globe"></i> 域名</label>
-                <input type="text" id="domain" placeholder="例如: example.com 或 example.com.cn" required>
+                <input type="text" id="domain" placeholder="例如: example.com 或 sub.example.com" required>
 
                 <div id="domainFillWarning" class="form-warning"></div>
 
@@ -102,7 +101,42 @@ export function HTML_TEMPLATE (siteName, siteIcon, bgimgURL, githubURL, blogURL,
                 <button type="submit"><i class="fa fa-save"></i> 保存</button>
             </form>
         </div>
-    </div>
+    </div>`;
+}
+
+export function HTML_TEMPLATE(siteName, siteIcon, bgimgURL, githubURL, blogURL, blogName, isAdmin = false, initialDomains = null) {
+    const bgimgStyle = generateBgStyle(bgimgURL);
+    const footerHTML = generateFooter(githubURL, blogURL, blogName);
+    const headerHTML = isAdmin ? generateAdminHeader(siteName) : generatePublicHeader(siteName);
+    const formModal = isAdmin ? generateFormModal() : '';
+    // 公开页面：将服务端脱敏后的域名数据嵌入 HTML（避免前端调用 API 暴露敏感数据）
+    const initialDomainsJSON = initialDomains ? JSON.stringify(initialDomains) : 'null';
+    
+    return `
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${siteName}</title>
+    <link id="faviconLink" rel="icon" href="${siteIcon}" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        ${bgimgStyle} 
+        ${HTML_CSS}
+    </style>
+</head>
+<body>
+    <script>
+        // 注入前端运行模式
+        const IS_ADMIN = ${isAdmin};
+        // 公开页面：服务端已脱敏的域名数据，前端直接使用，不调用 API
+        const INITIAL_DOMAINS = ${initialDomainsJSON};
+    </script>
+
+    ${headerHTML}
+
+    ${formModal}
 
     <div id="summary" class="summary-container"></div>
 

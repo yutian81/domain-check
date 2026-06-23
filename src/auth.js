@@ -1,4 +1,4 @@
-// src/_middleware.js
+// src/auth.js
 
 import { getConfig } from './utils';
 
@@ -17,8 +17,8 @@ export async function authenticate(request, env) {
     return Response.redirect(new URL('/login', request.url), 302);
 }
 
-// 登录处理逻辑
-export async function handleLogin(request, env) {
+// 登录处理逻辑（支持自定义跳转路径）
+export async function handleLogin(request, env, redirectPath = '/') {
     const config = getConfig(env);
     if (request.method === 'GET') {
         const html = generateLoginPage(false, config.siteName, config.siteIcon, config.bgimgURL, config.githubURL, config.blogURL, config.blogName);
@@ -33,7 +33,7 @@ export async function handleLogin(request, env) {
                 const expires = new Date();
                 expires.setDate(expires.getDate() + 7);
                 const headers = new Headers();
-                headers.set('Location', '/');
+                headers.set('Location', redirectPath);
                 headers.set('Set-Cookie', `auth=${password}; Expires=${expires.toUTCString()}; HttpOnly; Path=/; Secure; SameSite=Lax`);
                 return new Response(null, { status: 302, headers: headers });
             } else {

@@ -1,0 +1,24 @@
+{
+  "name": "domain-check",
+  "version": "1.0.0",
+  "description": "域名到期监控探针",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yutian81/domain-check.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/yutian81/domain-check/issues"
+  },
+  "homepage": "https://github.com/yutian81/domain-check#readme",
+  "devDependencies": {
+    "wrangler": "^4.103.0"
+  }
+}

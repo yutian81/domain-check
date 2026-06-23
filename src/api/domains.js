@@ -3,23 +3,69 @@
 import { isPrimaryDomain } from '../utils';
 import { fetchDomainFromAPI } from './whois';
 
-const KV_KEY = 'DOMAIN_LIST';
+const DOMAIN_KEY_PREFIX = 'domain:';
 
-// 从KV中获取域名列表
+// 从 KV 中列出所有域名 key（分页安全）
+async function getAllDomainKeys(env) {
+    const keys = [];
+    let cursor;
+    do {
+        const result = await env.DOMAIN_KV.list({ prefix: DOMAIN_KEY_PREFIX, cursor });
+        keys.push(...result.keys);
+        cursor = result.cursor;
+    } while (cursor);
+    return keys.map(k => k.name);
+}
+
+// 从 KV 中读取单个域名详情
+async function getDomainFromKV(env, key) {
+    return await env.DOMAIN_KV.get(key, { type: 'json' });
+}
+
+// 从 KV 中获取所有域名列表（聚合）
 export async function getDomainsFromKV(env) {
     if (!env.DOMAIN_KV) {
         throw new Error('未配置KV命名空间 DOMAIN_KV。请检查您的配置');
     }
-    const data = await env.DOMAIN_KV.get(KV_KEY, { type: 'json' });
-    return Array.isArray(data) ? data : [];
+    const keys = await getAllDomainKeys(env);
+
+    // ----- 自动迁移：兼容旧版单 key (DOMAIN_LIST) 存储 -----
+    if (keys.length === 0) {
+        const oldData = await env.DOMAIN_KV.get('DOMAIN_LIST', { type: 'json' });
+        if (Array.isArray(oldData) && oldData.length > 0) {
+            console.log(`检测到旧版 KV 数据 (DOMAIN_LIST, ${oldData.length} 个域名)，正在迁移...`);
+            // 写入新格式：每个域名独立 key
+            await Promise.all(oldData.map(d =>
+                env.DOMAIN_KV.put(DOMAIN_KEY_PREFIX + d.domain, JSON.stringify(d))
+            ));
+            // 删除旧 key
+            await env.DOMAIN_KV.delete('DOMAIN_LIST');
+            console.log('KV 数据迁移完成');
+            return oldData; // 直接返回迁移后的数据
+        }
+        return [];
+    }
+
+    // 批量读取每个域名详情
+    const results = await Promise.all(keys.map(k => getDomainFromKV(env, k)));
+    return results.filter(Boolean); // 过滤掉可能的空值
 }
 
-// 保存域名信息到KV
+// 将域名列表保存到 KV（全量覆盖 — 仅用于导入/PUT）
 export async function setDomainsToKV(env, domains) {
     if (!env.DOMAIN_KV) {
         throw new Error('未配置KV命名空间 DOMAIN_KV。请检查您的配置');
     }
-    await env.DOMAIN_KV.put(KV_KEY, JSON.stringify(domains));
+
+    // 1. 删除旧数据（新格式 + 兼容旧格式）
+    const oldKeys = await getAllDomainKeys(env);
+    await Promise.all(oldKeys.map(k => env.DOMAIN_KV.delete(k)));
+    await env.DOMAIN_KV.delete('DOMAIN_LIST').catch(() => {}); // 兼容旧版单 key
+
+    // 2. 写入新数据
+    await Promise.all(domains.map(d =>
+        env.DOMAIN_KV.put(DOMAIN_KEY_PREFIX + d.domain, JSON.stringify(d))
+    ));
 }
 
 // 验证和处理单个域名数据的 POST 请求
@@ -37,9 +83,9 @@ async function handlePostDomain(request, env) {
     try {
         const domainName = newDomainData.domain;
         const originalDomainName = newDomainData.originalDomain || domainName;
-        const allDomains = await getDomainsFromKV(env);
+        const isEdit = originalDomainName !== domainName || 
+                       await env.DOMAIN_KV.get(DOMAIN_KEY_PREFIX + originalDomainName, { type: 'json' }) !== null;
         const isPrimary = isPrimaryDomain(domainName);
-        const isEdit = allDomains.some(d => d.domain === originalDomainName);
         
         // --- WHOIS 自动填充逻辑 ---
         // 条件：一级域名 (isPrimary) 且用户未手动输入关键信息 (expirationDate 缺失)
@@ -64,8 +110,9 @@ async function handlePostDomain(request, env) {
         }
 
         // 必填项检查逻辑 (针对所有未被 WHOIS 成功填充的域名)
+        // 外层已确保 !expirationDate，内层不再重复检查
         if (!newDomainData.expirationDate) {
-            if (!newDomainData.registrationDate || !newDomainData.system || !newDomainData.expirationDate || !newDomainData.systemURL) {
+            if (!newDomainData.registrationDate || !newDomainData.system || !newDomainData.systemURL) {
                 return new Response(JSON.stringify({ error: '信息不完整：注册/到期时间、注册商名称和URL为必填项。' }), { 
                     status: 422,
                     headers: { 'Content-Type': 'application/json' }
@@ -74,28 +121,28 @@ async function handlePostDomain(request, env) {
         }
         
         // --- KV 更新逻辑 ---
-        delete newDomainData.originalDomain;
-        let updatedDomains;
+        // 拷贝一份再删除，避免修改传入的 request body 对象
+        const { originalDomain, ...domainData } = newDomainData;
 
-        if (isEdit) {
-            // 编辑：先检查是否与其他域名冲突
-            const hasConflict = allDomains.some(d => d.domain === domainName && d.domain !== originalDomainName);
-            if (hasConflict) {
-                return new Response('域名已存在！', { status: 409 });
-            }
-
-            updatedDomains = allDomains.map(d =>
-                d.domain === originalDomainName ? { ...d, ...newDomainData } : d
-            );
-        } else {
-            if (allDomains.some(d => d.domain === domainName)) {
-                return new Response('域名已存在！', { status: 409 });
-            }
-            updatedDomains = [...allDomains, newDomainData];
+        // 编辑时先删除旧 key，再写新 key（域名可能被改名）
+        if (isEdit && originalDomainName !== domainName) {
+            await env.DOMAIN_KV.delete(DOMAIN_KEY_PREFIX + originalDomainName);
         }
 
-        await setDomainsToKV(env, updatedDomains);
-        return new Response(JSON.stringify({ success: true, domain: newDomainData.domain }), {
+        // 检查新 key 是否已存在（编辑且域名不变时不检查自身）
+        const existingKey = DOMAIN_KEY_PREFIX + domainName;
+        if (isEdit && originalDomainName === domainName) {
+            // 编辑且域名未变：直接覆盖写入
+            await env.DOMAIN_KV.put(existingKey, JSON.stringify(domainData));
+        } else {
+            const existing = await env.DOMAIN_KV.get(existingKey, { type: 'json' });
+            if (existing) {
+                return new Response('域名已存在！', { status: 409 });
+            }
+            await env.DOMAIN_KV.put(existingKey, JSON.stringify(domainData));
+        }
+
+        return new Response(JSON.stringify({ success: true, domain: domainData.domain }), {
             headers: { 'Content-Type': 'application/json' }
         });
     } catch (error) {
@@ -130,17 +177,16 @@ async function handleDeleteDomain(request, env) {
     }
 
     try {
-        const allDomains = await getDomainsFromKV(env);
-        // 过滤掉 domainsToDelete 列表中的所有域名
-        const initialLength = allDomains.length;
-        const updatedDomains = allDomains.filter(d => !domainsToDelete.includes(d.domain));
-        const deletedCount = initialLength - updatedDomains.length;
+        // 直接删除每个域名对应的 KV key，无需读取全量列表
+        const deleteResults = await Promise.allSettled(
+            domainsToDelete.map(d => env.DOMAIN_KV.delete(DOMAIN_KEY_PREFIX + d))
+        );
+        const deletedCount = deleteResults.filter(r => r.status === 'fulfilled').length;
         
         if (deletedCount === 0) {
             return new Response(JSON.stringify({ success: false, message: `未找到任何要删除的域名。` }), { status: 404 });
         }
         
-        await setDomainsToKV(env, updatedDomains);
         return new Response(JSON.stringify({ success: true, message: `成功删除 ${deletedCount} 个域名。`, deletedCount: deletedCount }), {
             headers: { 'Content-Type': 'application/json' }
         });
