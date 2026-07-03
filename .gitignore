@@ -3,3 +3,4 @@ wrangler.local.toml
 .wrangler/
 .env.local
 .hermes/
+.playwright-mcp/

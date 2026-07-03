@@ -87,16 +87,32 @@ function generateFormModal() {
                 <input type="date" id="expirationDate" required>
 
                 <label for="system"><i class="fa fa-registered"></i> 注册商名称</label>
-                <input type="text" id="system" placeholder="例如: cloudflare">
+                <div class="autocomplete-field">
+                    <input type="text" id="system" placeholder="例如: cloudflare" autocomplete="off">
+                    <i class="fas fa-chevron-down autocomplete-arrow"></i>
+                    <div class="autocomplete-dropdown" id="systemDropdown"></div>
+                </div>
 
                 <label for="systemURL"><i class="fa fa-link"></i> 注册商地址</label>
-                <input type="url" id="systemURL" placeholder="例如: https://dash.cloudflare.com">
+                <div class="autocomplete-field">
+                    <input type="url" id="systemURL" placeholder="例如: https://dash.cloudflare.com" autocomplete="off">
+                    <i class="fas fa-chevron-down autocomplete-arrow"></i>
+                    <div class="autocomplete-dropdown" id="systemURLDropdown"></div>
+                </div>
 
                 <label for="registerAccount"><i class="fa fa-user"></i> 注册账号 (可选)</label>
                 <input type="text" id="registerAccount" placeholder="例如: admin@example.com">
 
                 <label for="groups"><i class="fa fa-tags"></i> 分组 (可选)</label>
-                <input type="text" id="groups" placeholder="多个分组可用英文逗号分隔, 例如: 主要, 个人, 待续费">
+                <div class="groups-field">
+                    <div class="groups-tag-list" id="groupsTagList"></div>
+                    <div class="groups-input-wrap">
+                        <input type="text" id="groupsInput" placeholder="输入分组名称或选择已有分组" autocomplete="off">
+                        <i class="fas fa-chevron-down groups-arrow"></i>
+                        <div class="groups-dropdown" id="groupsDropdown"></div>
+                    </div>
+                    <input type="hidden" id="groups" value="">
+                </div>
 
                 <button type="submit"><i class="fa fa-save"></i> 保存</button>
             </form>
@@ -137,6 +153,28 @@ export function HTML_TEMPLATE(siteName, siteIcon, bgimgURL, githubURL, blogURL, 
     ${headerHTML}
 
     ${formModal}
+
+    <!-- 续费弹窗（复用 toast 样式） -->
+    <div id="renewOverlay" class="toast-overlay" style="display:none;">
+        <div class="toast-card">
+            <div class="toast-icon"><i class="fas fa-sync-alt" style="color:#186db3;"></i></div>
+            <div class="renew-line">
+                <span id="renewDomainName">test1cn.com</span>
+                <span>&nbsp;续费时长</span>
+            </div>
+            <div class="renew-line">
+                <input type="number" id="renewDuration" min="1" value="1">
+                <select id="renewUnitSelect">
+                    <option value="year">年</option>
+                    <option value="month">月</option>
+                </select>
+            </div>
+            <div class="toast-actions">
+                <button class="toast-btn toast-btn-cancel" id="renewCancelBtn">取消</button>
+                <button class="toast-btn toast-btn-primary" id="renewConfirmBtn">确定</button>
+            </div>
+        </div>
+    </div>
 
     <div id="summary" class="summary-container"></div>
 

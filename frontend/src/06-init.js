@@ -39,6 +39,96 @@ window.addEventListener('load', async () => {
             document.getElementById('domainForm').addEventListener('submit', submitDomainForm);
         }
 
+        // 续费弹窗事件
+        const renewOverlay = document.getElementById('renewOverlay');
+        if (renewOverlay) {
+            document.getElementById('renewCancelBtn').addEventListener('click', closeRenewModal);
+            document.getElementById('renewConfirmBtn').addEventListener('click', submitRenew);
+            renewOverlay.addEventListener('click', (event) => {
+                if (event.target === renewOverlay) closeRenewModal();
+            });
+        }
+
+        // 分组标签输入事件
+        const groupsInput = document.getElementById('groupsInput');
+        if (groupsInput) {
+            groupsInput.addEventListener('focus', () => {
+                showGroupsDropdown(groupsInput.value);
+            });
+            groupsInput.addEventListener('input', (e) => {
+                showGroupsDropdown(e.target.value);
+            });
+            groupsInput.addEventListener('keydown', (e) => {
+                if (e.key === ' ' || e.key === ',') {
+                    e.preventDefault();
+                    const val = e.target.value.replace(/,/g, '').trim();
+                    if (val) {
+                        addGroupTag(val);
+                        e.target.value = '';
+                        hideGroupsDropdown();
+                    }
+                }
+                if (e.key === 'Enter') {
+                    const val = e.target.value.trim();
+                    if (val) {
+                        e.preventDefault();
+                        addGroupTag(val);
+                        e.target.value = '';
+                        hideGroupsDropdown();
+                    }
+                }
+                if (e.key === 'Backspace' && !e.target.value) {
+                    const tags = getCurrentGroupTags();
+                    if (tags.length > 0) removeGroupTag(tags[tags.length - 1]);
+                }
+            });
+            groupsInput.addEventListener('blur', () => {
+                setTimeout(hideGroupsDropdown, 200);
+            });
+            // 点击下拉选项
+            document.getElementById('groupsDropdown').addEventListener('click', (e) => {
+                const item = e.target.closest('.groups-dropdown-item');
+                if (item) {
+                    addGroupTag(item.dataset.group);
+                    groupsInput.value = '';
+                    hideGroupsDropdown();
+                    groupsInput.focus();
+                }
+            });
+        }
+
+        // 注册商名称下拉事件
+        const systemInput = document.getElementById('system');
+        if (systemInput) {
+            systemInput.addEventListener('focus', () => showAutocompleteDropdown('system', 'systemDropdown', getAllExistingSystems));
+            systemInput.addEventListener('input', () => showAutocompleteDropdown('system', 'systemDropdown', getAllExistingSystems));
+            systemInput.addEventListener('blur', () => setTimeout(() => hideAutocompleteDropdown('systemDropdown'), 200));
+            document.getElementById('systemDropdown').addEventListener('click', (e) => {
+                const item = e.target.closest('.autocomplete-dropdown-item');
+                if (item) {
+                    systemInput.value = item.dataset.value;
+                    hideAutocompleteDropdown('systemDropdown');
+                    systemInput.focus();
+                }
+            });
+        }
+
+        // 注册商地址下拉事件
+        const systemURLInput = document.getElementById('systemURL');
+        if (systemURLInput) {
+            systemURLInput.addEventListener('focus', () => showAutocompleteDropdown('systemURL', 'systemURLDropdown', getAllExistingSystemURLs));
+            systemURLInput.addEventListener('input', () => showAutocompleteDropdown('systemURL', 'systemURLDropdown', getAllExistingSystemURLs));
+            systemURLInput.addEventListener('blur', () => setTimeout(() => hideAutocompleteDropdown('systemURLDropdown'), 200));
+            document.getElementById('systemURLDropdown').addEventListener('click', (e) => {
+                const item = e.target.closest('.autocomplete-dropdown-item');
+                if (item) {
+                    systemURLInput.value = item.dataset.value;
+                    hideAutocompleteDropdown('systemURLDropdown');
+                    systemURLInput.focus();
+                }
+            });
+        }
+
         // 绑定注册日期和续费周期变动事件
         const registrationDateEl = document.getElementById('registrationDate');
         const renewalPeriodEl = document.getElementById('renewalPeriod');

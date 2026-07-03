@@ -287,6 +287,27 @@ function importData() {
     };
 }
 
+// 续费域名: PATCH /api/domains
+async function renewDomain(domain, duration, unit) {
+    try {
+        const response = await fetch(DOMAINS_API, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ domain, duration, unit }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ error: '续费失败' }));
+            throw new Error(errorData.error || response.statusText);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('续费失败:', error);
+        throw error;
+    }
+}
+
 // 批量删除选中的域名
 async function batchDeleteDomains(domains) {
     if (!domains || domains.length === 0) {
@@ -486,7 +507,7 @@ async function deleteDomain(domain) {
         }
         
         const deletedCount = responseData.deletedCount || domainsToDelete.length;
-        showSuccess(\`域名 \${domain} 已删除 (\${deletedCount} 个记录被移除)\`);
+        showSuccess(\`域名 \${domain} 已删除！\`);
 
         currentPage = 1;
         await fetchDomains();
@@ -543,6 +564,15 @@ function renderSummary(domainsList) {
     summaryEl.querySelectorAll('.summary-card').forEach(card => {
         card.addEventListener('click', handleSummaryClick);
     });
+}
+
+// 渲染分组标签
+function renderGroupTags(groupsStr) {
+    if (!groupsStr) return '<span class="group-tag tag-ungrouped">未分组</span>';
+    const tags = groupsStr.split(',').map(g => g.trim()).filter(g => g).map(g =>
+        \`<span class="group-tag">\${g}</span>\`
+    ).join('');
+    return \`<span class="group-tags-container">\${tags}</span>\`;
 }
 
 // 渲染分组标签
@@ -613,6 +643,7 @@ function createDomainCard(info) {
             \${checkboxHTML}
             <div class="card-action-icons">
                 <i class="fas fa-copy card-action-icon copy-icon" data-domain="\${info.domain}" title="克隆此卡片"></i>
+                <i class="fas fa-sync-alt card-action-icon renew-icon" data-domain="\${info.domain}" title="续期"></i>
                 <i class="fas fa-edit card-action-icon edit-icon" data-domain="\${info.domain}" title="编辑"></i>
                 <i class="fas fa-trash-alt card-action-icon delete-icon" data-domain="\${info.domain}" title="删除"></i>
             </div>
@@ -629,7 +660,7 @@ function createDomainCard(info) {
                 <p><strong><i class="fa fa-user"></i> 注册账号: </strong> \${displayAccount}</p>
                 <p><strong><i class="fa fa-calendar"></i> 注册时间: </strong> \${info.registrationDate || 'N/A'}</p>
                 <p><strong><i class="fa fa-calendar"></i> 到期时间: </strong> \${info.expirationDate || 'N/A'}</p>
-                <p><strong><i class="fa fa-folder"></i> 所属分组: </strong> \${info.groups || '无'}</p>
+                <p>\${renderGroupTags(info.groups)}</p>
             </div>
             <div class="card-footer">
                 <div class="progress-bar-container">
@@ -672,6 +703,15 @@ function renderDomainCards() {
                 const domain = e.target.dataset.domain;
                 const domainInfo = allDomains.find(d => d.domain === domain);
                 if (domainInfo) openDomainForm(domainInfo);
+            });
+        });
+        
+        // 续期事件
+        listEl.querySelectorAll('.renew-icon').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const domain = e.target.dataset.domain;
+                const domainInfo = allDomains.find(d => d.domain === domain);
+                if (domainInfo) openRenewModal(domainInfo);
             });
         });
         
@@ -760,7 +800,7 @@ function openDomainForm(domainInfo = null) {
         document.getElementById('system').value = domainInfo.system || '';
         document.getElementById('systemURL').value = domainInfo.systemURL || '';
         document.getElementById('registerAccount').value = domainInfo.registerAccount || '';
-        document.getElementById('groups').value = domainInfo.groups || '';
+        initGroupsTags(domainInfo.groups || '');
         renewalPeriodEl.value = domainInfo.renewalPeriod || '';
         renewalUnitEl.value = domainInfo.renewalUnit || 'year';
         document.getElementById('domain').disabled = false;
@@ -770,11 +810,11 @@ function openDomainForm(domainInfo = null) {
         document.getElementById('domain').disabled = false;
         renewalPeriodEl.value = '';
         renewalUnitEl.value = 'year';
-        expirationDateEl.value = ''; 
+        expirationDateEl.value = '';
+        initGroupsTags('');
     }
     
-    updateFormRequiredStatus(document.getElementById('domain').value); 
-    if (domainInfo && domainInfo.renewalPeriod && domainInfo.renewalUnit) { calculateExpirationDate(); }
+    updateFormRequiredStatus(document.getElementById('domain').value);
     modal.style.display = 'block';
 }
 
@@ -799,7 +839,7 @@ function openDomainFormWithCopy(domainInfo) {
     document.getElementById('system').value = domainInfo.system || '';
     document.getElementById('systemURL').value = domainInfo.systemURL || '';
     document.getElementById('registerAccount').value = domainInfo.registerAccount || '';
-    document.getElementById('groups').value = domainInfo.groups || '';
+    initGroupsTags(domainInfo.groups || '');
 
     // 续费周期信息
     const renewalPeriodEl = document.getElementById('renewalPeriod');
@@ -863,6 +903,192 @@ function updateFormRequiredStatus(domainValue) {
             const el = document.getElementById(id);
             if (el) { el.required = true; el.placeholder = '二级域名必填'; }
         });
+    }
+}
+
+// ===== 分组标签管理 =====
+
+// 获取所有已有分组（去重）
+function getAllExistingGroups() {
+    const groups = new Set();
+    allDomains.forEach(d => {
+        (d.groups || '').split(',').map(g => g.trim()).filter(g => g).forEach(g => groups.add(g));
+    });
+    return Array.from(groups).sort();
+}
+
+// 获取当前已选标签
+function getCurrentGroupTags() {
+    return Array.from(document.querySelectorAll('#groupsTagList .group-tag')).map(t => t.dataset.group);
+}
+
+// 更新隐藏 input
+function updateGroupsHiddenInput() {
+    const tags = getCurrentGroupTags();
+    document.getElementById('groups').value = tags.join(', ');
+}
+
+// 添加一个分组标签
+function addGroupTag(name) {
+    name = name.trim();
+    if (!name) return;
+    const current = getCurrentGroupTags();
+    if (current.includes(name)) return;
+
+    const tagList = document.getElementById('groupsTagList');
+    const tag = document.createElement('span');
+    tag.className = 'group-tag';
+    tag.dataset.group = name;
+    tag.innerHTML = \`\${name}<span class="group-tag-remove" data-group="\${name}">&times;</span>\`;
+    tagList.appendChild(tag);
+
+    tag.querySelector('.group-tag-remove').addEventListener('click', () => removeGroupTag(name));
+    tagList.classList.add('has-tags');
+    updateGroupsHiddenInput();
+}
+
+// 删除一个分组标签
+function removeGroupTag(name) {
+    const tag = document.querySelector(\`#groupsTagList .group-tag[data-group="\${name}"]\`);
+    if (tag) tag.remove();
+    const tagList = document.getElementById('groupsTagList');
+    if (!tagList.querySelector('.group-tag')) tagList.classList.remove('has-tags');
+    updateGroupsHiddenInput();
+}
+
+// 初始化分组标签
+function initGroupsTags(groupsStr) {
+    const tagList = document.getElementById('groupsTagList');
+    tagList.innerHTML = '';
+    tagList.classList.remove('has-tags');
+    if (groupsStr) {
+        groupsStr.split(',').map(g => g.trim()).filter(g => g).forEach(g => addGroupTag(g));
+    }
+    updateGroupsHiddenInput();
+}
+
+// 显示分组下拉列表
+function showGroupsDropdown(filter) {
+    const dropdown = document.getElementById('groupsDropdown');
+    const allGroups = getAllExistingGroups();
+    const currentTags = getCurrentGroupTags();
+    const filtered = filter
+        ? allGroups.filter(g => g.includes(filter) && !currentTags.includes(g))
+        : allGroups.filter(g => !currentTags.includes(g));
+
+    if (filtered.length === 0) {
+        dropdown.style.display = 'none';
+        return;
+    }
+
+    dropdown.innerHTML = filtered.map(g =>
+        \`<div class="groups-dropdown-item" data-group="\${g}">\${g}</div>\`
+    ).join('');
+    dropdown.style.display = 'block';
+}
+
+// 隐藏分组下拉列表
+function hideGroupsDropdown() {
+    document.getElementById('groupsDropdown').style.display = 'none';
+}
+
+// ===== 注册商下拉 =====
+
+// 获取所有已有注册商名称
+function getAllExistingSystems() {
+    const systems = new Set();
+    allDomains.forEach(d => {
+        if (d.system) systems.add(d.system);
+    });
+    return Array.from(systems).sort();
+}
+
+// 获取所有已有注册商地址
+function getAllExistingSystemURLs() {
+    const urls = new Set();
+    allDomains.forEach(d => {
+        if (d.systemURL) urls.add(d.systemURL);
+    });
+    return Array.from(urls).sort();
+}
+
+// 显示注册商下拉
+function showAutocompleteDropdown(inputId, dropdownId, dataFn) {
+    const input = document.getElementById(inputId);
+    const dropdown = document.getElementById(dropdownId);
+    const allItems = dataFn();
+    const filter = input.value.toLowerCase();
+    const filtered = filter
+        ? allItems.filter(item => item.toLowerCase().includes(filter))
+        : allItems;
+
+    if (filtered.length === 0) {
+        dropdown.style.display = 'none';
+        return;
+    }
+
+    dropdown.innerHTML = filtered.map(item =>
+        \`<div class="autocomplete-dropdown-item" data-value="\${item}">\${item}</div>\`
+    ).join('');
+    dropdown.style.display = 'block';
+}
+
+// 隐藏注册商下拉
+function hideAutocompleteDropdown(dropdownId) {
+    document.getElementById(dropdownId).style.display = 'none';
+}
+
+// 08-renewal.js — 续费模态框逻辑
+
+// 打开续费模态框
+function openRenewModal(domainInfo) {
+    const overlay = document.getElementById('renewOverlay');
+    if (!overlay) return;
+
+    // 设置域名显示
+    document.getElementById('renewDomainName').textContent = domainInfo.domain;
+
+    // 默认值：续费1年
+    document.getElementById('renewDuration').value = 1;
+    document.getElementById('renewUnitSelect').value = 'year';
+
+    // 存储当前操作的域名数据
+    overlay.dataset.domain = domainInfo.domain;
+
+    overlay.style.display = 'flex';
+}
+
+// 关闭续费模态框
+function closeRenewModal() {
+    const overlay = document.getElementById('renewOverlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
+// 提交续费
+async function submitRenew() {
+    const overlay = document.getElementById('renewOverlay');
+    const domain = overlay.dataset.domain;
+    const duration = parseInt(document.getElementById('renewDuration').value);
+    const unit = document.getElementById('renewUnitSelect').value;
+
+    if (!domain) return;
+
+    if (!duration || duration < 1) {
+        showAlert('请输入有效的续费时长');
+        return;
+    }
+
+    try {
+        const result = await renewDomain(domain, duration, unit);
+        closeRenewModal();
+
+        const unitLabel = unit === 'year' ? '年' : '月';
+        showSuccess(\`\${domain} 已续费\${duration}\${unitLabel}\\n到期时间：\${result.newExpirationDate}\`);
+
+        lastOperatedDomain = domain;
+        await fetchDomains();
+    } catch (error) {
+        showError('续费失败: ' + error.message);
     }
 }
 
@@ -1011,6 +1237,96 @@ window.addEventListener('load', async () => {
                 if (event.target === modal) { modal.style.display = 'none'; }
             });
             document.getElementById('domainForm').addEventListener('submit', submitDomainForm);
+        }
+
+        // 续费弹窗事件
+        const renewOverlay = document.getElementById('renewOverlay');
+        if (renewOverlay) {
+            document.getElementById('renewCancelBtn').addEventListener('click', closeRenewModal);
+            document.getElementById('renewConfirmBtn').addEventListener('click', submitRenew);
+            renewOverlay.addEventListener('click', (event) => {
+                if (event.target === renewOverlay) closeRenewModal();
+            });
+        }
+
+        // 分组标签输入事件
+        const groupsInput = document.getElementById('groupsInput');
+        if (groupsInput) {
+            groupsInput.addEventListener('focus', () => {
+                showGroupsDropdown(groupsInput.value);
+            });
+            groupsInput.addEventListener('input', (e) => {
+                showGroupsDropdown(e.target.value);
+            });
+            groupsInput.addEventListener('keydown', (e) => {
+                if (e.key === ' ' || e.key === ',') {
+                    e.preventDefault();
+                    const val = e.target.value.replace(/,/g, '').trim();
+                    if (val) {
+                        addGroupTag(val);
+                        e.target.value = '';
+                        hideGroupsDropdown();
+                    }
+                }
+                if (e.key === 'Enter') {
+                    const val = e.target.value.trim();
+                    if (val) {
+                        e.preventDefault();
+                        addGroupTag(val);
+                        e.target.value = '';
+                        hideGroupsDropdown();
+                    }
+                }
+                if (e.key === 'Backspace' && !e.target.value) {
+                    const tags = getCurrentGroupTags();
+                    if (tags.length > 0) removeGroupTag(tags[tags.length - 1]);
+                }
+            });
+            groupsInput.addEventListener('blur', () => {
+                setTimeout(hideGroupsDropdown, 200);
+            });
+            // 点击下拉选项
+            document.getElementById('groupsDropdown').addEventListener('click', (e) => {
+                const item = e.target.closest('.groups-dropdown-item');
+                if (item) {
+                    addGroupTag(item.dataset.group);
+                    groupsInput.value = '';
+                    hideGroupsDropdown();
+                    groupsInput.focus();
+                }
+            });
+        }
+
+        // 注册商名称下拉事件
+        const systemInput = document.getElementById('system');
+        if (systemInput) {
+            systemInput.addEventListener('focus', () => showAutocompleteDropdown('system', 'systemDropdown', getAllExistingSystems));
+            systemInput.addEventListener('input', () => showAutocompleteDropdown('system', 'systemDropdown', getAllExistingSystems));
+            systemInput.addEventListener('blur', () => setTimeout(() => hideAutocompleteDropdown('systemDropdown'), 200));
+            document.getElementById('systemDropdown').addEventListener('click', (e) => {
+                const item = e.target.closest('.autocomplete-dropdown-item');
+                if (item) {
+                    systemInput.value = item.dataset.value;
+                    hideAutocompleteDropdown('systemDropdown');
+                    systemInput.focus();
+                }
+            });
+        }
+
+        // 注册商地址下拉事件
+        const systemURLInput = document.getElementById('systemURL');
+        if (systemURLInput) {
+            systemURLInput.addEventListener('focus', () => showAutocompleteDropdown('systemURL', 'systemURLDropdown', getAllExistingSystemURLs));
+            systemURLInput.addEventListener('input', () => showAutocompleteDropdown('systemURL', 'systemURLDropdown', getAllExistingSystemURLs));
+            systemURLInput.addEventListener('blur', () => setTimeout(() => hideAutocompleteDropdown('systemURLDropdown'), 200));
+            document.getElementById('systemURLDropdown').addEventListener('click', (e) => {
+                const item = e.target.closest('.autocomplete-dropdown-item');
+                if (item) {
+                    systemURLInput.value = item.dataset.value;
+                    hideAutocompleteDropdown('systemURLDropdown');
+                    systemURLInput.focus();
+                }
+            });
         }
 
         // 绑定注册日期和续费周期变动事件

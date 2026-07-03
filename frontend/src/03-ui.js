@@ -48,6 +48,15 @@ function renderSummary(domainsList) {
 }
 
 // 渲染分组标签
+function renderGroupTags(groupsStr) {
+    if (!groupsStr) return '<span class="group-tag tag-ungrouped">未分组</span>';
+    const tags = groupsStr.split(',').map(g => g.trim()).filter(g => g).map(g =>
+        `<span class="group-tag">${g}</span>`
+    ).join('');
+    return `<span class="group-tags-container">${tags}</span>`;
+}
+
+// 渲染分组标签
 function renderGroupTabs() {
     const tabsEl = document.getElementById('groupTabs');
     const existingGroups = ['全部', '一级域名', '二级域名', '未分组'];
@@ -115,6 +124,7 @@ function createDomainCard(info) {
             ${checkboxHTML}
             <div class="card-action-icons">
                 <i class="fas fa-copy card-action-icon copy-icon" data-domain="${info.domain}" title="克隆此卡片"></i>
+                <i class="fas fa-sync-alt card-action-icon renew-icon" data-domain="${info.domain}" title="续期"></i>
                 <i class="fas fa-edit card-action-icon edit-icon" data-domain="${info.domain}" title="编辑"></i>
                 <i class="fas fa-trash-alt card-action-icon delete-icon" data-domain="${info.domain}" title="删除"></i>
             </div>
@@ -131,7 +141,7 @@ function createDomainCard(info) {
                 <p><strong><i class="fa fa-user"></i> 注册账号: </strong> ${displayAccount}</p>
                 <p><strong><i class="fa fa-calendar"></i> 注册时间: </strong> ${info.registrationDate || 'N/A'}</p>
                 <p><strong><i class="fa fa-calendar"></i> 到期时间: </strong> ${info.expirationDate || 'N/A'}</p>
-                <p><strong><i class="fa fa-folder"></i> 所属分组: </strong> ${info.groups || '无'}</p>
+                <p>${renderGroupTags(info.groups)}</p>
             </div>
             <div class="card-footer">
                 <div class="progress-bar-container">
@@ -174,6 +184,15 @@ function renderDomainCards() {
                 const domain = e.target.dataset.domain;
                 const domainInfo = allDomains.find(d => d.domain === domain);
                 if (domainInfo) openDomainForm(domainInfo);
+            });
+        });
+        
+        // 续期事件
+        listEl.querySelectorAll('.renew-icon').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const domain = e.target.dataset.domain;
+                const domainInfo = allDomains.find(d => d.domain === domain);
+                if (domainInfo) openRenewModal(domainInfo);
             });
         });
         

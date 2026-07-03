@@ -96,6 +96,27 @@ function importData() {
     };
 }
 
+// 续费域名: PATCH /api/domains
+async function renewDomain(domain, duration, unit) {
+    try {
+        const response = await fetch(DOMAINS_API, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ domain, duration, unit }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ error: '续费失败' }));
+            throw new Error(errorData.error || response.statusText);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('续费失败:', error);
+        throw error;
+    }
+}
+
 // 批量删除选中的域名
 async function batchDeleteDomains(domains) {
     if (!domains || domains.length === 0) {
@@ -295,7 +316,7 @@ async function deleteDomain(domain) {
         }
         
         const deletedCount = responseData.deletedCount || domainsToDelete.length;
-        showSuccess(`域名 ${domain} 已删除 (${deletedCount} 个记录被移除)`);
+        showSuccess(`域名 ${domain} 已删除！`);
 
         currentPage = 1;
         await fetchDomains();

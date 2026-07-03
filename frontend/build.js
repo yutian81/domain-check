@@ -15,6 +15,7 @@ const MODULES = [
     '02-api.js',
     '03-ui.js',
     '04-form.js',
+    '08-renewal.js',
     '05-filters.js',
     '06-init.js',
 ];

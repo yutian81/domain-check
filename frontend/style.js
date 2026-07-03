@@ -163,7 +163,7 @@ export const HTML_CSS = `
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid rgba(24, 109, 179, 0.3);
     padding-bottom: 10px;
 }
 .card-domain {
@@ -190,6 +190,26 @@ export const HTML_CSS = `
     line-height: 0.95;
     background-color: var(--status-color);
 }
+.group-tag {
+    display: inline-block;
+    padding: 2px 7px;
+    margin: 1px 2px;
+    border-radius: 50px;
+    color: #015193;
+    font-size: 0.72rem;
+    line-height: 1.4;
+    background-color: rgba(24, 109, 179, 0.20);
+    white-space: nowrap;
+}
+.group-tag.tag-ungrouped {
+    background-color: rgba(150, 150, 150, 0.25);
+    color: #494949;
+}
+.group-tags-container {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 2px;
+}
 .card-info p {
     margin: 5px 0;
     font-size: 0.8rem;
@@ -207,7 +227,7 @@ export const HTML_CSS = `
 }
 .card-footer {
     margin-top: auto;
-    padding-top: 15px;
+    padding-top: 8px;
 }
 .progress-bar-container {
     background-color: rgba(255, 255, 255, 0.35);
@@ -269,6 +289,8 @@ export const HTML_CSS = `
 }
 .edit-icon { color: #186db3; }
 .edit-icon:hover { color: #1c5a8a; }
+.renew-icon { color: #27ae60; }
+.renew-icon:hover { color: #1e8449; }
 .delete-icon { color: #e74c3c; }
 .delete-icon:hover { color: #c0392b; }
 .copy-icon { color: #8e44ad; }
@@ -310,10 +332,12 @@ export const HTML_CSS = `
     display: none;
 }
 .modal-content {
-    background-color: #fefefe;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     margin: 5% auto;
     padding: 20px;
-    border: 1px solid #888;
+    border: 1px solid rgba(255,255,255,0.3);
     width: 80%;
     max-width: 500px;
     border-radius: 8px;
@@ -354,10 +378,141 @@ export const HTML_CSS = `
     margin-bottom: 10px;
     min-height: 18px;
 }
+
+/* 分组标签选择器 */
+.groups-field {
+    margin: 5px 0 15px 0;
+}
+.groups-tag-list {
+    display: none;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+    min-height: 0;
+}
+.groups-tag-list.has-tags {
+    display: flex;
+    margin-bottom: 6px;
+}
+.groups-tag-list .group-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px 2px 8px;
+    margin: 0;
+    font-size: 0.75rem;
+    background-color: rgba(24, 109, 179, 0.20);
+    border-radius: 50px;
+    color: #015193;
+    line-height: 1.5;
+}
+.group-tag-remove {
+    cursor: pointer;
+    font-size: 0.85rem;
+    line-height: 1;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+.group-tag-remove:hover {
+    opacity: 1;
+}
+.groups-input-wrap {
+    position: relative;
+}
+.groups-input-wrap input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+    outline: none;
+}
+.groups-input-wrap input[type="text"]:focus {
+    border-color: #186db3;
+}
+.groups-arrow, .autocomplete-arrow {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #999;
+    font-size: 0.7rem;
+}
+
+/* 注册商下拉选择器 */
+.autocomplete-field {
+    position: relative;
+    margin: 5px 0 15px 0;
+}
+.autocomplete-field input[type="text"],
+.autocomplete-field input[type="url"] {
+    width: 100%;
+    padding: 10px 30px 10px 10px !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+}
+.autocomplete-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 160px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    z-index: 10;
+}
+.autocomplete-dropdown-item {
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #333;
+    line-height: 1.3;
+    transition: background-color 0.15s;
+}
+.autocomplete-dropdown-item:hover {
+    background-color: #e8f0fe;
+    color: #186db3;
+}
+
+.groups-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 160px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    z-index: 10;
+}
+.groups-dropdown-item {
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #333;
+    line-height: 1.3;
+    transition: background-color 0.15s;
+}
+.groups-dropdown-item:hover {
+    background-color: #e8f0fe;
+    color: #186db3;
+}
+
 .modal-content button[type="submit"] {
     background-color: #186db3;
+    font-size: 16px;
     color: white;
-    padding: 14px 20px;
+    padding: 10px 20px;
     margin: 8px 0;
     border: none;
     cursor: pointer;
@@ -408,7 +563,7 @@ export const HTML_CSS = `
     align-items: center;
 }
 .toast-card {
-    background: rgba(255,255,255,0.65);
+    background: rgba(255,255,255,0.85);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255,255,255,0.3);
@@ -433,8 +588,9 @@ export const HTML_CSS = `
     font-size: 1rem;
     color: #333;
     margin-bottom: 20px;
-    line-height: 1.5;
+    line-height: 2;
     word-break: break-word;
+    white-space: pre-line;
 }
 .toast-actions {
     display: flex;
@@ -468,6 +624,40 @@ export const HTML_CSS = `
     background-color: #ccc;
 }
 
+/* 续费弹窗两行布局 */
+.renew-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    font-size: 1rem;
+    color: #333;
+}
+.renew-line:last-child {
+    margin-bottom: 20px;
+}
+.renew-line #renewDomainName {
+    font-weight: bold;
+}
+.renew-line input[type="number"] {
+    width: 160px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    text-align: center;
+}
+.renew-line select {
+    width: 80px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
 /* --- 移动端优化 --- */
 @media (max-width: 768px) {
     .header, .summary-container, .controls-container, .domain-grid, .pagination { max-width: 95%; margin: 0 auto; }
@@ -489,7 +679,8 @@ export const HTML_CSS = `
     .card-header { align-items: flex-start; gap: 5px; }
     .card-status { align-self: flex-start; }
 
-    .modal-content { margin: 5% auto; width: 90%; padding: 15px; }
+    .modal-content { margin: 5% auto; width: 80%; padding: 15px; }
+    .toast-card { width: 80%; }
 
     .footer p { font-size: 0.7rem; gap: 6px; }
 }
