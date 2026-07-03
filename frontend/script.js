@@ -1012,6 +1012,15 @@ function getAllExistingSystemURLs() {
     return Array.from(urls).sort();
 }
 
+// 获取所有已有注册账号
+function getAllExistingRegisterAccounts() {
+    const accounts = new Set();
+    allDomains.forEach(d => {
+        if (d.registerAccount) accounts.add(d.registerAccount);
+    });
+    return Array.from(accounts).sort();
+}
+
 // 显示注册商下拉
 function showAutocompleteDropdown(inputId, dropdownId, dataFn) {
     const input = document.getElementById(inputId);
@@ -1325,6 +1334,22 @@ window.addEventListener('load', async () => {
                     systemURLInput.value = item.dataset.value;
                     hideAutocompleteDropdown('systemURLDropdown');
                     systemURLInput.focus();
+                }
+            });
+        }
+
+        // 注册账号下拉事件
+        const registerAccountInput = document.getElementById('registerAccount');
+        if (registerAccountInput) {
+            registerAccountInput.addEventListener('focus', () => showAutocompleteDropdown('registerAccount', 'registerAccountDropdown', getAllExistingRegisterAccounts));
+            registerAccountInput.addEventListener('input', () => showAutocompleteDropdown('registerAccount', 'registerAccountDropdown', getAllExistingRegisterAccounts));
+            registerAccountInput.addEventListener('blur', () => setTimeout(() => hideAutocompleteDropdown('registerAccountDropdown'), 200));
+            document.getElementById('registerAccountDropdown').addEventListener('click', (e) => {
+                const item = e.target.closest('.autocomplete-dropdown-item');
+                if (item) {
+                    registerAccountInput.value = item.dataset.value;
+                    hideAutocompleteDropdown('registerAccountDropdown');
+                    registerAccountInput.focus();
                 }
             });
         }

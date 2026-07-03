@@ -101,7 +101,11 @@ function generateFormModal() {
                 </div>
 
                 <label for="registerAccount"><i class="fa fa-user"></i> 注册账号 (可选)</label>
-                <input type="text" id="registerAccount" placeholder="例如: admin@example.com">
+                <div class="autocomplete-field">
+                    <input type="text" id="registerAccount" placeholder="例如: admin@example.com" autocomplete="off">
+                    <i class="fas fa-chevron-down autocomplete-arrow"></i>
+                    <div class="autocomplete-dropdown" id="registerAccountDropdown"></div>
+                </div>
 
                 <label for="groups"><i class="fa fa-tags"></i> 分组 (可选)</label>
                 <div class="groups-field">

@@ -129,6 +129,22 @@ window.addEventListener('load', async () => {
             });
         }
 
+        // 注册账号下拉事件
+        const registerAccountInput = document.getElementById('registerAccount');
+        if (registerAccountInput) {
+            registerAccountInput.addEventListener('focus', () => showAutocompleteDropdown('registerAccount', 'registerAccountDropdown', getAllExistingRegisterAccounts));
+            registerAccountInput.addEventListener('input', () => showAutocompleteDropdown('registerAccount', 'registerAccountDropdown', getAllExistingRegisterAccounts));
+            registerAccountInput.addEventListener('blur', () => setTimeout(() => hideAutocompleteDropdown('registerAccountDropdown'), 200));
+            document.getElementById('registerAccountDropdown').addEventListener('click', (e) => {
+                const item = e.target.closest('.autocomplete-dropdown-item');
+                if (item) {
+                    registerAccountInput.value = item.dataset.value;
+                    hideAutocompleteDropdown('registerAccountDropdown');
+                    registerAccountInput.focus();
+                }
+            });
+        }
+
         // 绑定注册日期和续费周期变动事件
         const registrationDateEl = document.getElementById('registrationDate');
         const renewalPeriodEl = document.getElementById('renewalPeriod');

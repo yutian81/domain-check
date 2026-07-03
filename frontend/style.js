@@ -679,8 +679,8 @@ export const HTML_CSS = `
     .card-header { align-items: flex-start; gap: 5px; }
     .card-status { align-self: flex-start; }
 
-    .modal-content { margin: 5% auto; width: 80%; padding: 15px; }
-    .toast-card { width: 80%; }
+    .modal-content { margin: 6% auto; padding: 15px; }
+    .toast-card { margin: 20px; padding: 15px; }
 
     .footer p { font-size: 0.7rem; gap: 6px; }
 }
