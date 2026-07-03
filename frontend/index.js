@@ -113,7 +113,7 @@ function generateFormModal() {
                     <div class="groups-input-wrap">
                         <input type="text" id="groupsInput" placeholder="输入分组名称或选择已有分组" autocomplete="off">
                         <i class="fas fa-chevron-down groups-arrow"></i>
-                        <div class="groups-dropdown" id="groupsDropdown"></div>
+                        <div class="autocomplete-dropdown" id="groupsDropdown"></div>
                     </div>
                     <input type="hidden" id="groups" value="">
                 </div>

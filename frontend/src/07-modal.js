@@ -31,7 +31,6 @@ function showModal(type, message) {
         const icon = document.getElementById('toastIcon');
         const msg = document.getElementById('toastMessage');
         const actions = document.getElementById('toastActions');
-        const okBtn = document.getElementById('toastOkBtn');
 
         msg.textContent = message;
         actions.innerHTML = '';

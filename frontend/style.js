@@ -318,6 +318,11 @@ export const HTML_CSS = `
     background-color: #186db3;
     color: white;
 }
+.page-dots {
+    padding: 8px 6px;
+    color: #494949;
+    font-size: 1.2rem;
+}
 
 /* Modal 样式 */
 .modal {
@@ -477,33 +482,6 @@ export const HTML_CSS = `
     transition: background-color 0.15s;
 }
 .autocomplete-dropdown-item:hover {
-    background-color: #e8f0fe;
-    color: #186db3;
-}
-
-.groups-dropdown {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    max-height: 160px;
-    overflow-y: auto;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    z-index: 10;
-}
-.groups-dropdown-item {
-    padding: 6px 12px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    color: #333;
-    line-height: 1.3;
-    transition: background-color 0.15s;
-}
-.groups-dropdown-item:hover {
     background-color: #e8f0fe;
     color: #186db3;
 }

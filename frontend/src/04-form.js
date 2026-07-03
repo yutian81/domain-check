@@ -205,7 +205,7 @@ function showGroupsDropdown(filter) {
     }
 
     dropdown.innerHTML = filtered.map(g =>
-        `<div class="groups-dropdown-item" data-group="${g}">${g}</div>`
+        `<div class="autocomplete-dropdown-item" data-group="${g}">${g}</div>`
     ).join('');
     dropdown.style.display = 'block';
 }

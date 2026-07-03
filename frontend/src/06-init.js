@@ -87,7 +87,7 @@ window.addEventListener('load', async () => {
             });
             // 点击下拉选项
             document.getElementById('groupsDropdown').addEventListener('click', (e) => {
-                const item = e.target.closest('.groups-dropdown-item');
+                const item = e.target.closest('.autocomplete-dropdown-item');
                 if (item) {
                     addGroupTag(item.dataset.group);
                     groupsInput.value = '';

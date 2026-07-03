@@ -79,9 +79,6 @@ function renderGroupTabs() {
     });
 
     tabsEl.innerHTML = html;
-    tabsEl.querySelectorAll('.tab-btn').forEach(button => {
-        button.addEventListener('click', handleTabClick);
-    });
 }
 
 // 生成单个域名卡片的 HTML
