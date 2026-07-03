@@ -6,6 +6,17 @@ export const HTML_CSS = `
                  sans-serif;
 }
 
+:root {
+    --primary: #186db3;
+    --primary-hover: #1c5a8a;
+    --primary-bg-light: rgba(24, 109, 179, 0.20);
+    --danger: #e74c3c;
+    --danger-hover: #c0392b;
+    --text-color: #333;
+    --text-secondary: #555;
+    --border-color: #ccc;
+}
+
 /* 顶部标题和操作按钮 */
 .header {
     display: flex;
@@ -40,16 +51,16 @@ export const HTML_CSS = `
 }
 .export-btn, .import-btn { background-color: #1eaf5b; color: white; }
 .export-btn:hover, .import-btn:hover { background-color: #1c914d; }
-.add-btn { background-color: #186db3; color: white; }
-.add-btn:hover { background-color: #1c5a8a; }
-.login-btn { background-color: #186db3; color: white; }
-.login-btn:hover { background-color: #1c5a8a; }
-.logout-btn { background-color: #e74c3c; color: white; }
-.logout-btn:hover { background-color: #c0392b; }
+.add-btn { background-color: var(--primary); color: white; }
+.add-btn:hover { background-color: var(--primary-hover); }
+.login-btn { background-color: var(--primary); color: white; }
+.login-btn:hover { background-color: var(--primary-hover); }
+.logout-btn { background-color: var(--danger); color: white; }
+.logout-btn:hover { background-color: var(--danger-hover); }
 .select-btn { background-color: #8e44ad; color: white; }
 .select-btn:hover { background-color: #7d3c9a; }
-.del-btn { background-color: #e74c3c; color: white; }
-.del-btn:hover { background-color: #c0392b; }
+.del-btn { background-color: var(--danger); color: white; }
+.del-btn:hover { background-color: var(--danger-hover); }
 
 /* 概览卡片样式 */
 .summary-container {
@@ -117,7 +128,7 @@ export const HTML_CSS = `
     transition: background-color 0.3s, border-color 0.3s;
     border: none;
 }
-.tab-btn.active { background-color: #186db3; color: white; }
+.tab-btn.active { background-color: var(--primary); color: white; }
 .search-container {
     display: flex;
     align-items: center;
@@ -169,16 +180,16 @@ export const HTML_CSS = `
 .card-domain {
     font-size: 1.1rem;
     font-weight: bold;
-    color: #186db3;
+    color: var(--primary);
     cursor: pointer;
     word-break: break-all;
     transition: color 0.3s ease;
 }
-.card-domain:hover { color: #1c5a8a; }
+.card-domain:hover { color: var(--primary-hover); }
 .card-domain-masked {
     font-size: 1.1rem;
     font-weight: bold;
-    color: #555;
+    color: var(--text-secondary);
     word-break: break-all;
 }
 .card-status {
@@ -195,15 +206,15 @@ export const HTML_CSS = `
     padding: 2px 7px;
     margin: 1px 2px;
     border-radius: 50px;
-    color: #015193;
+    color: var(--primary);
     font-size: 0.72rem;
     line-height: 1.4;
-    background-color: rgba(24, 109, 179, 0.20);
+    background-color: var(--primary-bg-light);
     white-space: nowrap;
 }
 .group-tag.tag-ungrouped {
     background-color: rgba(150, 150, 150, 0.25);
-    color: #494949;
+    color: var(--text-secondary);
 }
 .group-tags-container {
     display: inline-flex;
@@ -215,7 +226,7 @@ export const HTML_CSS = `
     font-size: 0.8rem;
 }
 .card-info strong {
-    color: #333;
+    color: var(--text-color);
     font-weight: normal;
 }
 .card-info a {
@@ -247,7 +258,7 @@ export const HTML_CSS = `
     top: 50%;
     transform: translateY(-50%);
     font-size: 0.75rem;
-    color: #333;
+    color: var(--text-color);
     line-height: 1;
     z-index: 2;
 }
@@ -256,7 +267,7 @@ export const HTML_CSS = `
     text-align: center;
     margin-top: 5px;
     font-weight: bold;
-    color: #555;
+    color: var(--text-secondary);
 }
 
 /* 卡片操作按钮区域 */
@@ -284,15 +295,15 @@ export const HTML_CSS = `
     width: 18px;
     height: 18px;
     cursor: pointer;
-    accent-color: #186db3;
+    accent-color: var(--primary);
     flex-shrink: 0;
 }
-.edit-icon { color: #186db3; }
-.edit-icon:hover { color: #1c5a8a; }
+.edit-icon { color: var(--primary); }
+.edit-icon:hover { color: var(--primary-hover); }
 .renew-icon { color: #27ae60; }
 .renew-icon:hover { color: #1e8449; }
-.delete-icon { color: #e74c3c; }
-.delete-icon:hover { color: #c0392b; }
+.delete-icon { color: var(--danger); }
+.delete-icon:hover { color: var(--danger-hover); }
 .copy-icon { color: #8e44ad; }
 .copy-icon:hover { color: #7d3c9a; }
 
@@ -315,12 +326,12 @@ export const HTML_CSS = `
     border-radius: 8px;
 }
 .page-btn.active {
-    background-color: #186db3;
+    background-color: var(--primary);
     color: white;
 }
 .page-dots {
     padding: 8px 6px;
-    color: #494949;
+    color: var(--text-secondary);
     font-size: 1.2rem;
 }
 
@@ -370,7 +381,7 @@ export const HTML_CSS = `
     padding: 10px;
     margin: 5px 0 15px 0;
     display: inline-block;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     box-sizing: border-box;
 }
@@ -406,9 +417,9 @@ export const HTML_CSS = `
     padding: 2px 6px 2px 8px;
     margin: 0;
     font-size: 0.75rem;
-    background-color: rgba(24, 109, 179, 0.20);
+    background-color: var(--primary-bg-light);
     border-radius: 50px;
-    color: #015193;
+    color: var(--primary);
     line-height: 1.5;
 }
 .group-tag-remove {
@@ -428,14 +439,14 @@ export const HTML_CSS = `
     width: 100%;
     padding: 8px 10px;
     margin: 0;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     font-size: 0.9rem;
     box-sizing: border-box;
     outline: none;
 }
 .groups-input-wrap input[type="text"]:focus {
-    border-color: #186db3;
+    border-color: var(--primary);
 }
 .groups-arrow, .autocomplete-arrow {
     position: absolute;
@@ -477,17 +488,17 @@ export const HTML_CSS = `
     padding: 6px 12px;
     cursor: pointer;
     font-size: 0.85rem;
-    color: #333;
+    color: var(--text-color);
     line-height: 1.3;
     transition: background-color 0.15s;
 }
 .autocomplete-dropdown-item:hover {
     background-color: #e8f0fe;
-    color: #186db3;
+    color: var(--primary);
 }
 
 .modal-content button[type="submit"] {
-    background-color: #186db3;
+    background-color: var(--primary);
     font-size: 16px;
     color: white;
     padding: 10px 20px;
@@ -500,7 +511,7 @@ export const HTML_CSS = `
 
 .footer {
     background-color: none;
-    color: #333333;
+    color: var(--text-color);
     font-size: 0.8rem;
     width: 100%;
     text-align: center;
@@ -516,13 +527,13 @@ export const HTML_CSS = `
     margin: 0;
 }
 .footer a {
-    color: #333333;
+    color: var(--text-color);
     text-decoration: none;
     transition: color 0.3s ease;
     white-space: nowrap;
 }
 .footer a:hover {
-    color: #186db3;
+    color: var(--primary);
 }
 
 /* --- 自定义提示框（替换 alert/confirm） --- */
@@ -564,7 +575,7 @@ export const HTML_CSS = `
 }
 .toast-message {
     font-size: 1rem;
-    color: #333;
+    color: var(--text-color);
     margin-bottom: 20px;
     line-height: 2;
     word-break: break-word;
@@ -588,18 +599,18 @@ export const HTML_CSS = `
     transform: scale(0.97);
 }
 .toast-btn-primary {
-    background-color: #186db3;
+    background-color: var(--primary);
     color: white;
 }
 .toast-btn-primary:hover {
-    background-color: #1c5a8a;
+    background-color: var(--primary-hover);
 }
 .toast-btn-cancel {
     background-color: #e0e0e0;
-    color: #555;
+    color: var(--text-secondary);
 }
 .toast-btn-cancel:hover {
-    background-color: #ccc;
+    background-color: var(--border-color);
 }
 
 /* 续费弹窗两行布局 */
@@ -611,7 +622,7 @@ export const HTML_CSS = `
     margin-bottom: 16px;
     flex-wrap: wrap;
     font-size: 1rem;
-    color: #333;
+    color: var(--text-color);
 }
 .renew-line:last-child {
     margin-bottom: 20px;
@@ -622,7 +633,7 @@ export const HTML_CSS = `
 .renew-line input[type="number"] {
     width: 160px;
     padding: 6px 8px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     font-size: 0.95rem;
     text-align: center;
@@ -630,7 +641,7 @@ export const HTML_CSS = `
 .renew-line select {
     width: 80px;
     padding: 6px 8px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     font-size: 0.95rem;
     cursor: pointer;
