@@ -54,9 +54,12 @@ export default {
             return handleLogin(request, env, '/admin');
         }
 
-        // 退出登录：仅跳转回首页，不删除 Cookie（保留 7 天有效期）
+        // 退出登录：清除登录 Cookie，跳转回首页
         if (pathname === '/logout') {
-            return Response.redirect(new URL('/', request.url), 302);
+            const headers = new Headers();
+            headers.set('Location', '/');
+            headers.set('Set-Cookie', 'auth=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Path=/; Secure; SameSite=Lax');
+            return new Response(null, { status: 302, headers });
         }
 
         // 前端配置 API（公开，仅暴露非敏感字段）
